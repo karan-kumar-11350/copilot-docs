@@ -1,0 +1,3159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charm EHR Copilot — Technical Documentation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark" disabled>
+<style>
+:root {
+  --bg: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #1a1a2e;
+  --bg-topnav: #1a1a2e;
+  --text: #2d3748;
+  --text-muted: #718096;
+  --text-sidebar: #a8b2d1;
+  --text-sidebar-active: #64ffda;
+  --border: #e2e8f0;
+  --accent: #3182ce;
+  --accent-light: #ebf4ff;
+  --shadow: rgba(0,0,0,0.08);
+  --code-bg: #f7fafc;
+  --table-stripe: #f7fafc;
+  --table-hover: #ebf4ff;
+  --tag-get-bg: #e3f2fd;
+  --tag-get-text: #1565c0;
+  --tag-post-bg: #e8f5e9;
+  --tag-post-text: #2e7d32;
+  --tag-put-bg: #fff3e0;
+  --tag-put-text: #e65100;
+  --tag-delete-bg: #ffebee;
+  --tag-delete-text: #c62828;
+  --tag-async-bg: #fce4ec;
+  --tag-async-text: #c62828;
+  --search-bg: #ffffff;
+  --sidebar-hover: rgba(255,255,255,0.05);
+  --scrollbar-bg: #e2e8f0;
+  --scrollbar-thumb: #a0aec0;
+}
+[data-theme="dark"] {
+  --bg: #0a0a1a;
+  --bg-card: #16213e;
+  --bg-sidebar: #0d1117;
+  --bg-topnav: #0d1117;
+  --text: #e2e8f0;
+  --text-muted: #8892b0;
+  --text-sidebar: #8892b0;
+  --text-sidebar-active: #64ffda;
+  --border: #233554;
+  --accent: #64ffda;
+  --accent-light: #1a2744;
+  --shadow: rgba(0,0,0,0.4);
+  --code-bg: #0d1117;
+  --table-stripe: #1a2744;
+  --table-hover: #233554;
+  --tag-get-bg: #1a2744;
+  --tag-get-text: #90caf9;
+  --tag-post-bg: #1a2e1a;
+  --tag-post-text: #81c784;
+  --tag-put-bg: #2e2a1a;
+  --tag-put-text: #ffb74d;
+  --tag-delete-bg: #2e1a1a;
+  --tag-delete-text: #ef9a9a;
+  --tag-async-bg: #2e1a2a;
+  --tag-async-text: #f48fb1;
+  --search-bg: #16213e;
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --scrollbar-bg: #233554;
+  --scrollbar-thumb: #4a5568;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 60px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+
+/* Top Nav */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 52px; background: var(--bg-topnav);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.topnav h1 {
+  font-size: 15px; font-weight: 600; color: #ffffff;
+  white-space: nowrap; letter-spacing: 0.3px;
+}
+.topnav h1 span { color: var(--text-sidebar-active); }
+.nav-controls { display: flex; align-items: center; gap: 12px; }
+.theme-toggle {
+  background: none; border: 1px solid rgba(255,255,255,0.15);
+  color: #e2e8f0; cursor: pointer; font-size: 18px;
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.1); border-color: var(--text-sidebar-active); }
+.search-box {
+  position: relative; display: flex; align-items: center;
+}
+.search-box input {
+  width: 240px; padding: 7px 12px 7px 34px;
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+  background: rgba(255,255,255,0.06); color: #e2e8f0;
+  font-size: 13px; outline: none; transition: all 0.2s;
+}
+.search-box input::placeholder { color: rgba(255,255,255,0.35); }
+.search-box input:focus { border-color: var(--text-sidebar-active); background: rgba(255,255,255,0.1); width: 300px; }
+.search-box svg { position: absolute; left: 10px; width: 16px; height: 16px; color: rgba(255,255,255,0.35); pointer-events: none; }
+.search-results {
+  position: absolute; top: 42px; left: 0; right: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; max-height: 400px; overflow-y: auto;
+  box-shadow: 0 8px 24px var(--shadow); display: none; z-index: 200;
+}
+.search-results.visible { display: block; }
+.search-results a {
+  display: block; padding: 10px 14px; text-decoration: none;
+  color: var(--text); font-size: 13px; border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.search-results a:hover { background: var(--accent-light); }
+.search-results a:last-child { border-bottom: none; }
+.search-results a .sr-section { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Sidebar */
+.sidebar {
+  position: fixed; left: 0; top: 52px; bottom: 0; width: 260px;
+  background: var(--bg-sidebar); overflow-y: auto;
+  padding: 16px 0; z-index: 50;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.sidebar-group { margin-bottom: 20px; }
+.sidebar-group h3 {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-sidebar-active); padding: 0 20px; margin-bottom: 8px;
+  font-weight: 700;
+}
+.sidebar a {
+  display: block; padding: 6px 20px; text-decoration: none;
+  color: var(--text-sidebar); font-size: 13px;
+  border-left: 3px solid transparent; transition: all 0.15s;
+  line-height: 1.4;
+}
+.sidebar a:hover { color: #e2e8f0; background: var(--sidebar-hover); }
+.sidebar a.active {
+  color: var(--text-sidebar-active);
+  border-left-color: var(--text-sidebar-active);
+  background: rgba(100,255,218,0.05);
+}
+.sidebar a .api-count {
+  font-size: 10px; color: var(--text-muted);
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px; border-radius: 10px; margin-left: 6px;
+}
+
+/* Main Content */
+.main {
+  margin-left: 260px; margin-top: 52px; padding: 28px 36px 60px;
+  max-width: 1100px;
+}
+
+/* Bulk actions row */
+.bulk-actions {
+  display: flex; gap: 8px; margin-bottom: 20px;
+  position: sticky; top: 52px; z-index: 10;
+  background: var(--bg); padding: 10px 0;
+}
+.bulk-btn {
+  padding: 6px 14px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text);
+  border-radius: 6px; cursor: pointer; font-size: 12px;
+  transition: all 0.15s;
+}
+.bulk-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Section Cards */
+.section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 20px;
+  box-shadow: 0 1px 3px var(--shadow);
+  overflow: hidden; transition: box-shadow 0.2s;
+}
+.section:hover { box-shadow: 0 4px 12px var(--shadow); }
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  user-select: none; transition: background 0.15s;
+}
+.section-header:hover { background: var(--accent-light); }
+.collapse-icon {
+  font-size: 12px; color: var(--text-muted);
+  transition: transform 0.3s; flex-shrink: 0;
+}
+.section.collapsed .collapse-icon { transform: rotate(-90deg); }
+.section-title {
+  font-size: 17px; font-weight: 700; color: var(--text);
+}
+.section-subtitle {
+  font-size: 13px; color: var(--text-muted); margin-top: 2px;
+}
+.section-body {
+  padding: 24px; max-height: 50000px;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  overflow: hidden;
+}
+.section.collapsed .section-body {
+  max-height: 0; padding: 0 24px;
+}
+
+/* Content styling */
+.section-body h3 {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent-light);
+}
+.section-body h3:first-child { margin-top: 0; }
+.section-body h4 {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  margin: 20px 0 8px;
+}
+.section-body p { margin-bottom: 12px; }
+.section-body ul, .section-body ol {
+  margin-bottom: 12px; padding-left: 24px;
+}
+.section-body li { margin-bottom: 4px; }
+.section-body strong { font-weight: 600; }
+
+/* Tables */
+.table-wrapper { overflow-x: auto; margin: 16px 0; border-radius: 8px; border: 1px solid var(--border); }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  background: var(--accent-light); color: var(--text);
+  font-weight: 600; text-align: left; padding: 10px 14px;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 9px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tbody tr:nth-child(even) { background: var(--table-stripe); }
+tbody tr:hover { background: var(--table-hover); }
+td code, th code {
+  background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+  font-size: 12px; font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  color: var(--accent);
+}
+
+/* Code Blocks */
+pre {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin: 14px 0;
+  overflow-x: auto; font-size: 13px; line-height: 1.6;
+}
+pre code {
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  background: none; padding: 0; color: var(--text);
+}
+code {
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+  font-size: 13px;
+}
+
+/* API Tags */
+.api-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.api-tag {
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 12px; font-family: 'SF Mono', Consolas, monospace;
+  letter-spacing: 0.3px;
+}
+.api-tag.get { background: var(--tag-get-bg); color: var(--tag-get-text); }
+.api-tag.post { background: var(--tag-post-bg); color: var(--tag-post-text); }
+.api-tag.put { background: var(--tag-put-bg); color: var(--tag-put-text); }
+.api-tag.delete { background: var(--tag-delete-bg); color: var(--tag-delete-text); }
+.api-tag.async { background: var(--tag-async-bg); color: var(--tag-async-text); }
+
+/* API Endpoint Cards */
+.endpoint-card {
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px; margin: 8px 0;
+  background: var(--bg); transition: border-color 0.2s;
+}
+.endpoint-card:hover { border-color: var(--accent); }
+.endpoint-card .ep-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.endpoint-card .ep-method {
+  font-size: 11px; font-weight: 700; padding: 3px 8px;
+  border-radius: 4px; font-family: 'SF Mono', Consolas, monospace;
+  min-width: 48px; text-align: center;
+}
+.endpoint-card .ep-method.get { background: var(--tag-get-bg); color: var(--tag-get-text); }
+.endpoint-card .ep-method.post { background: var(--tag-post-bg); color: var(--tag-post-text); }
+.endpoint-card .ep-url {
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 13px; font-weight: 500; color: var(--text);
+}
+.endpoint-card .ep-desc { font-size: 13px; color: var(--text-muted); }
+.endpoint-card .ep-params { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Mermaid */
+.mermaid-wrapper {
+  margin: 16px 0; padding: 20px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px;
+  overflow-x: auto; text-align: center;
+  position: relative;
+}
+.mermaid { font-size: 14px; }
+.mermaid svg { max-width: 100%; height: auto; }
+
+/* Expand button on diagram */
+.diagram-expand-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 5px; padding: 4px 10px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  opacity: 0.75; transition: opacity 0.15s;
+  display: flex; align-items: center; gap: 4px;
+  z-index: 2;
+}
+.diagram-expand-btn:hover { opacity: 1; }
+
+/* Diagram Modal */
+#diagram-modal {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.75);
+  align-items: center; justify-content: center;
+}
+#diagram-modal.open { display: flex; }
+#diagram-modal-box {
+  background: var(--bg-card); border-radius: 12px;
+  width: 95vw; height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+#diagram-modal-toolbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#diagram-modal-toolbar span {
+  font-size: 13px; font-weight: 600; color: var(--text-muted);
+  flex: 1;
+}
+.modal-tool-btn {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 12px;
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  color: var(--text); line-height: 1.2;
+  transition: background 0.15s;
+}
+.modal-tool-btn:hover { background: var(--accent-light); }
+#diagram-modal-zoom-label {
+  font-size: 12px; min-width: 42px; text-align: center;
+  color: var(--text-muted); font-weight: 600;
+}
+#diagram-modal-close-btn {
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--text-muted); padding: 2px 6px;
+  border-radius: 4px;
+}
+#diagram-modal-close-btn:hover { color: var(--text); background: var(--bg); }
+#diagram-modal-viewport {
+  flex: 1; overflow: auto;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 24px;
+}
+#diagram-modal-svg-wrap {
+  display: inline-block;
+  line-height: 0;
+}
+#diagram-modal-svg-wrap svg {
+  display: block;
+  transition: width 0.15s ease, height 0.15s ease;
+}
+
+/* Info boxes */
+.info-box {
+  padding: 12px 16px; border-radius: 8px; margin: 14px 0;
+  font-size: 13px;
+}
+.info-box.note {
+  background: #ebf4ff; border-left: 4px solid #3182ce;
+  color: #2c5282;
+}
+[data-theme="dark"] .info-box.note {
+  background: #1a2744; border-left-color: #64ffda;
+  color: #a8b2d1;
+}
+.info-box.warn {
+  background: #fffbeb; border-left: 4px solid #d69e2e;
+  color: #744210;
+}
+[data-theme="dark"] .info-box.warn {
+  background: #2e2a1a; border-left-color: #fbd38d;
+  color: #fbd38d;
+}
+
+/* Version badge */
+.version-badge {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  padding: 2px 10px; border-radius: 12px;
+  background: var(--tag-get-bg); color: var(--tag-get-text);
+  margin-left: 10px;
+}
+
+/* Author chip */
+.author-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-sidebar);
+  white-space: nowrap;
+}
+.author-chip svg { opacity: 0.6; flex-shrink: 0; }
+.author-chip a {
+  color: var(--text-sidebar-active); text-decoration: none;
+  font-weight: 500;
+}
+.author-chip a:hover { text-decoration: underline; }
+
+/* Doc footer */
+.doc-footer {
+  text-align: center; padding: 32px 24px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted); font-size: 13px;
+}
+.doc-footer strong { color: var(--text); }
+.doc-footer a { color: var(--accent); text-decoration: none; }
+.doc-footer a:hover { text-decoration: underline; }
+
+/* Tree / file structure */
+.file-tree {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin: 14px 0;
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 13px; line-height: 1.8;
+  overflow-x: auto; white-space: pre;
+}
+
+/* Back to top */
+.back-top {
+  display: inline-block; margin-top: 16px;
+  font-size: 12px; color: var(--accent);
+  text-decoration: none;
+}
+.back-top:hover { text-decoration: underline; }
+
+/* Print */
+@media print {
+  .sidebar, .topnav, .bulk-actions, .search-box, .theme-toggle, .back-top { display: none !important; }
+  .main { margin-left: 0 !important; margin-top: 0 !important; padding: 10px !important; }
+  .section { break-inside: avoid; page-break-inside: avoid; box-shadow: none !important; }
+  .section.collapsed .section-body { max-height: none !important; padding: 24px !important; }
+  .mermaid-wrapper { border: 1px solid #ccc; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px; }
+  .search-box input { width: 160px; }
+  .search-box input:focus { width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="topnav">
+  <h1><span>Charm</span> EHR Copilot &mdash; Technical Documentation <span class="version-badge">v1.0</span></h1>
+  <div class="author-chip">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Karan Kumar &mdash; <a href="mailto:karan.kumar@zohocorp.com">karan.kumar@zohocorp.com</a></span>
+  </div>
+  <div class="nav-controls">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search sections..." onkeyup="handleSearch(this.value)" onfocus="handleSearch(this.value)" onblur="setTimeout(()=>document.getElementById('searchResults').classList.remove('visible'),200)">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="theme-icon">&#9790;</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-group">
+    <h3>Overview</h3>
+    <a href="#system-overview">1. System Overview</a>
+    <a href="#architecture-overview">2. Architecture Overview</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Configuration</h3>
+    <a href="#subscription-tier">3. Subscription &amp; Tiers</a>
+    <a href="#enable-disable">4. Enable / Disable Controls</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Features</h3>
+    <a href="#ambient-recording">5.1 Ambient Recording <span class="api-count">5 APIs</span></a>
+    <a href="#chart-note">5.2 Chart Note Generation <span class="api-count">4 APIs</span></a>
+    <a href="#copilot-chat">5.3 Copilot Chat <span class="api-count">6 APIs</span></a>
+    <a href="#rag-pre-router" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ RAG Pre-Router</a>
+    <a href="#faq-bot">5.4 FAQ Bot <span class="api-count">3 APIs</span></a>
+    <a href="#patient-dashboard">5.5 Patient Dashboard <span class="api-count">4 APIs</span></a>
+    <a href="#lab-opinion">5.6 Lab Opinion</a>
+    <a href="#nurse-encounter">5.7 Nurse Encounter</a>
+    <a href="#name-search">5.8 Name Search</a>
+    <a href="#feedback">5.9 Feedback &amp; Persistence</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>API Reference</h3>
+    <a href="#api-reference">6. API Reference <span class="api-count">40+ APIs</span></a>
+    <a href="#call-chain">6.10 Call Chain Mapping</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Architecture</h3>
+    <a href="#data-flow">7. Data Flow Diagrams</a>
+    <a href="#frontend-arch">8. Frontend Architecture</a>
+    <a href="#backend-arch">9. Backend Architecture</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Reference</h3>
+    <a href="#database-schema">10. Database Schema</a>
+    <a href="#config-reference">11. Configuration Reference</a>
+    <a href="#error-codes">12. Error Codes</a>
+    <a href="#security-rbac">13. Security &amp; RBAC</a>
+    <a href="#async-tasks">14. Async Task Execution</a>
+    <a href="#third-party">15. Third-Party Integrations</a>
+    <a href="#mobile-api">16. Mobile Integration APIs</a>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+  <div class="bulk-actions">
+    <button class="bulk-btn" onclick="expandAll()">Expand All</button>
+    <button class="bulk-btn" onclick="collapseAll()">Collapse All</button>
+  </div>
+
+  <!-- Section 1: System Overview -->
+  <div class="section" id="system-overview">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">1. System Overview</div>
+        <div class="section-subtitle">AI-powered clinical assistant embedded within Charm EHR</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Charm Copilot is an AI-powered clinical assistant embedded within the Charm EHR platform. It provides real-time ambient audio recording, automatic chart note generation, conversational AI, lab opinion, patient summarization, FAQ assistance, and referral generation &mdash; all gated behind a subscription tier system.</p>
+
+      <h3>Core Technology Stack</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Technology</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Azure OpenAI (GPT-4)</strong></td><td>LLM Backend via Azure API</td></tr>
+            <tr><td><strong>Azure Whisper + AWS fallback</strong></td><td>Speech-to-Text transcription</td></tr>
+            <tr><td><strong>OpenAI Assistants API</strong></td><td>Threads, Runs, Messages, Tool Calls framework</td></tr>
+            <tr><td><strong>Internal TaskExecutor</strong></td><td>Async execution thread pool</td></tr>
+            <tr><td><strong>Vanilla JS + Handlebars.js</strong></td><td>Frontend rendering</td></tr>
+            <tr><td><strong>Java (Servlet-based REST)</strong></td><td>Backend API layer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Source Locations</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Area</th><th>Path</th></tr></thead>
+          <tbody>
+            <tr><td>Backend core</td><td><code>source/com/medicalmine/api/rest/ehr/ai/</code></td></tr>
+            <tr><td>OpenAI API client layer</td><td><code>source/com/medicalmine/api/rest/ehr/ai/openAiApi/</code></td></tr>
+            <tr><td>GPT/Azure utilities</td><td><code>source/com/medicalmine/api/rest/ehr/ai/util/</code> and <code>gpt4/</code></td></tr>
+            <tr><td>Frontend copilot</td><td><code>webapps/ehr/js/prescription_v2/charmCopilot.js</code></td></tr>
+            <tr><td>Frontend scriber</td><td><code>webapps/ehr/js/prescription_v2/gpt4v2.js</code></td></tr>
+            <tr><td>Frontend CRUD configs</td><td><code>webapps/ehr/js/prescription_v2/charm_crud_api_configs.js</code></td></tr>
+            <tr><td>API security config</td><td><code>webapps/api/WEB-INF/security-api-ai.xml</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 2: Architecture Overview -->
+  <div class="section" id="architecture-overview">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">2. Architecture Overview</div>
+        <div class="section-subtitle">Layered system diagram showing browser, backend, and external services</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+graph TD
+    subgraph Browser["BROWSER (EHR UI)"]
+        CC["charmCopilot.js<br/>UI Orchestrator"]
+        GP["gpt4v2.js<br/>Scriber / Audio"]
+        CR["charm_crud_api_configs.js<br/>Data Write-back"]
+    end
+
+    subgraph Backend["Charm EHR Java Backend"]
+        AI["AiAPI.java<br/>Route Dispatcher"]
+        AA["AssistantApi.java<br/>Tier Validation Gateway"]
+        AU["AssistantUtil.java<br/>Core Orchestration"]
+        GT["GPTTaskUtil.java<br/>Async Task Queue"]
+    end
+
+    subgraph External["External Services"]
+        AZ["Azure OpenAI<br/>(GPT-4)"]
+        WH["Azure Whisper<br/>(STT)"]
+        AW["AWS Whisper<br/>(Fallback)"]
+    end
+
+    CC --> AI
+    GP --> AI
+    CR --> AI
+    AI --> AA
+    AA --> AU
+    AU --> GT
+    GT --> AZ
+    GT --> WH
+    GT --> AW
+
+    style Browser fill:#e3f2fd,stroke:#1565c0,color:#000
+    style Backend fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style External fill:#fff3e0,stroke:#e65100,color:#000
+        </div>
+      </div>
+
+      <h3>Component Roles</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Component</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><code>AiAPI.java</code></td><td>Servlet route dispatcher &mdash; maps HTTP endpoints to handler methods</td></tr>
+            <tr><td><code>AssistantApi.java</code></td><td>Tier + module access validation gateway before any AI call</td></tr>
+            <tr><td><code>CopilotTierValidator.java</code></td><td>Enforces tier hierarchy, module allowlists, encounter limits</td></tr>
+            <tr><td><code>CopilotConfigAPI.java</code></td><td>CRUD for tier config, general settings, per-member settings</td></tr>
+            <tr><td><code>AssistantUtil.java</code></td><td>Core OpenAI Assistants orchestration &mdash; threads, runs, tool calls</td></tr>
+            <tr><td><code>GPTTaskUtil.java</code></td><td>Async task pool for Whisper and chart note generation</td></tr>
+            <tr><td><code>AzureApi.java</code></td><td>Low-level Azure GPT-4 and Whisper HTTP calls</td></tr>
+            <tr><td><code>OpenAIApiClient.java</code></td><td>Base HTTP client with proxy support for all OpenAI endpoints</td></tr>
+            <tr><td><code>ThreadManager.java</code></td><td>Manages OpenAI thread lifecycle</td></tr>
+            <tr><td><code>RunManager.java</code></td><td>Manages OpenAI run lifecycle (poll, cancel, tool output submission)</td></tr>
+            <tr><td><code>MessageManager.java</code></td><td>Manages OpenAI message lifecycle</td></tr>
+            <tr><td><code>CharmCopilotSubscriptionUtil.java</code></td><td>Usage details persistence, subscription state</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 3: Subscription & Tier System -->
+  <div class="section" id="subscription-tier">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">3. Subscription &amp; Tier System</div>
+        <div class="section-subtitle">NONE &lt; BASIC (Free) &lt; ADVANCED (Professional) tier hierarchy</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>3.1 Tier Hierarchy</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+graph LR
+    NONE["NONE<br/>No Access"] -->|upgrade| BASIC["BASIC (Free)<br/>Limited Access"]
+    BASIC -->|upgrade| ADVANCED["ADVANCED (Professional)<br/>Full Access"]
+
+    style NONE fill:#ffebee,stroke:#c62828,color:#000
+    style BASIC fill:#fff3e0,stroke:#e65100,color:#000
+    style ADVANCED fill:#e8f5e9,stroke:#2e7d32,color:#000
+        </div>
+      </div>
+
+      <h3>3.2 Tier Definitions</h3>
+      <h4>NONE</h4>
+      <ul>
+        <li>No Copilot access whatsoever &mdash; UI is hidden/disabled</li>
+        <li>All <code>CopilotTierValidator</code> checks throw error <code>90147</code></li>
+      </ul>
+      <h4>BASIC &mdash; Basic (Free)</h4>
+      <ul>
+        <li>Limited feature set with daily encounter usage limits</li>
+        <li>Accessible modules: <code>FAQ_BOT_ASSISTANT</code>, <code>COMMON_ASSISTANT</code>, <code>ENCOUNTER</code></li>
+        <li>Encounter limit: configurable per member via <code>copilot_encounter_limit</code> MemberProp (default: <strong>2/day</strong>)</li>
+        <li>When limit exceeded, ENCOUNTER module falls back to <code>COMMON_ASSISTANT</code></li>
+      </ul>
+      <h4>ADVANCED &mdash; Advanced (Professional)</h4>
+      <ul>
+        <li>Full feature set with no usage limits</li>
+        <li>All modules: <code>FAQ_BOT_ASSISTANT</code>, <code>COMMON_ASSISTANT</code>, <code>ENCOUNTER</code>, <code>PATIENT_DASHBOARD</code>, <code>LAB_OPINION</code>, <code>NURSE_ENCOUNTER</code></li>
+      </ul>
+
+      <h3>3.3 Feature Access Matrix</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Feature</th><th>NONE</th><th>BASIC (Free)</th><th>ADVANCED (Pro)</th></tr></thead>
+          <tbody>
+            <tr><td>FAQ Bot</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Common Assistant</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Encounter Copilot</td><td>No</td><td>Yes (2/day)</td><td>Yes</td></tr>
+            <tr><td>Chart Note Generation</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Ambient Recording</td><td>No</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Dictation</td><td>No</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Patient Dashboard Copilot</td><td>No</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Patient Summarization</td><td>No</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Lab Opinion Copilot</td><td>No</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Nurse Encounter</td><td>No</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Doc Upload</td><td>No</td><td>No</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3.4 Tier Configuration (CharmProperties)</h3>
+      <p>Tier module/feature sets are stored as JSON in CharmProperties. Hardcoded defaults are used as fallback.</p>
+      <h4>COPILOT_TIER_BASIC</h4>
+      <pre><code class="language-json">{
+  "modules": ["FAQ_BOT_ASSISTANT", "COMMON_ASSISTANT", "ENCOUNTER"],
+  "features": {
+    "FAQ_BOT": true,
+    "AMBIENT_RECORDING": false,
+    "CHART_NOTE_GEN": true,
+    "PATIENT_SUMMARIZATION": false,
+    "PAT_NURSE_TRANSCRIPT": false,
+    "LAB_OPINION": false,
+    "DICTATION": false,
+    "DOC_UPLOAD": false
+  }
+}</code></pre>
+      <h4>COPILOT_TIER_ADVANCED</h4>
+      <pre><code class="language-json">{
+  "modules": ["FAQ_BOT_ASSISTANT", "COMMON_ASSISTANT", "ENCOUNTER",
+              "PATIENT_DASHBOARD", "LAB_OPINION", "NURSE_ENCOUNTER"],
+  "features": {
+    "FAQ_BOT": true,
+    "AMBIENT_RECORDING": true,
+    "CHART_NOTE_GEN": true,
+    "PATIENT_SUMMARIZATION": true,
+    "PAT_NURSE_TRANSCRIPT": true,
+    "LAB_OPINION": true,
+    "DICTATION": true,
+    "DOC_UPLOAD": true
+  }
+}</code></pre>
+
+      <h3>3.5 MemberProps (per-member configuration)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>PROP_NAME</th><th>Example Value</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>copilot_tier</code></td><td><code>BASIC</code></td><td>Member's tier: NONE, BASIC, or ADVANCED</td></tr>
+            <tr><td><code>copilot_encounter_limit</code></td><td><code>2</code></td><td>Max encounters per day (BASIC only; default: 2)</td></tr>
+            <tr><td><code>copilot_basic_usage</code></td><td><code>2026-04-28:enc001,enc002</code></td><td>Daily usage tracker</td></tr>
+            <tr><td><code>isCopilotAutoOpenEnabled</code></td><td><code>true</code></td><td>Auto-open copilot on encounter load</td></tr>
+            <tr><td><code>openCopilotAsNewPane</code></td><td><code>true</code></td><td>Display mode: embed or overlay</td></tr>
+            <tr><td><code>CHART_NOTE_FORMAT_PREFERENCE</code></td><td><code>bullet_points</code></td><td>Chart note format preference</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3.6 Tier Resolution Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    A["Request arrives at Copilot API"] --> B["CopilotTierValidator.requireModuleAccess()"]
+    B --> C["resolveTierForCurrentMember()"]
+    C --> D{"tier == NONE?"}
+    D -->|Yes| E["Throw FinanceException(90147)"]
+    D -->|No| F["resolveModulesForTier(tier)"]
+    F --> G{"moduleName in<br/>allowed list?"}
+    G -->|No| H["Throw FinanceException(90148)"]
+    G -->|Yes| I["PROCEED"]
+
+    style E fill:#ffebee,stroke:#c62828,color:#000
+    style H fill:#ffebee,stroke:#c62828,color:#000
+    style I fill:#e8f5e9,stroke:#2e7d32,color:#000
+        </div>
+      </div>
+
+      <h3>3.7 BASIC Tier Encounter Limit Check</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    A["requireEncounterLimitNotExceeded(encId)"] --> B{"tier?"}
+    B -->|ADVANCED| C["Return - no limit"]
+    B -->|NONE| D["Throw 90147"]
+    B -->|BASIC| E["Read copilot_basic_usage"]
+    E --> F{"Date matches today?"}
+    F -->|No| G["Empty set - new day reset"]
+    F -->|Yes| H["Parse encounter IDs"]
+    G --> I{"encounterId already in set?"}
+    H --> I
+    I -->|Yes| J["Return - re-access allowed"]
+    I -->|No| K{"count >= limit?"}
+    K -->|Yes| L["Throw 90150 - limit exceeded"]
+    K -->|No| M["PROCEED"]
+
+    style C fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style D fill:#ffebee,stroke:#c62828,color:#000
+    style J fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style L fill:#ffebee,stroke:#c62828,color:#000
+    style M fill:#e8f5e9,stroke:#2e7d32,color:#000
+        </div>
+      </div>
+
+      <h3>3.8 Config API</h3>
+      <div class="endpoint-card">
+        <div class="ep-header">
+          <span class="ep-method get">GET</span>
+          <span class="ep-url">/api/ehr/v1/copilot/config</span>
+        </div>
+        <div class="ep-desc">Returns full resolved tier, module list, feature flags, display config, and BASIC usage.</div>
+        <div class="ep-params">Handler: <code>CopilotConfigAPI.getCopilotConfig()</code></div>
+      </div>
+      <pre><code class="language-json">{
+  "tierName": "BASIC",
+  "modules": ["FAQ_BOT_ASSISTANT", "COMMON_ASSISTANT", "ENCOUNTER"],
+  "features": { "FAQ_BOT": true, "AMBIENT_RECORDING": false, "CHART_NOTE_GEN": true },
+  "config": { "autoOpen": true, "copilotPlacement": "overlay" },
+  "usage": {
+    "encounters": { "date": "2026-04-28", "count": 1, "limit": 2, "remaining": 1 }
+  }
+}</code></pre>
+      <div class="info-box note"><code>usage</code> block is only present for BASIC tier. ADVANCED omits it.</div>
+
+      <div class="endpoint-card">
+        <div class="ep-header">
+          <span class="ep-method post">POST</span>
+          <span class="ep-url">/api/ehr/v1/copilot/usage/track</span>
+        </div>
+        <div class="ep-desc">Records an encounter usage entry for BASIC tier.</div>
+        <div class="ep-params">Params: <code>module_type</code> (form param)</div>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 4: Enable / Disable Controls -->
+  <div class="section" id="enable-disable">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">4. Enable / Disable Controls</div>
+        <div class="section-subtitle">Practice-level and member-level configuration toggles</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>4.1 Practice-Level Controls</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>PracticeProp Key</th><th>Type</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td><code>COPILOT_ENABLED</code></td><td>boolean</td><td>Master on/off for the whole practice</td></tr>
+            <tr><td><code>COPILOT_BASIC_ENABLED</code></td><td>boolean</td><td>Enable/disable BASIC tier for ALL members</td></tr>
+            <tr><td><code>COPILOT_BASIC_AMBIENT_RECORDING_ENABLED</code></td><td>boolean</td><td>Gate ambient recording for BASIC tier</td></tr>
+            <tr><td><code>IS_WEBHOOK_ENABLED_FOR_COPILOT</code></td><td>boolean</td><td>Async (webhook) vs synchronous run execution</td></tr>
+            <tr><td><code>WHISPER_ENDPOINT</code></td><td>string</td><td>Whisper transcription endpoint override</td></tr>
+            <tr><td><code>WHISPER_RECORDING_DURATION_LIMIT</code></td><td>long (ms)</td><td>Max recording duration (default: 1,800,000 ms = 30 min)</td></tr>
+            <tr><td><code>COPILOT_AUTO_DELETE_AUDIO</code></td><td>boolean</td><td>Auto-delete audio after processing</td></tr>
+            <tr><td><code>COPILOT_AUTO_DELETE_TRANSCRIPT</code></td><td>boolean</td><td>Auto-delete transcript after processing</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4.2 Member-Level Controls</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>MemberProp Key</th><th>Type</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td><code>copilot_tier</code></td><td>string</td><td>Member's tier: NONE, BASIC, ADVANCED</td></tr>
+            <tr><td><code>copilot_encounter_limit</code></td><td>int</td><td>Override daily encounter limit (default: 2)</td></tr>
+            <tr><td><code>copilot_basic_usage</code></td><td>string</td><td>Usage tracker for BASIC tier</td></tr>
+            <tr><td><code>isCopilotAutoOpenEnabled</code></td><td>boolean</td><td>Auto-open copilot panel</td></tr>
+            <tr><td><code>openCopilotAsNewPane</code></td><td>string</td><td>Display mode: embed or overlay</td></tr>
+            <tr><td><code>CHART_NOTE_FORMAT_PREFERENCE</code></td><td>string</td><td>Preferred format: bullet_points, structured</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4.3 Admin APIs for Enable/Disable</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/settings/members/enable_basic_for_all</span></div>
+        <div class="ep-desc">Enable BASIC for all members</div>
+        <div class="ep-params">Params: <code>enabled=true|false</code></div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/settings/members/batch_update</span></div>
+        <div class="ep-desc">Set tier per member (batch)</div>
+        <div class="ep-params">Params: JSONArray of <code>{memberId, tier, encounterLimit}</code></div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/settings/members/remove</span></div>
+        <div class="ep-desc">Remove members from copilot</div>
+        <div class="ep-params">Params: <code>member_ids</code> (comma-separated)</div>
+      </div>
+
+      <h3>4.4 Practice Terms Agreement</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/copilot/practice/terms_agreement</span></div>
+        <div class="ep-desc">Retrieve current agreement status before copilot activation</div>
+      </div>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.1: Ambient Recording -->
+  <div class="section" id="ambient-recording">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.1 Ambient Recording &amp; Transcription (Whisper)</div>
+        <div class="section-subtitle">Record patient-provider conversations, chunk audio, transcribe via Azure Whisper</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /whisper/audio</span>
+        <span class="api-tag post">POST /whisper/persistTable</span>
+        <span class="api-tag post">POST /whisper/storeaudio</span>
+        <span class="api-tag get">GET /whisper/getConversationAudio</span>
+        <span class="api-tag get">GET /whisper/getChunkAudio</span>
+      </div>
+
+      <h3>Trigger Points</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>ID</th><th>Context</th></tr></thead>
+          <tbody>
+            <tr><td><code>pat_doc</code></td><td>Patient-Doctor consultation</td></tr>
+            <tr><td><code>pat_nurse</code></td><td>Nurse-patient interaction</td></tr>
+            <tr><td><code>dictation</code></td><td>Provider dictating notes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Recording Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as EHR UI (gpt4v2.js)
+    participant API as Charm Backend
+    participant TE as TaskExecutor
+    participant AZ as Azure Whisper
+    participant WMS as WMS Push
+
+    P->>UI: Click "Record"
+    UI->>UI: Check BroadcastChannel
+    UI->>UI: navigator.mediaDevices.getUserMedia()
+    UI->>UI: new MediaRecorder(stream)
+    loop Every audioChunkSize ms
+        UI->>UI: continuousRecording()
+        UI->>UI: convertBlobToWav(blob)
+        UI->>UI: addToQueue(chunk)
+        UI->>API: POST /whisper/audio
+        Note right of API: audio_file, chunk, useAzure, encounter_id, audioLength, threadId
+        API->>TE: createWhisperAudioTask()
+        TE->>TE: DFS storage (storeConsultationAudio)
+        TE->>AZ: fetchWhisperResponse()
+        AZ-->>TE: transcript text
+        TE->>TE: addOrUpdateConversationAudioRecord()
+        TE->>WMS: sendWMSCustomMsgToUsers()
+        WMS-->>UI: getWhisperResponseFromWebhook
+        UI->>UI: Append to running transcript
+    end
+    P->>UI: Click "Stop"
+    UI->>API: POST /whisper/storeaudio
+    UI->>API: POST /whisper/persistTable
+        </div>
+      </div>
+
+      <h3>Error Handling &amp; Retry</h3>
+      <div class="info-box note">On error, if <code>retryCount &lt; 2</code> and triggerPoint is <code>pat_doc</code>, the system retries from DFS with exponential backoff (1s, 2s). After max retries, an error WMS message is sent to the browser.</div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.2: Chart Note Generation -->
+  <div class="section" id="chart-note">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.2 Chart Note Generation</div>
+        <div class="section-subtitle">Convert transcript into structured clinical chart note (SOAP format) via parallel tasks</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /gpt/generateChartNote</span>
+        <span class="api-tag post">POST /gpt/chartNote/submit</span>
+        <span class="api-tag get">GET /gpt/chartNote/status/{id}</span>
+        <span class="api-tag get">GET /gpt/notesPreview</span>
+      </div>
+
+      <p>Two parallel tasks are created: <strong>Subjective + Objective</strong> (<code>CHART_NOTE_SUBJECTIVE_GENERATION</code>) and <strong>Assessment + Plan</strong> (<code>CHART_NOTE_ASSESSMENT_GENERATION</code>).</p>
+
+      <h3>Complete 8-Step Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as EHR UI (gpt4v2.js)
+    participant API as Charm Backend
+    participant TV as TierValidator
+    participant TE as TaskExecutor
+    participant AZ as Azure GPT-4
+    participant WMS as WMS Push
+
+    P->>UI: Step 1 - Click "Generate Chart Note"
+    UI->>UI: Step 2 - Collect transcript + params
+    UI->>UI: Step 3 - Gather attachment data
+    UI->>UI: Step 4 - Show loading UI
+    UI->>API: POST /gpt/generateChartNote
+    API->>TV: requireFeatureAccess("CHART_NOTE_GEN")
+    API->>TV: requireEncounterLimitNotExceeded()
+    API->>TE: createGenerateChartNoteTask()
+
+    par Step 6 - Parallel Generation
+        TE->>AZ: Thread A - Subjective+Objective
+        AZ-->>TE: S/O chart note JSON
+        TE->>WMS: WMS callback (subjective_objective)
+    and
+        TE->>AZ: Thread B - Assessment+Plan
+        AZ-->>TE: A/P chart note JSON
+        TE->>WMS: WMS callback (assessment_diagnoses)
+    end
+
+    WMS-->>UI: Step 7 - getChartNoteFromWebhook
+    UI->>UI: Merge results + displayInCopilot()
+    UI->>UI: Step 8 - Cleanup + UI reset
+        </div>
+      </div>
+
+      <h3>Race Condition Handling</h3>
+      <p>When both tasks run concurrently, either can finish first. The frontend coordinates via two flags and a temporary store:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Scenario</th><th>Handling</th></tr></thead>
+          <tbody>
+            <tr><td>Subjective arrives first</td><td>Display partial note; set flag; wait for assessment</td></tr>
+            <tr><td>Assessment arrives first</td><td>Store in <code>scriber.assessmentResponse</code>; wait for subjective</td></tr>
+            <tr><td>Both arrive (subjective last)</td><td>Merge via <code>Object.assign()</code> then single <code>displayInCopilot()</code></td></tr>
+            <tr><td>Either errors</td><td>Clear both flags; show error + Retry button</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Chart Note Format Preferences</h3>
+      <ul>
+        <li><code>bullet_points</code> &mdash; bulleted list format</li>
+        <li><code>structured</code> &mdash; section-based SOAP structure</li>
+        <li>Stored per-member in <code>CHART_NOTE_FORMAT_PREFERENCE</code> MemberProp</li>
+      </ul>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.3: Copilot Chat -->
+  <div class="section" id="copilot-chat">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.3 Copilot Chat (Assistant Threads)</div>
+        <div class="section-subtitle">Conversational AI interface with 6-phase thread lifecycle and tool call support</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /assistant/thread/create</span>
+        <span class="api-tag post">POST /assistant/thread/message/create</span>
+        <span class="api-tag post">POST /assistant/thread/run</span>
+        <span class="api-tag post">POST /assistant/submitToolOutputs</span>
+        <span class="api-tag post">POST /assistant/message/update/encounterDetails</span>
+        <span class="api-tag get">GET /assistant/thread/{id}/message/retrieve</span>
+      </div>
+
+      <h3>Thread Lifecycle (6 Phases)</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as Copilot UI
+    participant API as AssistantApi
+    participant TV as TierValidator
+    participant TE as TaskExecutor
+    participant AZ as Azure OpenAI
+    participant WMS as WMS Push
+
+    P->>UI: Phase 1 - Open Copilot Panel
+    UI->>API: POST /assistant/thread/create
+    API->>TV: requireModuleAccess() + requireEncounterLimit()
+    API->>AZ: POST /threads
+    AZ-->>API: thread_id, assistant_id
+    API-->>UI: {thread_id, assistant_id}
+
+    P->>UI: Phase 2 - Type message
+    UI->>API: POST /assistant/thread/message/create
+    API->>AZ: POST /threads/{id}/messages
+
+    P->>UI: Phase 3 - Send
+    UI->>API: POST /assistant/thread/run
+    API->>TE: initiateRunWithThreadExec()
+    Note right of TE: Background: poll Azure every ~1s
+
+    alt Phase 4a - Run Completed
+        TE->>AZ: retrieveRun() - completed
+        TE->>WMS: copilotWebhookRunProcessResponse
+        WMS-->>UI: Display assistant reply
+    else Phase 4b - Tool Calls Required
+        TE->>AZ: retrieveRun() - requires_action
+        TE->>WMS: copilotWebhookRunProcessResponse
+        WMS-->>UI: function_tools array
+        UI->>UI: window[functionName](args)
+        UI->>API: Phase 5 - POST /submitToolOutputs
+        API->>TE: submitToolOutputsExec()
+        TE->>AZ: submitToolOutputs + poll
+        TE->>WMS: Phase 6 - copilotToolOutputCallback
+        WMS-->>UI: Final response or more tool calls
+    end
+        </div>
+      </div>
+
+      <h3>Encounter Details Injection</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/assistant/message/update/encounterDetails</span></div>
+        <div class="ep-desc">Deletes old context message and appends fresh encounter data (physician notes, medications, diagnoses, vitals) to thread.</div>
+        <div class="ep-params">Params: <code>thread_id</code>, <code>encounter_id</code>, <code>patient_id</code>, <code>message_id</code></div>
+      </div>
+
+      <h3>Sync vs Async Path</h3>
+      <div class="info-box note">When <code>IS_WEBHOOK_ENABLED_FOR_COPILOT = false</code>, the system uses <code>initiateRunWithThread()</code> with an inline polling loop and returns the final response directly in the HTTP response (no WMS).</div>
+
+      <!-- RAG Pre-Router subsection -->
+      <h3 id="rag-pre-router" style="margin-top:32px;padding-top:16px;border-top:1px solid var(--border);">
+        RAG Pre-Router: <code style="font-size:14px;">copilot/ask</code>
+        <span style="font-size:11px;font-weight:500;background:var(--tag-post-bg);color:var(--tag-post-text);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">NEW</span>
+      </h3>
+      <div class="info-box note">Before every assistant run in Copilot Chat, the frontend calls <code>POST /api/ehr/v1/copilot/ask</code> for <strong>intent detection</strong>, <strong>module routing</strong>, and <strong>named entity extraction</strong> using a lightweight LLM (<code>COPILOT_ROUTER_AGENT</code>). The result enriches the user query with relevant tool schemas and patient/member context before the actual OpenAI run begins. This is the core of the <strong>RAG pipeline</strong> in Copilot Chat.</div>
+
+      <h4 style="margin:20px 0 10px;font-size:14px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Module Availability</h4>
+      <table>
+        <thead><tr><th>Module</th><th>copilot/ask Called?</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code>ENCOUNTER</code></td><td><span style="color:#c62828;font-weight:700;">No</span></td><td>Bypassed entirely — goes straight to run</td></tr>
+          <tr><td><code>PATIENT_DASHBOARD</code> (query &gt; 500 chars)</td><td><span style="color:#c62828;font-weight:700;">No</span></td><td>Long queries bypass the router</td></tr>
+          <tr><td><code>PATIENT_DASHBOARD</code> (query ≤ 500 chars)</td><td><span style="color:#2e7d32;font-weight:700;">Yes</span></td><td>Full RAG routing</td></tr>
+          <tr><td><code>COMMON_ASSISTANT</code></td><td><span style="color:#2e7d32;font-weight:700;">Yes</span></td><td>Full RAG routing</td></tr>
+          <tr><td><code>FAQ_BOT_ASSISTANT</code></td><td><span style="color:#c62828;font-weight:700;">No</span></td><td>Goes directly to <code>initiateRunProcess</code></td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin:24px 0 10px;font-size:14px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">API Endpoint</h4>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="method-badge post">POST</span><span class="ep-url">/api/ehr/v1/copilot/ask</span></div>
+        <div class="ep-desc">RAG pre-router — intent detection, module routing, named entity extraction via small LLM before assistant run.</div>
+        <div class="ep-params">Params: <code>question</code>, <code>past_transactions</code>, <code>assistant_id</code>, <code>thread_id</code>, <code>module_name</code></div>
+      </div>
+
+      <h4 style="margin:20px 0 8px;font-size:13px;font-weight:700;">Request Parameters</h4>
+      <table>
+        <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>question</code></td><td>String</td><td>Raw user query</td></tr>
+          <tr><td><code>past_transactions</code></td><td>JSON String</td><td>Last 4 conversation messages (2 user+assistant pairs), serialized as <code>{ messages: [...], maxQueueLimit: 10 }</code></td></tr>
+          <tr><td><code>assistant_id</code></td><td>String</td><td>Current thread's assistant ID</td></tr>
+          <tr><td><code>thread_id</code></td><td>String</td><td>Current thread ID</td></tr>
+          <tr><td><code>module_name</code></td><td>String</td><td>Active module name (e.g. <code>PATIENT_DASHBOARD</code>)</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin:20px 0 8px;font-size:13px;font-weight:700;">Response JSON</h4>
+      <pre><code class="language-json">{
+  "intent": "Fetch",
+  "module": ["patient-summary"],
+  "named_entity": {
+    "John Smith": "patient_name",
+    "Dr. Adams":  "provider_name",
+    "Clinic XYZ": "unknown"
+  }
+}</code></pre>
+      <div class="info-box warn" style="margin-top:8px;">On content filtering / abuse monitoring: <code>{ "error": true }</code> — run is halted and <code>persistCopilotAbuseMonitoring()</code> is called.</div>
+
+      <h4 style="margin:20px 0 8px;font-size:13px;font-weight:700;">Intent Values</h4>
+      <table>
+        <thead><tr><th>Intent</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>Fetch</code></td><td>User wants to retrieve data from EHR modules</td></tr>
+          <tr><td><code>Summary</code></td><td>User wants a patient summary</td></tr>
+          <tr><td><code>FAQ</code></td><td>User is asking a FAQ/product question</td></tr>
+          <tr><td><em>other</em></td><td>Falls back to current module's assistant</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin:20px 0 8px;font-size:13px;font-weight:700;">Named Entity Types</h4>
+      <table>
+        <thead><tr><th>Type</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>patient_name</code></td><td>Resolved via <code>searchPatientsByName()</code></td></tr>
+          <tr><td><code>provider_name</code></td><td>Resolved via <code>searchProviderByName()</code></td></tr>
+          <tr><td><code>unknown</code></td><td>Resolved via <code>searchNames()</code> (combined patient + member search)</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin:24px 0 10px;font-size:14px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Backend Call Chain</h4>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant FE as Frontend (charmCopilot.js)
+    participant AA as AssistantApi.java
+    participant AU as AssistantUtil.java
+    participant GPT as GPT4Util (small_llm)
+    participant AZ as Azure OpenAI
+    participant DB as DB (AZURECHARMCOPILOTUSAGE)
+
+    FE->>AA: POST /api/ehr/v1/copilot/ask<br/>(question, past_transactions, module_name)
+    AA->>AA: CopilotTierValidator.requireModuleAccess()
+    AA->>AU: getIntentModuleFromQuery()
+    AU->>AU: Prepend module context to question
+    AU->>GPT: generateAzureGPT4Request("COPILOT_ROUTER_AGENT")
+    GPT->>AZ: Lightweight LLM call (small_llm endpoint)
+    AZ-->>GPT: Raw JSON string
+    GPT-->>AU: intent + module + named_entity
+    AU->>DB: persistCopilotUsageDetails(..., "GET_INTENT")
+    AU-->>AA: JSON string
+    AA-->>FE: { intent, module[], named_entity{} }
+        </div>
+      </div>
+
+      <h4 style="margin:24px 0 10px;font-size:14px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">Frontend RAG Enrichment Flow</h4>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    A[copilot/ask returns] --> B{resp.error?}
+    B -->|Yes| B1[Show abuse message\npersistCopilotAbuseMonitoring\nSTOP]
+
+    B -->|No| C{intent?}
+
+    C -->|Fetch| D{module contains\nencounter or unknown?}
+    D -->|Yes| D1[initiateRunProcess\nquery as-is]
+    D -->|No| E{named_entity\nnot empty?}
+    E -->|Yes| F[Resolve names in parallel:\npatient_name → searchPatientsByName\nprovider_name → searchProviderByName\nunknown → searchNames]
+    F --> G{Resolution outcome}
+    G -->|ambiguity| G1[Show disambiguation UI\npause run]
+    G -->|not_found| G2[Show not-found message\nstop]
+    G -->|resolved| H[Store in window.contextParams]
+    E -->|No| H
+    H --> I[Enrich question:\n+ getPatientMemberContext\n+ getApiInfoItemsSchemaByModule per module]
+    I --> J[initiateRunProcess\nenrichedQuestion, COMMON_ASSISTANT]
+
+    C -->|Summary| K[initiateRunProcess\nquery, PATIENT_DASHBOARD]
+    C -->|FAQ| L[initiateRunProcess\nquery, PATIENT_DASHBOARD]
+    C -->|other| M[initiateRunProcess\nquery, copilot.moduleName]
+        </div>
+      </div>
+
+      <h4 style="margin:24px 0 8px;font-size:13px;font-weight:700;">Question Enrichment Helpers</h4>
+      <table>
+        <thead><tr><th>Helper</th><th>Location</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>getPatientMemberContext()</code></td>
+            <td><code>charmCopilot.js</code> line 6423</td>
+            <td>Reads current patient/member context from DOM + <code>window.contextParams</code> (resolved entity IDs) and appends as natural-language string to the question</td>
+          </tr>
+          <tr>
+            <td><code>getApiInfoItemsSchemaByModule(module)</code></td>
+            <td><code>charm_dynamic_components.js</code> line 2200</td>
+            <td>Returns JSON-schema of allowed EHR API endpoints/actions for a module — injected into the enriched question so the assistant knows what data it can fetch</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box note">
+        <strong>Why ENCOUNTER bypasses RAG:</strong> The context is already fully bounded to the current encounter. Encounter details are injected into the thread directly via <code>POST /api/ehr/v1/assistant/message/update/encounterDetails</code> (pulls live data from <code>PHYSICIANNOTES</code>, <code>PATIENTMEDICATIONS</code>, <code>PATIENTDIAGNOSISMAP</code>, <code>SOAPWIDGETS</code>). Adding routing overhead would add latency with no benefit.
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.4: FAQ Bot -->
+  <div class="section" id="faq-bot">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.4 FAQ Bot Assistant</div>
+        <div class="section-subtitle">AI assistant for CharmHealth product knowledge base queries with multi-tool-call flow</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /assistant/thread/create</span>
+        <span class="api-tag post">POST /assistant/thread/run</span>
+        <span class="api-tag post">POST /faq/fetch_answer</span>
+        <span class="api-tag post">POST /assistant/submitToolOutputs</span>
+        <span class="api-tag post">POST /faq/submit_feedback</span>
+      </div>
+
+      <h3>Multi-Tool-Call Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as Resource Bot UI
+    participant API as Backend
+    participant AZ as Azure OpenAI
+    participant WMS as WMS Push
+
+    P->>UI: 1. Open Resource Bot tab
+    UI->>API: POST /assistant/thread/create (FAQ_BOT_ASSISTANT)
+    API-->>UI: {faq_thread_id, faq_assistant_id}
+
+    P->>UI: 2. Submit query
+    UI->>API: 3. POST /assistant/thread/run
+    Note right of API: Background: poll Azure
+
+    AZ-->>API: requires_action: formatSearchQueries
+    API->>WMS: 4. copilotWebhookRunProcessResponse
+    WMS-->>UI: function_tools: formatSearchQueries
+
+    UI->>UI: 5. Execute formatSearchQueries()
+    UI->>API: POST /faq/fetch_answer
+    Note right of API: 6. Fetch KB answers + submit as tool output
+    API->>AZ: submitToolOutputs + poll
+
+    AZ-->>API: requires_action: formatResolvedFAQResponse
+    API->>WMS: 7. copilotToolOutputCallback
+    WMS-->>UI: function_tools: formatResolvedFAQResponse
+
+    UI->>UI: Render FAQ response (Handlebars)
+    UI->>API: 8. POST /submitToolOutputs
+    API->>AZ: Submit + poll to completed
+    API->>WMS: copilotToolOutputCallback (completed)
+    WMS-->>UI: Restore input UI
+        </div>
+      </div>
+
+      <h3>Optional: Support Ticket Flow</h3>
+      <p>If the FAQ bot cannot assist, it may trigger <code>raiseCharmSupportTicket()</code> tool call. If <code>faqPilot.isUserAskedToRaiseSupport = true</code>, it renders a confirmation view via the <code>SupportTicketForFaqBotQuery</code> Handlebars template.</p>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.5: Patient Dashboard -->
+  <div class="section" id="patient-dashboard">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.5 Patient Dashboard / Summarization</div>
+        <div class="section-subtitle">10-step flow generating structured patient summary from historical data</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /assistant/thread/create</span>
+        <span class="api-tag post">POST /assistant/thread/message/create</span>
+        <span class="api-tag post">POST /assistant/thread/run</span>
+        <span class="api-tag get">GET /copilot/assistant/patient_text_data</span>
+        <span class="api-tag post">POST /assistant/submitToolOutputs</span>
+        <span class="api-tag post">POST /persist-response/patient-summary</span>
+      </div>
+
+      <h3>Complete 10-Step Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as Dashboard UI
+    participant API as Backend
+    participant AZ as Azure OpenAI
+    participant WMS as WMS Push
+
+    P->>UI: 1. Open Patient Dashboard
+    UI->>API: POST /assistant/thread/create (PATIENT_DASHBOARD)
+    API-->>UI: {thread_id, assistant_id, patient_information}
+
+    UI->>API: 2. POST /thread/message/create (inject patient context)
+    API-->>UI: Success
+
+    P->>UI: 3. Click "Show Patient Summary"
+    UI->>API: 4. POST /assistant/thread/run
+
+    AZ-->>API: 5. requires_action: fetchPatientInformation
+    API->>WMS: copilotWebhookRunProcessResponse
+    WMS-->>UI: function_tools array
+
+    UI->>UI: 6. Execute fetchPatientInformation()
+    UI->>API: GET /copilot/assistant/patient_text_data
+
+    alt 7a. Cached summary found
+        API-->>UI: patient_summary_object
+        UI->>UI: renderSummaryHTML (from cache)
+    else 7b. No cache - fresh data
+        API-->>UI: patient_text_data
+        UI->>API: POST /submitToolOutputs (with patient data)
+        API->>AZ: 8. Submit tool outputs + poll
+        AZ-->>API: requires_action: renderSummaryHTML
+        API->>WMS: 9. copilotToolOutputCallback
+        WMS-->>UI: renderSummaryHTML tool call
+        UI->>UI: Render summary (Handlebars)
+        UI->>API: POST /persist-response/patient-summary
+    end
+
+    UI->>API: 10. POST /submitToolOutputs (final)
+    API->>WMS: copilotToolOutputCallback (completed)
+    WMS-->>UI: Restore input - provider can continue chatting
+        </div>
+      </div>
+
+      <h3>Key State Variables</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Variable</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>patientDashboard.currentPatientInformation</code></td><td>Raw patient text data fetched from API; injected as thread context</td></tr>
+            <tr><td><code>patientDashboard.isSummaryFetchedFromDBLastEncounter</code></td><td>Prevents re-persisting a summary loaded from DB cache</td></tr>
+            <tr><td><code>patientDashboard.patientSummaryMessageId</code></td><td>Tracks context message ID for future updates</td></tr>
+            <tr><td><code>copilot.chartId</code></td><td>Set to "vitalsGraphInPatSummary" before renderChart tool call</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.6: Lab Opinion -->
+  <div class="section" id="lab-opinion">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.6 Lab Opinion</div>
+        <div class="section-subtitle">AI interpretation of lab order results</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /gpt/lab/opinion</span>
+        <span class="api-tag post">POST /assistant/thread/create</span>
+        <span class="api-tag post">POST /assistant/message/update/labRecords</span>
+      </div>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as Lab Results View
+    participant API as Backend
+    participant AZ as Azure OpenAI
+
+    P->>UI: Open lab results
+    UI->>API: GET /gpt/lab/opinion (group_id)
+    UI->>API: POST /assistant/thread/create (LAB_OPINION)
+    API-->>UI: {thread_id, assistant_id}
+    UI->>API: POST /assistant/message/update/labRecords
+    Note right of API: Delete old message, append medical group details
+    API->>AZ: Run assistant
+    AZ-->>API: Lab opinion response
+    API-->>UI: Display opinion
+        </div>
+      </div>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.7: Nurse Encounter -->
+  <div class="section" id="nurse-encounter">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.7 Nurse Encounter (Nurse Summary)</div>
+        <div class="section-subtitle">Clinical summary notes for nurse interactions</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /assistant/thread/create</span>
+      </div>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant N as Nurse
+    participant UI as EHR UI
+    participant API as Backend
+    participant AZ as Azure Whisper
+
+    N->>UI: Start recording (triggerPoint: pat_nurse)
+    UI->>API: Same Whisper flow as 5.1
+    API->>AZ: Transcribe audio chunks
+    AZ-->>UI: Running transcript
+
+    N->>UI: Stop recording
+    UI->>UI: scriber.showAndFetechNurseSummary()
+    UI->>API: POST /assistant/thread/create (NURSE_ENCOUNTER)
+    API-->>UI: Summary generation
+        </div>
+      </div>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.8: Name Search -->
+  <div class="section" id="name-search">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.8 Name Search</div>
+        <div class="section-subtitle">Search members and patients by name during tool call resolution</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/assistant/search_name</span></div>
+        <div class="ep-desc">Search members and patients by name using Trie-based search</div>
+        <div class="ep-params">Params: <code>names</code> (list), <code>delimiter</code> (default: ";;;;")</div>
+      </div>
+      <p>Uses <code>NameSearchUtil.search()</code> with <code>TrieWordSearcher</code> / <code>CharTrie</code> to search both member and patient name indices.</p>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 5.9: Feedback & Persistence -->
+  <div class="section" id="feedback">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5.9 Feedback &amp; Interaction Persistence</div>
+        <div class="section-subtitle">Thumbs up/down, interaction logging, response persistence, abuse monitoring</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Feedback APIs</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/submitFeedback</span></div>
+        <div class="ep-desc">Thumbs up / down feedback</div>
+        <div class="ep-params">Params: <code>messageId</code>, <code>feedbackType</code> (1=positive, 0=negative)</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/submitComment</span></div>
+        <div class="ep-desc">Submit feedback comment</div>
+        <div class="ep-params">Params: <code>messageId</code>, <code>comment</code></div>
+      </div>
+      <h3>Persistence APIs</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/persistInteraction</span></div>
+        <div class="ep-desc">Log interaction events (JSONArray of records with ACTION_TYPE, MODULE_NAME, etc.)</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/persistResponse</span></div>
+        <div class="ep-desc">Persist final AI response details</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/copilot/persistAbuseMonitoring</span></div>
+        <div class="ep-desc">Abuse monitoring log entry</div>
+      </div>
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 6: API Reference -->
+  <div class="section" id="api-reference">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">6. API Reference</div>
+        <div class="section-subtitle">Complete endpoint reference with authentication, rate limiting, and response shapes</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">All endpoints require <code>authentication="required"</code>. Rate limiting: <strong>60 req/min</strong>, lock-period 5 seconds.</div>
+
+      <h3>6.2 Configuration APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th><th>Key Params</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/copilot/config</code></td><td><span class="api-tag get">GET</span></td><td>Get member's copilot tier config</td><td>&mdash;</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/usage/track</code></td><td><span class="api-tag post">POST</span></td><td>Track BASIC tier encounter usage</td><td><code>module_type</code>, <code>encounter_id</code></td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/settings/general</code></td><td><span class="api-tag get">GET</span></td><td>Get practice general settings</td><td>&mdash;</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/settings/general/update</code></td><td><span class="api-tag post">POST</span></td><td>Update practice general settings</td><td><code>whisper_max_limit</code>, auto_delete flags</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/settings/members</code></td><td><span class="api-tag get">GET</span></td><td>Get all member-level settings</td><td>&mdash;</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/settings/members/batch_update</code></td><td><span class="api-tag post">POST</span></td><td>Batch update member configs</td><td><code>data</code> (JSONArray)</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/settings/members/enable_basic_for_all</code></td><td><span class="api-tag post">POST</span></td><td>Toggle BASIC for all members</td><td><code>enabled</code></td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/settings/members/remove</code></td><td><span class="api-tag post">POST</span></td><td>Remove members from copilot</td><td><code>member_ids</code> (CSV)</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/soapConfigSetting</code></td><td><span class="api-tag post">POST</span></td><td>Toggle SOAP panel placement</td><td><code>memberId</code>, <code>configType</code></td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/practice/terms_agreement</code></td><td><span class="api-tag get">GET</span></td><td>Get practice terms status</td><td>&mdash;</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/practice/update_settings</code></td><td><span class="api-tag get">GET</span></td><td>Update practice copilot settings</td><td><code>copilot_configuration_status</code></td></tr>
+            <tr><td><code>/api/ehr/v1/copilot-role/updateMembers</code></td><td><span class="api-tag get">GET</span></td><td>Update member-level settings</td><td><code>member_id_list</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.3 Whisper / Audio APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/whisper/transcribe_property</code></td><td><span class="api-tag get">GET</span></td><td>Get transcription config</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/audio</code></td><td><span class="api-tag post">POST</span></td><td>Submit audio chunk (sync)</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/audio/submit</code></td><td><span class="api-tag post">POST</span></td><td>Submit audio chunk (async)</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/audio/status/{id}</code></td><td><span class="api-tag get">GET</span></td><td>Poll transcription status</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/persistTable</code></td><td><span class="api-tag post">POST</span></td><td>Persist audio metadata</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/storeaudio</code></td><td><span class="api-tag post">POST</span></td><td>Store final recording</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/getConversationAudio</code></td><td><span class="api-tag get">GET</span></td><td>Retrieve audio metadata</td></tr>
+            <tr><td><code>/api/ehr/v1/whisper/getChunkAudio</code></td><td><span class="api-tag get">GET</span></td><td>Retrieve audio chunk</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/{id}/deleteAudioTranscript</code></td><td><span class="api-tag post">POST</span></td><td>Delete audio/transcript</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.4 Chart Note APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/gpt/generateChartNote</code></td><td><span class="api-tag post">POST</span></td><td>Generate chart note (sync)</td></tr>
+            <tr><td><code>/api/ehr/v1/gpt/chartNote/submit</code></td><td><span class="api-tag post">POST</span></td><td>Submit chart note job (async)</td></tr>
+            <tr><td><code>/api/ehr/v1/gpt/chartNote/status/{id}</code></td><td><span class="api-tag get">GET</span></td><td>Poll chart note job status</td></tr>
+            <tr><td><code>/api/ehr/v1/gpt/notesPreview</code></td><td><span class="api-tag get">GET</span></td><td>Preview current notes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.5 Assistant Thread APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/assistant/thread/create</code></td><td><span class="api-tag post">POST</span></td><td>Create new assistant thread</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/thread/message/create</code></td><td><span class="api-tag post">POST</span></td><td>Add message to thread</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/thread/{id}/message/retrieve</code></td><td><span class="api-tag get">GET</span></td><td>Retrieve thread messages</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/thread/{id}/delete</code></td><td><span class="api-tag get">GET</span></td><td>Delete thread</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/thread/run</code></td><td><span class="api-tag post">POST</span></td><td>Run assistant on thread</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/submitToolOutputs</code></td><td><span class="api-tag post">POST</span></td><td>Submit tool call results</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/message/update/encounterDetails</code></td><td><span class="api-tag post">POST</span></td><td>Inject encounter context</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/message/update/patientSummaryDetails</code></td><td><span class="api-tag post">POST</span></td><td>Inject patient summary context</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/message/update/labRecords</code></td><td><span class="api-tag post">POST</span></td><td>Inject lab record context</td></tr>
+            <tr><td><code>/api/ehr/v1/assistant/search_name</code></td><td><span class="api-tag post">POST</span></td><td>Entity name search</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.6 Patient Data APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/copilot/assistant/patient_text_data</code></td><td><span class="api-tag get">GET</span></td><td>Fetch patient historical data</td></tr>
+            <tr><td><code>/api/ehr/v1/gpt/patient_context</code></td><td><span class="api-tag get">GET</span></td><td>Get patient clinical context</td></tr>
+            <tr><td><code>/api/ehr/v1/persist-response/patient-summary</code></td><td><span class="api-tag post">POST</span></td><td>Persist patient summary</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.8 FAQ APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/faq/fetch_answer</code></td><td><span class="api-tag post">POST</span></td><td>Fetch KB answers (called by formatSearchQueries tool handler)</td></tr>
+            <tr><td><code>/api/ehr/v1/faq/submit_feedback</code></td><td><span class="api-tag post">POST</span></td><td>Submit user feedback on FAQ response</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.9 Feedback &amp; Monitoring APIs</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/api/ehr/v1/copilot/submitFeedback</code></td><td><span class="api-tag post">POST</span></td><td>Thumbs up/down</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/submitComment</code></td><td><span class="api-tag post">POST</span></td><td>Submit comment</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/persistInteraction</code></td><td><span class="api-tag post">POST</span></td><td>Log interaction events</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/persistResponse</code></td><td><span class="api-tag post">POST</span></td><td>Persist final AI response</td></tr>
+            <tr><td><code>/api/ehr/v1/copilot/persistAbuseMonitoring</code></td><td><span class="api-tag post">POST</span></td><td>Abuse monitoring log</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>WMS Callback Function Reference</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>callbackFn</th><th>Triggered By</th><th>Frontend Handler</th></tr></thead>
+          <tbody>
+            <tr><td><code>getWhisperResponseFromWebhook</code></td><td>Whisper transcription complete (each chunk)</td><td><code>scriber.getWhisperResponse(data)</code></td></tr>
+            <tr><td><code>getChartNoteFromWebhook</code></td><td>Chart note generation complete (fires twice)</td><td><code>getChartNoteFromWebhook(data)</code></td></tr>
+            <tr><td><code>getGptResponseFromWebHook</code></td><td>Legacy chart GPT recommendation</td><td><code>getGptResponseFromWebHook(data)</code></td></tr>
+            <tr><td><code>getFAQResponseFromWebhook</code></td><td>FAQ query processing complete</td><td><code>getFAQResponseFromWebhook(data)</code></td></tr>
+            <tr><td><code>copilotWebhookRunProcessResponse</code></td><td>Assistant run complete (async)</td><td>copilot WMS listener</td></tr>
+            <tr><td><code>copilotToolOutputCallback</code></td><td>Tool output submission complete</td><td>copilot tool output handler</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 6.10: Call Chain Mapping -->
+  <div class="section" id="call-chain">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">6.10 URL &rarr; Class &rarr; Method &rarr; Call Chain Mapping</div>
+        <div class="section-subtitle">Every endpoint mapped to Java class, handler method, and full internal call chain</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Thread Run Async Flow (Webhook Mode)</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant UI as Frontend
+    participant API as AssistantApi
+    participant TV as TierValidator
+    participant TE as TaskExecutor
+    participant RM as RunManager
+    participant AZ as Azure OpenAI
+    participant WMS as WMS Push
+
+    rect rgb(235, 244, 255)
+    Note over UI,WMS: PHASE 1 - Initiate Run
+    UI->>API: POST /assistant/thread/run
+    API->>TV: requireModuleAccess + requireEncounterLimit
+    API->>TE: initiateRunWithThreadExec()
+    TE-->>API: {success: true}
+    API-->>UI: HTTP 200 (immediate)
+    TE->>RM: createRun(threadId, runRequest)
+    loop Poll Azure
+        RM->>AZ: retrieveRun()
+    end
+    end
+
+    alt completed
+        RM->>WMS: copilotWebhookRunProcessResponse
+        Note right of WMS: {message, thread_id, response_id}
+    else requires_action
+        RM->>WMS: copilotWebhookRunProcessResponse
+        Note right of WMS: {function_tools[], run_id, thread_id}
+    else failed
+        RM->>WMS: copilotWebhookRunProcessResponse
+        Note right of WMS: {error, thread_id}
+    end
+
+    rect rgb(232, 245, 233)
+    Note over UI,WMS: PHASE 2 - Frontend Handles Response
+    WMS-->>UI: copilotWebhookRunProcessResponse
+    UI->>UI: Guard: thread_id match check
+    alt Has function_tools
+        UI->>UI: window[functionName](args)
+        UI->>UI: copilot.submitToolOutputs(call_id, result)
+    else Has message
+        UI->>UI: copilot.displayMessage()
+    end
+    end
+
+    rect rgb(255, 243, 224)
+    Note over UI,WMS: PHASE 3 - Submit Tool Outputs
+    UI->>API: POST /submitToolOutputs
+    API->>TE: submitToolOutputsExec()
+    TE->>RM: submitToolOutputs(runId, threadId)
+    loop Poll Azure
+        RM->>AZ: retrieveRun()
+    end
+    end
+
+    rect rgb(243, 229, 245)
+    Note over UI,WMS: PHASE 4 - Tool Output Callback
+    RM->>WMS: copilotToolOutputCallback
+    WMS-->>UI: copilotToolOutputCallback
+    alt completed
+        UI->>UI: displayMessage + restoreInputUI
+    else requires_action
+        UI->>UI: processToolCalls (loop to Phase 2)
+    end
+    end
+        </div>
+      </div>
+
+      <h3>Whisper Call Chain</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Class</th><th>Method</th><th>Call Chain Summary</th></tr></thead>
+          <tbody>
+            <tr><td><code>/whisper/audio</code></td><td>AiAPI</td><td><code>getTextFromAudio()</code></td><td>AIUtil &rarr; GPTTaskUtil &rarr; TaskExecutor &rarr; AzureApi/AWSInterface &rarr; WMS: <code>getWhisperResponseFromWebhook</code></td></tr>
+            <tr><td><code>/whisper/audio/submit</code></td><td>AiAPI</td><td><code>submitAudioTranscription()</code></td><td>AIUtil.submitAsync &rarr; ASYNCTASKTABLE &rarr; TaskExecutor &rarr; poll via status endpoint</td></tr>
+            <tr><td><code>/whisper/audio/status/{id}</code></td><td>AiAPI</td><td><code>getAudioTranscriptionStatus()</code></td><td>Read ASYNCTASKTABLE by request_id</td></tr>
+            <tr><td><code>/whisper/persistTable</code></td><td>AiAPI</td><td><code>persistWhisperUsageDetails()</code></td><td>Write CONVERSATIONAUDIORECORD</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Chart Note Call Chain</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Class</th><th>Method</th><th>Call Chain Summary</th></tr></thead>
+          <tbody>
+            <tr><td><code>/gpt/generateChartNote</code></td><td>AiAPI</td><td><code>generateChartNotesFromConversation()</code></td><td>TierValidator &rarr; AIUtil &rarr; GPTTaskUtil &rarr; 2x TaskExecutor &rarr; WMS: <code>getChartNoteFromWebhook</code></td></tr>
+            <tr><td><code>/gpt/chartNote/submit</code></td><td>AiAPI</td><td><code>submitChartNoteGeneration()</code></td><td>TierValidator &rarr; AIUtil.submitAsync &rarr; TaskExecutor &rarr; poll via status endpoint</td></tr>
+            <tr><td><code>/gpt/notesPreview</code></td><td>AiAPI</td><td><code>fetchMaskedNotes()</code></td><td>AIUtil.fetchMaskedEncounterDetails + fetchPatientDetailsAndDxs</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Assistant Thread Call Chain</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Class</th><th>Method</th><th>Call Chain Summary</th></tr></thead>
+          <tbody>
+            <tr><td><code>/assistant/thread/create</code></td><td>AssistantApi</td><td><code>createNewThread()</code></td><td>TierValidator &rarr; AssistantUtil &rarr; ThreadManager &rarr; Azure POST /threads</td></tr>
+            <tr><td><code>/assistant/thread/run</code></td><td>AssistantApi</td><td><code>initiateRunWithThread()</code></td><td>TierValidator &rarr; TaskExecutor &rarr; poll Azure &rarr; WMS: <code>copilotWebhookRunProcessResponse</code></td></tr>
+            <tr><td><code>/assistant/submitToolOutputs</code></td><td>AssistantApi</td><td><code>submitToolOutputs()</code></td><td>TaskExecutor &rarr; RunManager.submitToolOutputs &rarr; WMS: <code>copilotToolOutputCallback</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 7: Data Flow Diagrams -->
+  <div class="section" id="data-flow">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">7. Data Flow Diagrams</div>
+        <div class="section-subtitle">DFD Level 0, 1, and Level 2 diagrams for core subsystems</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>7.1 DFD Level 0 &mdash; System Context</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+graph TD
+    PR["Provider (User)"] -->|Clinical queries| CS["Charm Copilot System"]
+    CS -->|AI responses| PR
+    CS <-->|API calls| AZ["Azure OpenAI<br/>(GPT-4, Whisper)"]
+    CS <-->|Data read/write| DB["Charm EHR Database<br/>(Patient, Encounter, Member)"]
+
+    style PR fill:#e3f2fd,stroke:#1565c0,color:#000
+    style CS fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style AZ fill:#fff3e0,stroke:#e65100,color:#000
+    style DB fill:#f3e5f5,stroke:#6a1b9a,color:#000
+        </div>
+      </div>
+
+      <h3>7.2 DFD Level 1 &mdash; Copilot System</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+graph TD
+    subgraph CopilotSystem["CHARM COPILOT SYSTEM"]
+        RM["Recording Module"] -->|audio| TM["Transcription<br/>(Whisper)"]
+        TM -->|transcript| CNG["Chart Note<br/>Generation"]
+        PC["Patient Context"] -->|transcript| CNG
+        CUI["Copilot Chat UI"] -->|query| CTM["Chat/Thread<br/>Management"]
+        CTM -->|tool calls| TCH["Tool Call Handler<br/>(encounter, dx, labs)"]
+        SM["Subscription Manager"] -->|tier check| AV["Access Validator"]
+    end
+
+    style CopilotSystem fill:#f5f5f5,stroke:#333,color:#000
+        </div>
+      </div>
+
+      <h3>7.3 DFD Level 2 &mdash; Ambient Recording &amp; Chart Note</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    A["1. START RECORDING<br/>Provider clicks Record"] --> B["MediaRecorder API"]
+    B -->|every N ms| C["2. CHUNK AUDIO<br/>WAV conversion + queue"]
+    C --> D["3. TRANSCRIBE CHUNK<br/>POST /whisper/audio"]
+    D --> E["TaskExecutor async"]
+    E --> F["DFS Storage"]
+    E --> G["Azure/AWS Whisper"]
+    G --> H["addOrUpdateConversationAudioRecord"]
+    H --> I["WMS: getWhisperResponseFromWebhook"]
+    I --> J["4. DISPLAY TRANSCRIPT<br/>Append to conversation view"]
+    J --> K["5. STOP RECORDING<br/>POST /whisper/storeaudio"]
+    K --> L["6. GENERATE CHART NOTE<br/>POST /gpt/generateChartNote"]
+    L --> M["Task A: Subjective+Objective"]
+    L --> N["Task B: Assessment+Plan"]
+    M --> O["Azure GPT-4"]
+    N --> O
+    O --> P["7. DISPLAY & APPLY<br/>User reviews and accepts"]
+    P --> Q["8. PERSIST<br/>persistInteraction + persistResponse"]
+
+    style A fill:#e3f2fd,stroke:#1565c0,color:#000
+    style P fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style Q fill:#f3e5f5,stroke:#6a1b9a,color:#000
+        </div>
+      </div>
+
+      <h3>7.5 DFD Level 2 &mdash; Tier &amp; Access Control</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    REQ["Incoming API Request"] --> A["AssistantApi.java"]
+    A --> B["CopilotTierValidator"]
+    B --> C["1. resolveTierForCurrentMember()"]
+    C --> D["MemberProps: copilot_tier"]
+    D --> E{"tier == NONE?"}
+    E -->|Yes| F["Error 90147"]
+    E -->|No| G["2. resolveModulesForTier()"]
+    G --> H["CharmProperties config"]
+    H --> I{"moduleName in allowlist?"}
+    I -->|No| J["Error 90148"]
+    I -->|Yes| K{"ENCOUNTER module?"}
+    K -->|No| L["PROCEED"]
+    K -->|Yes| M["requireEncounterLimit"]
+    M --> N{"tier == ADVANCED?"}
+    N -->|Yes| L
+    N -->|No| O["Read copilot_basic_usage"]
+    O --> P{"count >= limit?"}
+    P -->|Yes| Q["Error 90150"]
+    P -->|No| L
+
+    style F fill:#ffebee,stroke:#c62828,color:#000
+    style J fill:#ffebee,stroke:#c62828,color:#000
+    style Q fill:#ffebee,stroke:#c62828,color:#000
+    style L fill:#e8f5e9,stroke:#2e7d32,color:#000
+        </div>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 8: Frontend Architecture -->
+  <div class="section" id="frontend-arch">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">8. Frontend Architecture</div>
+        <div class="section-subtitle">File structure, JS objects, key functions, Handlebars templates, CRUD configs</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>8.1 File Structure</h3>
+      <div class="file-tree">webapps/ehr/js/
+&#9500;&#9472;&#9472; prescription_v2/
+&#9474;   &#9500;&#9472;&#9472; charmCopilot.js          Main copilot UI orchestrator (7,766 lines)
+&#9474;   &#9500;&#9472;&#9472; gpt4v2.js                Scriber / audio recording + transcription (3,501 lines)
+&#9474;   &#9500;&#9472;&#9472; charm_crud_api_configs.js CRUD module configs (3,364 lines)
+&#9474;   &#9500;&#9472;&#9472; charm_dynamic_validations.js  Form validations
+&#9474;   &#9500;&#9472;&#9472; charm_dynamic_components.js   Dynamic form rendering (2,732 lines)
+&#9474;   &#9492;&#9472;&#9472; encounterFunctionTools.js     Tool call handlers for encounter data
+&#9500;&#9472;&#9472; copilotPredefinedQuestion.js   Predefined question sets per module
+&#9492;&#9472;&#9472; gpt4.js                        Legacy GPT v4 (superseded by gpt4v2)</div>
+
+      <h3>8.2 Core JavaScript Objects</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Object</th><th>File</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><code>copilot</code></td><td>charmCopilot.js</td><td>UI orchestrator, chat, panel state</td></tr>
+            <tr><td><code>scriber</code></td><td>gpt4v2.js</td><td>Audio recording, Whisper, chart note display</td></tr>
+            <tr><td><code>module_configs</code></td><td>charm_crud_api_configs.js</td><td>CRUD module configurations</td></tr>
+            <tr><td><code>encounterFunctionTools</code></td><td>encounterFunctionTools.js</td><td>Tool call handlers</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>8.3 Key Frontend Functions &mdash; charmCopilot.js</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Function</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>copilot.sendQuery(event, fromDictation)</code></td><td>Send message to assistant</td></tr>
+            <tr><td><code>copilot.displayMessage(role, msg, responseId)</code></td><td>Render message in chat UI</td></tr>
+            <tr><td><code>copilot.openCopilotView()</code></td><td>Open copilot side panel</td></tr>
+            <tr><td><code>copilot.closeCopilotView()</code></td><td>Close copilot side panel</td></tr>
+            <tr><td><code>copilot.initiateRunProcess(notes)</code></td><td>Trigger chart note generation</td></tr>
+            <tr><td><code>copilot.enableMicAndtextArea()</code></td><td>Enable voice/text input</td></tr>
+            <tr><td><code>copilot.disableMicAndtextArea()</code></td><td>Disable during processing</td></tr>
+            <tr><td><code>copilot.showFeedBackIcon(responseId)</code></td><td>Show thumbs up/down</td></tr>
+            <tr><td><code>copilot.featureConfig.isFeatureEnabled()</code></td><td>Check feature access</td></tr>
+            <tr><td><code>copilot.tier.isBasic()</code></td><td>Check BASIC tier</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Frontend Functions &mdash; gpt4v2.js</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Function</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>scriber.recordingStart(triggerPoint)</code></td><td>Initialize recording</td></tr>
+            <tr><td><code>scriber.startRecording(triggerPoint)</code></td><td>Activate MediaRecorder</td></tr>
+            <tr><td><code>scriber.stopRecording()</code></td><td>Stop recording</td></tr>
+            <tr><td><code>scriber.continuousRecording()</code></td><td>Chunked audio handler</td></tr>
+            <tr><td><code>scriber.sendData(data, triggerPoint)</code></td><td>Submit audio chunk</td></tr>
+            <tr><td><code>scriber.getWhisperResponse(data)</code></td><td>Handle transcription result</td></tr>
+            <tr><td><code>scriber.convertBlobToWav(blob)</code></td><td>WAV conversion</td></tr>
+            <tr><td><code>scriber.processQueue()</code></td><td>Sequential queue processor</td></tr>
+            <tr><td><code>scriber.showAndFetechChartNote(data)</code></td><td>Display chart note</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Frontend Functions &mdash; encounterFunctionTools.js</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Function</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>addAttributesToChart(json)</code></td><td>Batch add chart attributes</td></tr>
+            <tr><td><code>addDiagnosesThroughAssistant(params)</code></td><td>AI-driven diagnosis add</td></tr>
+            <tr><td><code>addAllergyThroughAssistant(value)</code></td><td>AI-driven allergy add</td></tr>
+            <tr><td><code>suggestAskedAttributesForChartNote(args)</code></td><td>Show AI suggestions in chart</td></tr>
+            <tr><td><code>persistCopilotInteraction(array)</code></td><td>Log interactions</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>8.4 Handlebars Templates</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Template Path</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>nlp/gpt4/scribberChartNote</code></td><td>Main chart note scriber view</td></tr>
+            <tr><td><code>nlp/gpt4/generatedChartNoteView</code></td><td>Generated note display</td></tr>
+            <tr><td><code>nlp/gpt4/transcriberListeningDiv</code></td><td>Active listening UI</td></tr>
+            <tr><td><code>nlp/gpt4/responseWaitingLoader</code></td><td>Loading animation</td></tr>
+            <tr><td><code>nlp/gpt4/showPatientDoctorTranscription</code></td><td>Transcription review</td></tr>
+            <tr><td><code>nlp/gpt4/audioPlayerCopilot</code></td><td>Audio playback</td></tr>
+            <tr><td><code>nlp/gpt4/copilotPatientContext</code></td><td>Patient context view</td></tr>
+            <tr><td><code>nlp/chart_suggestions/charmAssistDashboard</code></td><td>Assistant dashboard</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>8.5 CRUD Module Config Structure</h3>
+      <pre><code class="language-javascript">{
+  title: string,
+  data_comp_in_response: string,
+  crud_apis: { create, read, update, delete },
+  views: { table, form_to_write, list, summary },
+  conversational_component_details: {
+    message_template,
+    format_method,
+    edit_template_path
+  }
+}</code></pre>
+      <p>Supported modules: <code>allergies</code>, <code>diagnoses</code>, <code>medications</code>, <code>vitals</code>, <code>supplements</code>, <code>medical_history</code>, <code>social_history</code>, <code>tasks</code>, <code>alerts</code>, <code>appointments</code>, <code>billing_invoices</code>, <code>billing_claims</code>, <code>patient-summary</code>, <code>query-output</code></p>
+
+      <h3>8.6 Predefined Questions</h3>
+      <p>Context-specific quick-action questions per module:</p>
+      <ul>
+        <li><code>ENCOUNTER</code> &mdash; encounter-specific clinical questions</li>
+        <li><code>PATIENT_DASHBOARD</code> &mdash; patient history questions</li>
+        <li><code>COMMON_ASSISTANT</code> &mdash; general clinical queries</li>
+        <li><code>NURSE_ENCOUNTER</code> &mdash; nurse workflow questions</li>
+        <li><code>FAQ_BOT_ASSISTANT</code> &mdash; EHR usage questions</li>
+      </ul>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 9: Backend Architecture -->
+  <div class="section" id="backend-arch">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">9. Backend Architecture</div>
+        <div class="section-subtitle">Java package structure, key methods, singleton pattern, API configuration</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>9.1 Package Structure</h3>
+      <div class="file-tree">com.medicalmine.api.rest.ehr.ai/
+&#9500;&#9472;&#9472; AiAPI.java                        REST entry point / router
+&#9500;&#9472;&#9472; AIUtil.java                       Core utility methods
+&#9500;&#9472;&#9472; CopilotConfigAPI.java             Config &amp; tier management
+&#9500;&#9472;&#9472; CopilotTierValidator.java         Tier enforcement
+&#9500;&#9472;&#9472; AWSInterface.java                 AWS abstraction
+&#9500;&#9472;&#9472; CharmCopilotSubscriptionUtil.java Subscription &amp; usage persistence
+&#9474;
+&#9500;&#9472;&#9472; openAiApi/
+&#9474;   &#9500;&#9472;&#9472; OpenAIApiClient.java          Base HTTP client
+&#9474;   &#9500;&#9472;&#9472; AssistantApi.java             Tier-gated API surface
+&#9474;   &#9500;&#9472;&#9472; AssistantUtil.java            Core assistant orchestration
+&#9474;   &#9500;&#9472;&#9472; ThreadManager.java            Thread CRUD
+&#9474;   &#9500;&#9472;&#9472; RunManager.java               Run lifecycle
+&#9474;   &#9500;&#9472;&#9472; MessageManager.java           Message CRUD
+&#9474;   &#9492;&#9472;&#9472; NameSearchUtil.java           Name search
+&#9474;
+&#9500;&#9472;&#9472; gpt4/
+&#9474;   &#9500;&#9472;&#9472; AzureApi.java                 Azure GPT-4 + Whisper HTTP calls
+&#9474;   &#9492;&#9472;&#9472; GPT4Api.java                  GPT-4 API wrapper
+&#9474;
+&#9492;&#9472;&#9472; util/
+    &#9500;&#9472;&#9472; GPTTaskUtil.java              Async task manager
+    &#9500;&#9472;&#9472; GPT4Util.java                 GPT-4 generation utilities
+    &#9500;&#9472;&#9472; TrieWordSearcher.java         Name search (Trie-based)
+    &#9492;&#9472;&#9472; CharTrie.java                 Trie data structure</div>
+
+      <h3>9.2 AIUtil Key Methods</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>processChartNote()</code> (overload 1)</td><td>Legacy chart note processing</td></tr>
+            <tr><td><code>processChartNote()</code> (overload 2)</td><td>Full chart note with encounter context</td></tr>
+            <tr><td><code>getChartNoteFromConvFromWebhook()</code></td><td>Webhook-triggered chart note generation</td></tr>
+            <tr><td><code>retryWhisperTaskFromDFS()</code></td><td>Retry transcription from DFS-stored audio</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>9.3 Singleton Pattern (Managers)</h3>
+      <pre><code class="language-java">// ThreadManager, RunManager, MessageManager, AssistantManager
+public static XManager getInstance() throws Exception {
+    if (instance == null) {
+        instance = newInstance();
+    }
+    return instance;
+}
+
+public static XManager newInstance() throws Exception {
+    HashMap&lt;String, String&gt; config = AssistantUtil.getApiConfiguration(
+        "assistant_local", "assistant"
+    );
+    return new XManager(config.get("API_KEY"), config.get("BASE_URL"),
+                        config.get("API_VERSION"));
+}</code></pre>
+
+      <h3>9.4 API Configuration Resolution</h3>
+      <pre><code class="language-java">AssistantUtil.getApiConfiguration(serviceProvider, endPointType)
+   // SELECT from COPILOTAPIENDPOINT WHERE
+   //     PROVIDER_NAME = serviceProvider
+   //     AND API_ENDPOINT_TYPE = endPointType
+   // Returns: { BASE_URL, API_KEY, API_VERSION }</code></pre>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 10: Database Schema -->
+  <div class="section" id="database-schema">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">10. Database Schema</div>
+        <div class="section-subtitle">Copilot-specific tables and EHR tables used by Copilot</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="info-box note">All column details sourced from <code>product_package/conf/Charm/data-dictionary.xml</code>.</div>
+
+      <h3>10.1 Copilot-Specific Tables</h3>
+
+      <h4>CopilotApiEndpoint <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">publicSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Stores API endpoint configurations for each AI provider and endpoint type.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>COPILOT_API_ENDPOINT_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>PROVIDER_NAME</code></td><td>CHAR</td><td>50</td><td>NOT NULL</td><td>Provider of the API service (e.g., <code>Azure</code>, <code>Amazon</code>, <code>OpenAI</code>)</td></tr>
+          <tr><td><code>API_BASE_URL</code></td><td>CHAR</td><td>2083</td><td>NOT NULL</td><td>Base URL of the API</td></tr>
+          <tr><td><code>API_ENDPOINT_TYPE</code></td><td>CHAR</td><td>50</td><td>nullable</td><td>Type of endpoint (e.g., <code>Assistant</code>, <code>GPT</code>, <code>Whisper</code>)</td></tr>
+          <tr><td><code>API_ACCESS_KEY</code></td><td>CHAR</td><td>256</td><td>nullable</td><td>API key used for authentication</td></tr>
+          <tr><td><code>API_VERSION_NUMBER</code></td><td>CHAR</td><td>100</td><td>nullable</td><td>API version string (e.g., <code>2024-05-01-preview</code>)</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">AssistantModule <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">publicSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Maps logical copilot modules to their Azure OpenAI assistant IDs and model versions.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>ASSISTANT_MODULE_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>ASSISTANT_ID</code></td><td>CHAR</td><td>100</td><td>nullable</td><td>Azure OpenAI assistant ID once created</td></tr>
+          <tr><td><code>MODULE_NAME</code></td><td>CHAR</td><td>100</td><td>NOT NULL</td><td>Module name (e.g., <code>ENCOUNTER</code>, <code>FAQ_BOT_ASSISTANT</code>, <code>PATIENT_DASHBOARD</code>)</td></tr>
+          <tr><td><code>DESCRIPTION</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Description / system prompt context for this module</td></tr>
+          <tr><td><code>MODEL_VERSION</code></td><td>CHAR</td><td>20</td><td>nullable</td><td>GPT model version used for this module (e.g., <code>gpt-4</code>)</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">AssistantTool <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">publicSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Defines tool/function definitions registered to each assistant module.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>ASSISTANT_TOOL_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>ASSISTANT_MODULE_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>FK → <code>AssistantModule.ASSISTANT_MODULE_ID</code> (ON DELETE CASCADE)</td></tr>
+          <tr><td><code>FUNCTION_NAME</code></td><td>CHAR</td><td>100</td><td>NOT NULL</td><td>Name of the tool function exposed to the LLM</td></tr>
+          <tr><td><code>FUNCTION_DESCRIPTION</code></td><td>CHAR</td><td>1500</td><td>NOT NULL</td><td>Description sent to the LLM to explain what the function does</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">AssistantFunctionParameter <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">publicSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Defines parameters for each tool function in <code>AssistantTool</code>.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>ASSISTANT_FUNCTION_PARAMETER_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>ASSISTANT_TOOL_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>FK → <code>AssistantTool.ASSISTANT_TOOL_ID</code> (ON DELETE CASCADE)</td></tr>
+          <tr><td><code>PARAMETER_NAME</code></td><td>CHAR</td><td>100</td><td>NOT NULL</td><td>JSON schema parameter name</td></tr>
+          <tr><td><code>PARAMETER_DESCRIPTION</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Human-readable description of the parameter</td></tr>
+          <tr><td><code>PARAMETER_TYPE</code></td><td>CHAR</td><td>50</td><td>NOT NULL</td><td>JSON schema data type (e.g., <code>string</code>, <code>integer</code>)</td></tr>
+          <tr><td><code>PARAMETER_ENUM</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Allowed enum values stored as a JSON array string</td></tr>
+          <tr><td><code>IS_REQUIRED</code></td><td>BOOLEAN</td><td>—</td><td>NOT NULL</td><td>Whether this parameter is required by the function</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">AzureCharmCopilotUsage <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">practiceSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Main audit/usage table — every request-response cycle through the copilot is persisted here, including token consumption, feedback, and timing.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>AZURE_CHARM_COPILOT_USAGE_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>MEMBER_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>User ID of the interacting member</td></tr>
+          <tr><td><code>ASSISTANT_ID</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Azure OpenAI assistant ID</td></tr>
+          <tr><td><code>ASSISTANT_NAME</code></td><td>CHAR</td><td>5000</td><td>nullable</td><td>Module name of assistant (e.g., <code>PATIENT_DASHBOARD</code>, <code>ENCOUNTER</code>)</td></tr>
+          <tr><td><code>MODULE_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Entity ID for the module context (e.g., <code>ENCOUNTER_ID</code>, <code>LAB_ID</code>)</td></tr>
+          <tr><td><code>MODULE_NAME</code></td><td>CHAR</td><td>5000</td><td>nullable</td><td>Module handling the query (e.g., <code>PATIENT</code>, <code>ENCOUNTER</code>, <code>LABS</code>)</td></tr>
+          <tr><td><code>CONTEXT_WINDOW</code></td><td>CHAR</td><td>50</td><td>nullable</td><td>Context window identifier where copilot is being used</td></tr>
+          <tr><td><code>THREAD_ID</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Azure OpenAI thread ID for this conversation</td></tr>
+          <tr><td><code>PATIENT_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Patient associated with the request</td></tr>
+          <tr><td><code>API_ENDPOINT_TYPE</code></td><td>CHAR</td><td>100</td><td>nullable</td><td>Endpoint type used (<code>assistant</code>, <code>gpt-o3</code>, <code>whisper</code>)</td></tr>
+          <tr><td><code>TRANSCRIPTION_TYPE</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Transcription input type (<code>Audio</code>, <code>Speech</code>, <code>Text</code>)</td></tr>
+          <tr><td><code>AUDIO_DURATION</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Duration of audio input in seconds</td></tr>
+          <tr><td><code>USER_QUERY</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Original user query/question sent to the copilot</td></tr>
+          <tr><td><code>COPILOT_PROGRESS_STATUS</code></td><td>INTEGER</td><td>—</td><td>nullable</td><td>Progress status flag for async processing</td></tr>
+          <tr><td><code>RESPONSE_JSON</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Complete JSON response from the copilot assistant</td></tr>
+          <tr><td><code>RESPONSE_TYPE</code></td><td>CHAR</td><td>100</td><td>nullable</td><td>Response category (<code>Summary</code>, <code>Chart</code>, <code>PatientNurse</code>, <code>RagCall</code>, <code>GET_INTENT</code>, etc.)</td></tr>
+          <tr><td><code>REQUEST_START_TIME</code></td><td>BIGINT</td><td>19</td><td>nullable</td><td>UTC epoch millis when the query started</td></tr>
+          <tr><td><code>REQUEST_ENDTIME_TIME</code></td><td>BIGINT</td><td>19</td><td>nullable</td><td>UTC epoch millis when the query completed</td></tr>
+          <tr><td><code>USER_FEEDBACK</code></td><td>INTEGER</td><td>10</td><td>nullable</td><td>User feedback: <code>1</code> = thumbs up, <code>-1</code> = thumbs down, <code>0</code> = none</td></tr>
+          <tr><td><code>FEEDBACK_COMMENT</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Detailed feedback comment from the user</td></tr>
+          <tr><td><code>FEEDBACK_TIMESTAMP</code></td><td>DATETIME</td><td>—</td><td>nullable</td><td>When the user submitted feedback</td></tr>
+          <tr><td><code>INPUT_TOKENS</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Tokens consumed by the request</td></tr>
+          <tr><td><code>OUTPUT_TOKENS</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Tokens consumed to generate the response</td></tr>
+          <tr><td><code>TOTAL_TOKENS</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Total tokens consumed (<code>INPUT_TOKENS + OUTPUT_TOKENS</code>)</td></tr>
+          <tr><td><code>MESSAGE_TIMESTAMP</code></td><td>DATETIME</td><td>—</td><td>nullable</td><td>When the assistant provided the response</td></tr>
+          <tr><td><code>COMMENTS_REMARKS</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Additional remarks about the interaction</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">CopilotAbuseMonitoring <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">publicSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Stores content filtering / abuse detection events triggered by Azure OpenAI's abuse monitoring policy. Cross-organization visibility.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>COPILOT_ABUSE_MONITORING_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>PRACTICE_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Practice from which the abusive content was detected</td></tr>
+          <tr><td><code>MEMBER_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>User who triggered the inappropriate content</td></tr>
+          <tr><td><code>FACILITY_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Facility from which the request was made</td></tr>
+          <tr><td><code>ASSISTANT_ID</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Azure OpenAI assistant ID</td></tr>
+          <tr><td><code>THREAD_ID</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Thread in which the inappropriate content was detected</td></tr>
+          <tr><td><code>ASSISTANT_NAME</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Module name (e.g., <code>PATIENT_DASHBOARD</code>, <code>ENCOUNTER</code>)</td></tr>
+          <tr><td><code>ENCOUNTER_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Encounter ID if abuse detected in encounter context</td></tr>
+          <tr><td><code>FULL_RESPONSE_JSON</code></td><td>CHAR</td><td>20000</td><td>nullable</td><td>Complete Azure error response JSON with abuse details</td></tr>
+          <tr><td><code>DATE_TIME</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Epoch millis when the abuse was detected</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">CopilotInteractionTable <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">practiceSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Tracks user interactions with Copilot suggestions — what was suggested, what was accepted, and edits made before committing.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>INTERACTION_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>AZURE_CHARM_COPILOT_USAGE_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>FK → <code>AzureCharmCopilotUsage</code> (ON DELETE CASCADE)</td></tr>
+          <tr><td><code>ACTION_TYPE</code></td><td>CHAR</td><td>50</td><td>NOT NULL</td><td>Action performed: <code>FETCH</code>, <code>ADD</code>, <code>MODIFY</code>, <code>SUGGEST</code>, <code>DELETE</code>, <code>VIEW</code></td></tr>
+          <tr><td><code>MODULE_NAME</code></td><td>CHAR</td><td>100</td><td>NOT NULL</td><td>Module where interaction occurred (e.g., <code>ENCOUNTER</code>, <code>PATIENT_DASHBOARD</code>)</td></tr>
+          <tr><td><code>SUBMODULE_NAME</code></td><td>CHAR</td><td>100</td><td>nullable</td><td>Specific submodule (e.g., <code>CHIEF_COMPLAINTS</code>, <code>DX</code>, <code>RX</code>, <code>ALLERGY</code>)</td></tr>
+          <tr><td><code>COMPONENT_TYPE</code></td><td>CHAR</td><td>100</td><td>nullable</td><td>Component type (e.g., <code>CHART_NOTE</code>, <code>FACESHEET</code>, <code>LAB_ORDER</code>)</td></tr>
+          <tr><td><code>SUGGESTED_CONTENT</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Original copilot suggestion (JSON format)</td></tr>
+          <tr><td><code>ACTUAL_CONTENT_USED</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Content actually added/used after user modifications (JSON format)</td></tr>
+          <tr><td><code>IS_EDITED</code></td><td>BOOLEAN</td><td>—</td><td>NOT NULL</td><td>Whether the suggested content was edited before use</td></tr>
+          <tr><td><code>ITEMS_SUGGESTED_COUNT</code></td><td>INTEGER</td><td>—</td><td>nullable</td><td>Number of items suggested by copilot</td></tr>
+          <tr><td><code>ITEMS_ACCEPTED_COUNT</code></td><td>INTEGER</td><td>—</td><td>nullable</td><td>Number of items accepted/added by user</td></tr>
+          <tr><td><code>TARGET_ENTITY_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>ID of target entity (e.g., <code>ENCOUNTER_ID</code>, <code>PATIENT_ID</code>)</td></tr>
+          <tr><td><code>TARGET_ENTITY_TYPE</code></td><td>CHAR</td><td>50</td><td>nullable</td><td>Type of target entity (<code>ENCOUNTER</code>, <code>PATIENT</code>, <code>LAB_ORDER</code>, etc.)</td></tr>
+          <tr><td><code>INTERACTION_STATUS</code></td><td>CHAR</td><td>20</td><td>nullable</td><td>Status: <code>COMPLETED</code>, <code>CANCELLED</code>, <code>PARTIAL</code>, <code>FAILED</code></td></tr>
+          <tr><td><code>TIME_TO_ACTION_SECONDS</code></td><td>INTEGER</td><td>—</td><td>nullable</td><td>Seconds from copilot suggestion to user action</td></tr>
+          <tr><td><code>INTERACTION_METADATA</code></td><td>CHAR</td><td>1000</td><td>nullable</td><td>Additional interaction metadata (JSON format)</td></tr>
+          <tr><td><code>CREATED_TIMESTAMP</code></td><td>DATETIME</td><td>—</td><td>NOT NULL</td><td>When the interaction occurred</td></tr>
+          <tr><td><code>CREATED_BY</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Member ID who performed the interaction</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">ConversationAudioRecord <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">practiceSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">One row per audio chunk recorded during ambient recording. Stores DFS pointer to audio file and resulting transcript.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>AUDIO_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>DFS_POINTER</code></td><td>CHAR</td><td>255</td><td>NOT NULL</td><td>Pointer to the audio file stored in the distributed file system</td></tr>
+          <tr><td><code>ENCOUNTER_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Encounter associated with this audio chunk</td></tr>
+          <tr><td><code>CONTEXT_TYPE</code></td><td>CHAR</td><td>255</td><td>nullable</td><td>Recording context: <code>ChartNote_Conversation</code>, <code>patient-nurse_conversation</code>, etc.</td></tr>
+          <tr><td><code>TRANSCRIPT</code></td><td>CHAR</td><td>2000</td><td>nullable</td><td>Whisper text transcript of the audio</td></tr>
+          <tr><td><code>AUDIO_LENGTH</code></td><td>FLOAT</td><td>—</td><td>nullable</td><td>Duration of the audio in seconds</td></tr>
+          <tr><td><code>REQUEST_START_TIME</code></td><td>BIGINT</td><td>19</td><td>nullable</td><td>UTC epoch millis when transcription started</td></tr>
+          <tr><td><code>REQUEST_ENDTIME_TIME</code></td><td>BIGINT</td><td>19</td><td>nullable</td><td>UTC epoch millis when transcription completed</td></tr>
+          <tr><td><code>CREATED_AT</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>Epoch timestamp when the record was created</td></tr>
+          <tr><td><code>CHUNK_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Chunk sequence ID for multi-chunk recordings</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">EncounterTranscript <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">practiceSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">One row per encounter — stores the full combined transcript and AI-generated chart note sections. Unique on <code>ENCOUNTER_ID</code>.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>TRANSCRIPT_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>ENCOUNTER_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>FK to encounter; UNIQUE constraint (one transcript per encounter)</td></tr>
+          <tr><td><code>COMPLETE_TRANSCRIPT</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Full concatenated transcript of the encounter conversation</td></tr>
+          <tr><td><code>IS_TRANSCRIPT_DELETED</code></td><td>BOOLEAN</td><td>—</td><td>nullable</td><td>Whether transcript was soft-deleted; default <code>false</code></td></tr>
+          <tr><td><code>TRANSCRIPT_DELETED_BY_MEMBER_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Member ID who deleted the transcript</td></tr>
+          <tr><td><code>TRANSCRIPT_DELETED_AT</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Epoch millis when the transcript was deleted</td></tr>
+          <tr><td><code>GENERATED_SUBJECTIVE_NOTES</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>AI-generated subjective (HPI/S) notes from transcript</td></tr>
+          <tr><td><code>GENERATED_ASSESSMENT_NOTES</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>AI-generated assessment/plan (A/P) notes from transcript</td></tr>
+          <tr><td><code>CREATED_AT</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>Epoch millis when the record was created</td></tr>
+          <tr><td><code>UPDATED_AT</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Epoch millis when last updated</td></tr>
+          <tr><td><code>RESPONSE_ID</code></td><td>CHAR</td><td>255</td><td>nullable</td><td>Azure OpenAI response ID associated with chart note generation</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:24px;">CharmCopilotPatientSummaryResponse <span style="font-size:11px;font-weight:500;color:var(--text-muted);margin-left:6px;">practiceSpace</span></h4>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Caches generated patient summary objects so they can be re-rendered without re-running the LLM call.</p>
+      <table>
+        <thead><tr><th>Column</th><th>Type</th><th>Size</th><th>Nullable</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>CHARM_COPILOT_PATIENT_SUMMARY_RESPONSE_ID</code></td><td>BIGINT</td><td>—</td><td>NOT NULL</td><td>PK, auto-generated</td></tr>
+          <tr><td><code>ASSISTANT_ID</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Azure OpenAI assistant ID that generated the summary</td></tr>
+          <tr><td><code>THREAD_ID</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Thread in which the patient summary was generated</td></tr>
+          <tr><td><code>MEMBER_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Member (provider) who requested the summary</td></tr>
+          <tr><td><code>PATIENT_ID</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Patient for whom the summary was generated</td></tr>
+          <tr><td><code>PATIENT_SUMMARY_OBJECT</code></td><td>CHAR</td><td>10000</td><td>nullable</td><td>Serialized structured patient summary object (JSON)</td></tr>
+          <tr><td><code>DATE_TIME</code></td><td>BIGINT</td><td>—</td><td>nullable</td><td>Epoch millis when the summary was generated</td></tr>
+        </tbody>
+      </table>
+
+      <h4 style="margin-top:28px;">Table Relationships (FK Summary)</h4>
+      <pre><code>CopilotApiEndpoint             (no FK)
+AssistantModule                (no FK)
+AssistantTool               ──FK──► AssistantModule         (CASCADE DELETE)
+AssistantFunctionParameter  ──FK──► AssistantTool           (CASCADE DELETE)
+AzureCharmCopilotUsage         (no FK; soft-linked to PracticeMembersList.MEMBER_ID)
+CopilotAbuseMonitoring         (no FK; publicSpace cross-org)
+CopilotInteractionTable     ──FK──► AzureCharmCopilotUsage  (CASCADE DELETE)
+ConversationAudioRecord        (no FK; ENCOUNTER_ID soft ref)
+EncounterTranscript            (UNIQUE on ENCOUNTER_ID)
+CharmCopilotPatientSummaryResponse  (no FK; PATIENT_ID soft ref)</code></pre>
+
+      <h3>10.2 EHR Tables Used by Copilot</h3>
+      <table>
+        <thead><tr><th>Table</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td><code>PHYSICIANNOTES</code></td><td>Chief complaints, subjective notes, physical exam, treatment notes</td></tr>
+          <tr><td><code>PHYSICIANNOTESEXT</code></td><td>HPI, past medical history, family history, social history, review of systems</td></tr>
+          <tr><td><code>PATIENTMEDICATIONS</code></td><td>Drug details ID, start/stop dates, dosage, intake route</td></tr>
+          <tr><td><code>PATIENTDIAGNOSISMAP + DIAGNOSISLIST</code></td><td>Diagnoses with ICD codes</td></tr>
+          <tr><td><code>SOAPWIDGETS</code></td><td>Widget modules (vitals context)</td></tr>
+          <tr><td><code>HEALTHVITALENTRIES / CUSTOMVITALENTRIES / CUSTOMVITALS</code></td><td>Vital signs</td></tr>
+          <tr><td><code>MemberProps</code></td><td>Member-level key/value props (<code>copilot_tier</code>, <code>copilot_encounter_limit</code>, etc.)</td></tr>
+          <tr><td><code>PracticeProps</code></td><td>Practice-level key/value props (<code>COPILOT_ENABLED</code>, <code>IS_WEBHOOK_ENABLED_FOR_COPILOT</code>, etc.)</td></tr>
+        </tbody>
+      </table>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 11: Configuration Reference -->
+  <div class="section" id="config-reference">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">11. Configuration Reference</div>
+        <div class="section-subtitle">CharmProperties, MemberProps, and PracticeProps full reference</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>11.1 CharmProperties Keys (Tier Config)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Key</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>COPILOT_BASIC_TIER_CONFIG</code></td><td>JSON config for Basic (Free) tier modules/features</td></tr>
+            <tr><td><code>COPILOT_ADVANCED_TIER_CONFIG</code></td><td>JSON config for Advanced (Professional) tier modules/features</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>11.2 Full MemberProps Reference</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>copilot_tier</code></td><td>String</td><td>&mdash;</td><td>NONE | BASIC | ADVANCED</td></tr>
+            <tr><td><code>copilot_encounter_limit</code></td><td>Int</td><td>2</td><td>Daily encounter limit</td></tr>
+            <tr><td><code>copilot_basic_usage</code></td><td>String</td><td>&mdash;</td><td>YYYY-MM-DD:id1,id2,...</td></tr>
+            <tr><td><code>isCopilotAutoOpenEnabled</code></td><td>Boolean</td><td>false</td><td>Auto-open panel</td></tr>
+            <tr><td><code>openCopilotAsNewPane</code></td><td>String</td><td>embed</td><td>embed | overlay</td></tr>
+            <tr><td><code>CHART_NOTE_FORMAT_PREFERENCE</code></td><td>String</td><td>bullet_points</td><td>Output format</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>11.3 Full PracticeProps Reference</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>COPILOT_ENABLED</code></td><td>Boolean</td><td>false</td><td>Master toggle</td></tr>
+            <tr><td><code>COPILOT_BASIC_ENABLED</code></td><td>Boolean</td><td>false</td><td>Enable BASIC for all</td></tr>
+            <tr><td><code>COPILOT_BASIC_AMBIENT_RECORDING_ENABLED</code></td><td>Boolean</td><td>false</td><td>BASIC tier ambient recording</td></tr>
+            <tr><td><code>IS_WEBHOOK_ENABLED_FOR_COPILOT</code></td><td>Boolean</td><td>false</td><td>Async vs sync mode</td></tr>
+            <tr><td><code>WHISPER_ENDPOINT</code></td><td>String</td><td>Azure default</td><td>Whisper endpoint override</td></tr>
+            <tr><td><code>WHISPER_RECORDING_DURATION_LIMIT</code></td><td>Long (ms)</td><td>1800000</td><td>Max recording (30 min)</td></tr>
+            <tr><td><code>COPILOT_AUTO_DELETE_AUDIO</code></td><td>Boolean</td><td>false</td><td>Auto-delete audio</td></tr>
+            <tr><td><code>COPILOT_AUTO_DELETE_TRANSCRIPT</code></td><td>Boolean</td><td>false</td><td>Auto-delete transcript</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 12: Error Codes -->
+  <div class="section" id="error-codes">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">12. Error Codes &amp; Handling</div>
+        <div class="section-subtitle">Copilot-specific error codes, Whisper errors, and run status handling</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>12.1 Copilot-Specific Error Codes</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Code</th><th>Constant</th><th>Trigger</th><th>Message</th></tr></thead>
+          <tbody>
+            <tr><td><code>90147</code></td><td>COPILOT_ACCESS_DENIED_NO_TIER</td><td>Member tier = NONE or not set</td><td>Access denied &mdash; no Copilot tier</td></tr>
+            <tr><td><code>90148</code></td><td>COPILOT_MODULE_ACCESS_DENIED</td><td>Module not in tier's allowlist</td><td>Module not available on your plan</td></tr>
+            <tr><td><code>90149</code></td><td>COPILOT_FEATURE_ACCESS_DENIED</td><td>Feature not enabled for tier</td><td>Feature not available on your plan</td></tr>
+            <tr><td><code>90150</code></td><td>COPILOT_ENCOUNTER_LIMIT_EXCEEDED</td><td>BASIC daily count >= limit</td><td>Daily encounter limit reached</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>12.2 Whisper Error Handling</h3>
+      <ul>
+        <li>Max retries (3) exceeded: <code>updateAsyncWhisperError(audioId, exception, retryCount)</code> &rarr; writes error to <code>CONVERSATIONAUDIORECORD.error_status</code></li>
+        <li>Azure Whisper endpoint down: Fallback to AWS Whisper (<code>fromAzure = false</code> path)</li>
+      </ul>
+
+      <h3>12.3 Run Status Error Handling</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Run Status</th><th>Frontend Action</th></tr></thead>
+          <tbody>
+            <tr><td><code>completed</code></td><td>Retrieve and display messages</td></tr>
+            <tr><td><code>requires_action</code></td><td>Submit tool outputs, continue polling</td></tr>
+            <tr><td><code>failed</code></td><td>Show error state, offer retry</td></tr>
+            <tr><td><code>cancelled</code></td><td>Show cancellation message</td></tr>
+            <tr><td><code>incomplete</code></td><td>Show partial response</td></tr>
+            <tr><td><code>expired</code></td><td>Show timeout error, offer new thread</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 13: Security & RBAC -->
+  <div class="section" id="security-rbac">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">13. Security &amp; RBAC</div>
+        <div class="section-subtitle">Authentication, role-based access, rate limiting, tier security, proxy support</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>13.1 Authentication</h3>
+      <p>All AI/Copilot APIs require <code>authentication="required"</code> in <code>security-api-ai.xml</code>.</p>
+
+      <h3>13.2 Role-Based Access Control</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>RBAC Permission</th><th>APIs Protected</th></tr></thead>
+          <tbody>
+            <tr><td><code>PATIENT:READ</code></td><td>Patient data, encounter notes preview</td></tr>
+            <tr><td><code>SOAPNOTES:CREATE</code></td><td>SOAP note creation</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Audit key <code>charm.ehr.api.gpt.ask</code> is logged for general queries.</p>
+
+      <h3>13.3 Rate Limiting</h3>
+      <div class="info-box note">Threshold: <strong>60 requests per minute</strong> | Lock-period: <strong>5 seconds</strong> | Duration: <strong>1 second per request</strong></div>
+
+      <h3>13.4 Tier-Level Security</h3>
+      <p><code>CopilotTierValidator</code> acts as a second security layer after RBAC &mdash; enforces business-tier restrictions at the Java service level, not just the HTTP routing layer.</p>
+
+      <h3>13.5 Proxy Support</h3>
+      <p><code>OpenAIApiClient</code> and <code>AzureApi</code> both support HTTP proxy for local/development environments (<code>IS_LOCALZOHO</code> flag). Reads proxy IP, port, username, password from CharmProperties.</p>
+
+      <h3>13.7 API Key Management</h3>
+      <p>API keys are stored in the <code>COPILOTAPIENDPOINT</code> database table &mdash; not hardcoded. Retrieved at runtime via <code>AssistantUtil.getApiConfiguration()</code>.</p>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 14: Async Task Execution -->
+  <div class="section" id="async-tasks">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">14. Async Task Execution</div>
+        <div class="section-subtitle">Thread pools, task types, retry pattern, DFS storage, webhook callbacks</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>14.1 Thread Pools</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Pool Name</th><th>Core Threads</th><th>Max Threads</th><th>Queue</th><th>Usage</th></tr></thead>
+          <tbody>
+            <tr><td><code>GPTTasks</code></td><td>10</td><td>2</td><td>AbortPolicy</td><td>Whisper transcription, chart note generation, FAQ</td></tr>
+            <tr><td><code>CopilotTasks</code></td><td>10</td><td>2</td><td>AbortPolicy</td><td>Async assistant runs (webhook mode)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>14.2 GPTTasks &mdash; Task Types</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Task</th><th>Created By</th><th>WMS Callback</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Whisper audio (webhook)</td><td><code>createWhisperAudioTask()</code></td><td><code>getWhisperResponseFromWebhook</code></td><td>Transcribe chunk; send result via WMS</td></tr>
+            <tr><td>Whisper audio (poll)</td><td><code>createAsyncWhisperAudioTask()</code></td><td>&mdash;</td><td>Transcribe; poll via status endpoint</td></tr>
+            <tr><td>Retry whisper</td><td><code>createRetryWhisperAudioTask()</code></td><td><code>getWhisperResponseFromWebhook</code></td><td>Retry with exponential backoff (1s/2s/4s, max 3)</td></tr>
+            <tr><td>Chart note (webhook)</td><td><code>createGenerateChartNoteTask()</code></td><td><code>getChartNoteFromWebhook</code></td><td>2 parallel tasks: S/O + A/D</td></tr>
+            <tr><td>Chart note (poll)</td><td><code>createAsyncChartNoteTask()</code></td><td>&mdash;</td><td>Same 2 tasks; writes to ENCOUNTERTRANSCRIPT</td></tr>
+            <tr><td>FAQ query</td><td><code>createFAQQueryTask()</code></td><td><code>getFAQResponseFromWebhook</code></td><td>Async FAQ processing</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>14.3 Retry Pattern</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    A["Attempt 1"] -->|fail| B["Wait 1s (2^0)"]
+    B --> C["Attempt 2"]
+    C -->|fail| D["Wait 2s (2^1)"]
+    D --> E["Attempt 3"]
+    E -->|fail| F["Wait 4s (2^2)"]
+    F --> G["Attempt 4"]
+    G --> H["MAX_RETRIES exceeded"]
+    H --> I["updateAsyncWhisperError()"]
+    I --> J["Write error to DB"]
+    J --> K["STOP"]
+
+    A -->|success| L["Return transcript"]
+    C -->|success| L
+    E -->|success| L
+    G -->|success| L
+
+    style H fill:#ffebee,stroke:#c62828,color:#000
+    style K fill:#ffebee,stroke:#c62828,color:#000
+    style L fill:#e8f5e9,stroke:#2e7d32,color:#000
+        </div>
+      </div>
+
+      <h3>14.4 Webhook Callback Pattern</h3>
+      <pre><code class="language-javascript">// Backend completes async run
+CharmChatUtil.sendWMSCustomMsgToUsers(zuid, {
+    callbackFn: "copilotWebhookRunProcessResponse",
+    output_string: { ...result }
+});
+
+// Frontend WMS listener receives message
+// calls copilotWebhookRunProcessResponse(data)
+// processes and displays result
+
+// Tool output callback:
+// callbackFn: "copilotToolOutputCallback"</code></pre>
+
+      <h3>14.5 DFS (Distributed File System) Storage</h3>
+      <ul>
+        <li>Audio bytes are stored to DFS before async processing begins</li>
+        <li>Ensures audio is not lost if the processing node changes</li>
+        <li>DFS reference stored alongside audio task</li>
+        <li>Used for retry: <code>retryWhisperTaskFromDFS()</code> re-reads audio from DFS</li>
+      </ul>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 15: Third-Party Integrations -->
+  <div class="section" id="third-party">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">15. Third-Party Integrations</div>
+        <div class="section-subtitle">Azure OpenAI, AWS Whisper, Web Audio API, PDFBox</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>15.1 Azure OpenAI</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Purpose</th><th>Endpoint Type</th></tr></thead>
+          <tbody>
+            <tr><td>Chat completion (GPT-4)</td><td><code>chat</code></td></tr>
+            <tr><td>Assistants</td><td><code>assistant</code></td></tr>
+            <tr><td>Threads</td><td><code>threads</code></td></tr>
+            <tr><td>Runs</td><td><code>runs</code></td></tr>
+            <tr><td>Messages</td><td><code>messages</code></td></tr>
+            <tr><td>Files upload</td><td><code>files</code></td></tr>
+            <tr><td>Whisper transcription</td><td><code>whisper</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Configuration retrieved from <code>COPILOTAPIENDPOINT</code> table (<code>PROVIDER_NAME = 'azure'</code>).</p>
+
+      <h3>15.2 AWS Whisper</h3>
+      <p>Used as fallback when <code>fromAzure = false</code>. Implementation in <code>AWSInterface.java</code>, <code>AWSUtil.java</code>, <code>AWSIAMInstance.java</code>. Uses IAM-based authentication with the same API surface as the Azure Whisper path.</p>
+
+      <h3>15.3 Web Audio API (Browser)</h3>
+      <ul>
+        <li><code>AudioContext</code> &mdash; WAV format conversion</li>
+        <li><code>MediaRecorder</code> API &mdash; browser-native audio recording</li>
+        <li><code>BroadcastChannel</code> &mdash; cross-tab recording conflict detection</li>
+      </ul>
+
+      <h3>15.4 Video Consultation Integration</h3>
+      <p>Copilot recording works alongside Zoom video consultation, OnCall (phone consultation), and patient-doctor video sessions (trigger: <code>pat_doc</code>).</p>
+
+      <h3>15.6 Apache PDFBox</h3>
+      <p>Used in <code>AssistantUtil.extractTextFromPDF()</code>: extracts text from PDF attachments, maximum 50,000 characters truncation, Base64-encoded PDF input.</p>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 16: Mobile App Integration APIs -->
+  <div class="section" id="mobile-api">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">16. Mobile App Integration APIs</div>
+        <div class="section-subtitle">Submit-poll pattern for mobile clients without WebSocket support</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">These APIs use a <strong>submit &rarr; poll</strong> pattern instead of webhooks. OAuth is required for all endpoints in this section.</div>
+
+      <h3>16.1 Audio Transcription (Polling)</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/whisper/audio/submit</span></div>
+        <div class="ep-desc">Submit audio chunk for transcription. Returns request_id immediately.</div>
+        <div class="ep-params">OAuth Scope: <code>copilot.common</code> | Content-Type: <code>multipart/form-data</code></div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/whisper/audio/status/{request_id}</span></div>
+        <div class="ep-desc">Poll transcription status. Call repeatedly until completed or failed.</div>
+        <div class="ep-params">OAuth Scope: <code>copilot.common</code></div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/whisper/audio/retry/{request_id}</span></div>
+        <div class="ep-desc">Retry a failed or stuck transcription request.</div>
+      </div>
+
+      <h4>Audio Transcription Polling Flow</h4>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant M as Mobile Client
+    participant API as Charm Backend
+
+    M->>API: POST /whisper/audio/submit (multipart)
+    API-->>M: {request_id, status: "processing"}
+
+    loop Poll every N seconds
+        M->>API: GET /whisper/audio/status/{request_id}
+        alt status: processing
+            API-->>M: {status: "processing"}
+        else status: completed
+            API-->>M: {status: "completed", result: "transcribed text"}
+        else status: failed
+            API-->>M: {status: "failed"}
+            M->>API: POST /whisper/audio/retry/{request_id}
+            API-->>M: {result: "transcribed text"}
+        end
+    end
+        </div>
+      </div>
+
+      <h3>16.2 Chart Note Generation (Polling)</h3>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/gpt/chartNote/submit</span></div>
+        <div class="ep-desc">Submit conversation transcript for chart note generation. Returns request_id immediately.</div>
+        <div class="ep-params">OAuth Scope: <code>copilot.encounter</code> | Content-Type: <code>multipart/form-data</code></div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/gpt/chartNote/status/{request_id}</span></div>
+        <div class="ep-desc">Poll chart note generation status.</div>
+        <div class="ep-params">OAuth Scope: <code>copilot.encounter</code></div>
+      </div>
+
+      <h4>Chart Note Polling Flow</h4>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant M as Mobile Client
+    participant API as Charm Backend
+
+    M->>API: POST /gpt/chartNote/submit (multipart)
+    API-->>M: {request_id, status: "processing"}
+
+    loop Poll every N seconds
+        M->>API: GET /gpt/chartNote/status/{request_id}
+        alt status: processing
+            API-->>M: {status: "processing"}
+        else status: completed
+            API-->>M: {status: "completed", result: {subjective_notes, assessment_notes}}
+        end
+    end
+        </div>
+      </div>
+
+      <h3>16.3 Comparison: Webhook vs Polling Mode</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Aspect</th><th>Webhook (Browser)</th><th>Polling (Mobile)</th></tr></thead>
+          <tbody>
+            <tr><td>Transport</td><td>WMS (WebSocket push)</td><td>HTTP poll loop</td></tr>
+            <tr><td>Submit endpoint</td><td><code>/assistant/thread/run</code> or <code>/gpt/generateChartNote</code></td><td><code>/whisper/audio/submit</code>, <code>/gpt/chartNote/submit</code></td></tr>
+            <tr><td>Result delivery</td><td>WMS <code>callbackFn</code> fires in JS</td><td>Client polls status endpoint</td></tr>
+            <tr><td>Retry mechanism</td><td>Automatic via WMS retry</td><td><code>POST /whisper/audio/retry/{id}</code></td></tr>
+            <tr><td>Auth</td><td>Session cookie</td><td>OAuth token (<code>copilot.common</code> / <code>copilot.encounter</code>)</td></tr>
+            <tr><td>Config flag</td><td><code>IS_WEBHOOK_ENABLED_FOR_COPILOT=true</code></td><td>Uses submit/status endpoints directly</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <footer class="doc-footer">
+    <div style="margin-bottom:6px;">
+      <strong>Charm EHR Copilot — Technical Documentation</strong> &nbsp;·&nbsp; v1.0 &nbsp;·&nbsp; 2026-04-29
+    </div>
+    <div>
+      Author: <strong>Karan Kumar</strong> &nbsp;&mdash;&nbsp;
+      <a href="mailto:karan.kumar@zohocorp.com">karan.kumar@zohocorp.com</a>
+    </div>
+  </footer>
+
+</main>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+// ─── Mermaid Init ────────────────────────────────────────────────────────────
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'loose',
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+  sequence: {
+    useMaxWidth: false,
+    wrap: false,
+    actorMargin: 80,
+    messageMargin: 40,
+    noteMargin: 10,
+    mirrorActors: false
+  }
+});
+
+// ─── Highlight.js Init ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('pre code').forEach(function (el) {
+    hljs.highlightElement(el);
+  });
+  initScrollSpy();
+  // Save original Mermaid source on every diagram BEFORE first render
+  // (after render, innerHTML becomes SVG — we can never recover source from it)
+  document.querySelectorAll('.mermaid').forEach(function(el) {
+    el.setAttribute('data-mermaid-source', el.textContent.trim());
+  });
+  mermaid.run({ querySelector: '.mermaid' }).then(addExpandButtons).catch(function() { addExpandButtons(); });
+});
+
+// ─── Theme Toggle ────────────────────────────────────────────────────────────
+function toggleTheme() {
+  var html = document.documentElement;
+  var isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '☾' : '☀';
+
+  // swap hljs stylesheet
+  document.getElementById('hljs-light').disabled = !isDark;
+  document.getElementById('hljs-dark').disabled = isDark;
+
+  updateMermaidTheme();
+}
+
+function updateMermaidTheme() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+    sequence: {
+      useMaxWidth: false,
+      wrap: false,
+      actorMargin: 80,
+      messageMargin: 40,
+      mirrorActors: false
+    }
+  });
+  // Restore original Mermaid source (saved before first render) then re-render
+  document.querySelectorAll('.mermaid').forEach(function(el) {
+    var src = el.getAttribute('data-mermaid-source');
+    if (!src) return; // never rendered, skip
+    el.removeAttribute('data-processed');
+    el.innerHTML = '';
+    el.textContent = src;
+  });
+  mermaid.run({ querySelector: '.mermaid' }).then(addExpandButtons).catch(function() { addExpandButtons(); });
+}
+
+// ─── Section Toggle ──────────────────────────────────────────────────────────
+function toggleSection(header) {
+  var section = header.closest('.section');
+  var wasCollapsed = section.classList.contains('collapsed');
+  section.classList.toggle('collapsed');
+  // If we just expanded, re-run mermaid on any unprocessed diagrams inside
+  if (wasCollapsed) {
+    var unprocessed = section.querySelectorAll('.mermaid:not([data-processed])');
+    if (unprocessed.length > 0) {
+      mermaid.run({ nodes: Array.from(unprocessed) }).then(addExpandButtons).catch(function() { addExpandButtons(); });
+    }
+  }
+}
+
+function expandAll() {
+  document.querySelectorAll('.section').forEach(function (s) {
+    s.classList.remove('collapsed');
+  });
+}
+
+function collapseAll() {
+  document.querySelectorAll('.section').forEach(function (s) {
+    s.classList.add('collapsed');
+  });
+}
+
+// ─── Search ──────────────────────────────────────────────────────────────────
+var searchIndex = [];
+
+function buildSearchIndex() {
+  if (searchIndex.length > 0) return;
+  document.querySelectorAll('.section').forEach(function (section) {
+    var id = section.id;
+    var title = section.querySelector('.section-title');
+    var subtitle = section.querySelector('.section-subtitle');
+    var bodyText = section.querySelector('.section-body');
+    if (!title) return;
+
+    // Also index h3 headings inside each section
+    section.querySelectorAll('h3, h4').forEach(function (h) {
+      searchIndex.push({
+        id: id,
+        title: h.textContent.trim(),
+        section: title.textContent.trim(),
+        anchor: id
+      });
+    });
+
+    searchIndex.push({
+      id: id,
+      title: title.textContent.trim(),
+      section: subtitle ? subtitle.textContent.trim() : '',
+      anchor: id
+    });
+  });
+
+  // Also index API endpoints from endpoint cards
+  document.querySelectorAll('.endpoint-card').forEach(function (card) {
+    var url = card.querySelector('.ep-url');
+    var method = card.querySelector('.ep-method');
+    var desc = card.querySelector('.ep-desc');
+    var section = card.closest('.section');
+    if (!url || !section) return;
+    searchIndex.push({
+      id: section.id,
+      title: (method ? method.textContent + ' ' : '') + url.textContent.trim(),
+      section: desc ? desc.textContent.trim() : '',
+      anchor: section.id
+    });
+  });
+}
+
+function handleSearch(query) {
+  buildSearchIndex();
+  var results = document.getElementById('searchResults');
+
+  if (!query || query.length < 2) {
+    results.classList.remove('visible');
+    return;
+  }
+
+  var q = query.toLowerCase();
+  var matches = searchIndex.filter(function (item) {
+    return item.title.toLowerCase().includes(q) ||
+           item.section.toLowerCase().includes(q);
+  }).slice(0, 12);
+
+  if (matches.length === 0) {
+    results.innerHTML = '<a href="#" style="color:var(--text-muted);cursor:default">No results found</a>';
+  } else {
+    results.innerHTML = matches.map(function (m) {
+      var highlighted = m.title.replace(
+        new RegExp('(' + escapeRegex(query) + ')', 'gi'),
+        '<mark style="background:rgba(255,235,59,0.5);border-radius:2px">$1</mark>'
+      );
+      return '<a href="#' + m.anchor + '" onclick="document.getElementById(\'searchResults\').classList.remove(\'visible\')">' +
+        highlighted +
+        (m.section ? '<div class="sr-section">' + m.section + '</div>' : '') +
+        '</a>';
+    }).join('');
+  }
+
+  results.classList.add('visible');
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// ─── Scroll Spy ──────────────────────────────────────────────────────────────
+function initScrollSpy() {
+  var sections = document.querySelectorAll('.section[id]');
+  var sidebarLinks = document.querySelectorAll('.sidebar a');
+
+  if (!sections.length || !sidebarLinks.length) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        sidebarLinks.forEach(function (link) {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(function (s) { observer.observe(s); });
+}
+
+// ─── Keyboard shortcut: / to focus search ────────────────────────────────────
+document.addEventListener('keydown', function (e) {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('searchInput').blur();
+    document.getElementById('searchResults').classList.remove('visible');
+  }
+});
+
+// ─── Diagram Modal ────────────────────────────────────────────────────────────
+var _modalNatW = 800;  // natural SVG width  (from viewBox)
+var _modalNatH = 400;  // natural SVG height (from viewBox)
+var _modalUserZoom = 1; // user zoom multiplier on top of fit scale
+var _modalFitScale = 1; // scale that makes it fit with no scroll
+var _modalZoomStep = 0.2;
+var _modalZoomMin  = 0.1;
+var _modalZoomMax  = 4;
+
+function openDiagramModal(wrapper) {
+  var svg = wrapper.querySelector('svg');
+  if (!svg) return;
+
+  var clone = svg.cloneNode(true);
+
+  // Read natural dimensions from viewBox (always present in Mermaid SVGs)
+  var vb = clone.viewBox && clone.viewBox.baseVal;
+  if (vb && vb.width) {
+    _modalNatW = vb.width;
+    _modalNatH = vb.height;
+  } else {
+    // fallback: read width/height attributes
+    _modalNatW = parseFloat(clone.getAttribute('width'))  || 800;
+    _modalNatH = parseFloat(clone.getAttribute('height')) || 400;
+  }
+
+  // Strip fixed size — we'll set it ourselves
+  clone.removeAttribute('width');
+  clone.removeAttribute('height');
+  clone.style.display = 'block';
+
+  var wrap = document.getElementById('diagram-modal-svg-wrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(clone);
+
+  document.getElementById('diagram-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Fit on next frame (modal must be visible to measure viewport)
+  requestAnimationFrame(function() {
+    _modalUserZoom = 1;
+    _fitModal();
+  });
+}
+
+function _fitModal() {
+  var viewport = document.getElementById('diagram-modal-viewport');
+  var availW = viewport.clientWidth  - 48; // 24px padding each side
+  var availH = viewport.clientHeight - 48;
+  var scaleW = availW / _modalNatW;
+  var scaleH = availH / _modalNatH;
+  _modalFitScale = Math.min(scaleW, scaleH); // fit entirely, no scroll
+  _modalFitScale = Math.max(_modalFitScale, _modalZoomMin);
+  _applyModalSize();
+}
+
+function _applyModalSize() {
+  var svgEl = document.querySelector('#diagram-modal-svg-wrap svg');
+  if (!svgEl) return;
+  var scale = _modalFitScale * _modalUserZoom;
+  // Set actual SVG dimensions — this affects layout (no transform tricks)
+  svgEl.setAttribute('width',  Math.round(_modalNatW * scale));
+  svgEl.setAttribute('height', Math.round(_modalNatH * scale));
+  document.getElementById('diagram-modal-zoom-label').textContent =
+    Math.round(scale * 100) + '%';
+}
+
+function modalZoomIn() {
+  _modalUserZoom = Math.min(_modalUserZoom + _modalZoomStep, _modalZoomMax / _modalFitScale);
+  _applyModalSize();
+}
+
+function modalZoomOut() {
+  _modalUserZoom = Math.max(_modalUserZoom - _modalZoomStep, _modalZoomMin / _modalFitScale);
+  _applyModalSize();
+}
+
+function modalZoomReset() {
+  _modalUserZoom = 1;
+  _fitModal();
+}
+
+function closeDiagramModal() {
+  document.getElementById('diagram-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.getElementById('diagram-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDiagramModal();
+});
+
+// Keyboard shortcuts inside modal
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('diagram-modal').classList.contains('open')) return;
+  if (e.key === 'Escape') closeDiagramModal();
+  if (e.key === '+' || e.key === '=') modalZoomIn();
+  if (e.key === '-') modalZoomOut();
+  if (e.key === '0') modalZoomReset();
+});
+
+// Inject expand buttons after Mermaid renders
+function addExpandButtons() {
+  document.querySelectorAll('.mermaid-wrapper').forEach(function(wrapper) {
+    if (wrapper.querySelector('.diagram-expand-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'diagram-expand-btn';
+    btn.innerHTML = '&#8599; Expand';
+    btn.title = 'View full diagram';
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openDiagramModal(wrapper);
+    });
+    wrapper.appendChild(btn);
+  });
+}
+</script>
+
+<!-- Diagram Modal -->
+<div id="diagram-modal">
+  <div id="diagram-modal-box">
+    <div id="diagram-modal-toolbar">
+      <span>Diagram</span>
+      <button class="modal-tool-btn" onclick="modalZoomOut()" title="Zoom out (-)">&#8722;</button>
+      <span id="diagram-modal-zoom-label">100%</span>
+      <button class="modal-tool-btn" onclick="modalZoomIn()" title="Zoom in (+)">&#43;</button>
+      <button class="modal-tool-btn" onclick="modalZoomReset()" title="Fit to window (0)" style="font-size:13px;padding:4px 10px;">Fit</button>
+      <button id="diagram-modal-close-btn" onclick="closeDiagramModal()" title="Close (Esc)">&#x2715;</button>
+    </div>
+    <div id="diagram-modal-viewport">
+      <div id="diagram-modal-svg-wrap"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
