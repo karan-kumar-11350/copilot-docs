@@ -463,11 +463,135 @@ code {
 
 /* Print */
 @media print {
-  .sidebar, .topnav, .bulk-actions, .search-box, .theme-toggle, .back-top { display: none !important; }
-  .main { margin-left: 0 !important; margin-top: 0 !important; padding: 10px !important; }
-  .section { break-inside: avoid; page-break-inside: avoid; box-shadow: none !important; }
-  .section.collapsed .section-body { max-height: none !important; padding: 24px !important; }
-  .mermaid-wrapper { border: 1px solid #ccc; }
+  /* Hide all interactive UI */
+  .sidebar, .topnav, .bulk-actions, .search-box, .theme-toggle,
+  .back-top, .diagram-expand-btn, #diagram-modal,
+  .collapse-icon, .author-chip { display: none !important; }
+
+  /* Full-width layout */
+  body { background: #fff !important; color: #000 !important; font-size: 12px; }
+  .main { margin: 0 !important; padding: 0 !important; }
+  .main-content { padding: 0 16px !important; }
+
+  /* Print cover page */
+  .print-cover {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    page-break-after: always;
+  }
+
+  /* TOC page */
+  .print-toc { display: block !important; page-break-after: always; }
+
+  /* Sections — no box shadows or rounded corners */
+  .section {
+    border: none !important; box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 0 8px 0 !important;
+  }
+  .section-header {
+    background: #f0f0f0 !important; color: #000 !important;
+    border-radius: 0 !important; padding: 8px 14px !important;
+    border-bottom: 1px solid #ccc !important;
+  }
+  .section-title { color: #000 !important; font-size: 15px !important; }
+  .section-subtitle { color: #444 !important; }
+
+  /* Expand ALL sections (collapsed or not) — remove transition & overflow */
+  .section-body,
+  .section.collapsed .section-body {
+    max-height: none !important;
+    display: block !important;
+    padding: 10px 16px !important;
+    overflow: visible !important;
+    transition: none !important;
+  }
+
+  /* Tighten heading margins */
+  .section-body h3 { margin: 14px 0 8px !important; }
+  .section-body h3:first-child { margin-top: 4px !important; }
+  .section-body h4 { margin: 10px 0 6px !important; }
+  .section-body p { margin-bottom: 8px !important; }
+
+  /* ── TABLES: prevent mid-row page breaks ── */
+  .table-wrapper {
+    overflow-x: visible !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 8px 0 !important;
+  }
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    font-size: 10px !important;
+    break-inside: auto;
+  }
+  thead { display: table-header-group; } /* repeat header row on each page */
+  tr    { break-inside: avoid; page-break-inside: avoid; }
+  th, td { border: 1px solid #bbb !important; padding: 4px 7px !important; }
+  th { background: #e4e4e4 !important; color: #000 !important;
+       -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Code */
+  pre, code {
+    background: #f5f5f5 !important; color: #000 !important;
+    border: 1px solid #ddd !important; font-size: 10px !important;
+  }
+  pre { white-space: pre-wrap !important; word-break: break-word !important; }
+
+  /* ── DIAGRAMS: fix whitespace & scale SVGs to page width ── */
+  .mermaid-wrapper {
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    padding: 6px !important;
+    margin: 8px 0 !important;
+    overflow: visible !important;
+    text-align: center !important;
+    break-inside: avoid;
+  }
+  /* Override large explicit width/height Mermaid sets on SVG at render-time */
+  .mermaid svg {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+  }
+
+  /* Endpoint cards / info boxes */
+  .endpoint-card { border: 1px solid #ccc !important; break-inside: avoid; padding: 8px !important; }
+  .method-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .info-box { border: 1px solid #ccc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Page breaks — headings never orphaned; each major section on new page */
+  h2, h3, h4 { break-after: avoid; }
+  .section:nth-child(n+3) { break-before: page; }
+
+  /* Footer */
+  .doc-footer {
+    display: block !important;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    font-size: 10px;
+    color: #555;
+    padding: 8px 0;
+  }
+
+  /* Page size & margins */
+  @page {
+    size: A4;
+    margin: 16mm 14mm 16mm 14mm;
+    @bottom-center {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 9px; color: #666;
+    }
+    @top-right {
+      content: "Charm EHR Copilot — Technical Documentation";
+      font-size: 8px; color: #999;
+    }
+  }
 }
 
 /* Responsive */
@@ -545,6 +669,21 @@ code {
     <a href="#async-tasks">14. Async Task Execution</a>
     <a href="#third-party">15. Third-Party Integrations</a>
     <a href="#mobile-api">16. Mobile Integration APIs</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Administration</h3>
+    <a href="#admin-console">17. Admin Console</a>
+    <a href="#admin-terms" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Assistants</a>
+    <a href="#admin-member-config" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Thread Data</a>
+    <a href="#admin-general-settings" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Configurations</a>
+    <a href="#admin-security-audit" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ ChartNote Formatting</a>
+    <a href="#admin-usage" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Practice Usage</a>
+    <a href="#admin-subscription" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Subscription / Pat Summary</a>
+    <a href="#admin-faqpilot" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ FAQPilot</a>
+    <a href="#admin-prompt" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Prompt Editor</a>
+    <a href="#admin-crud" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ CRUD API Config</a>
+    <a href="#admin-audio-scheduler" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Audio Transcript</a>
+    <a href="#admin-flow" style="padding-left:28px;font-size:12px;opacity:0.8;">↳ Navigation Flow</a>
   </div>
 </aside>
 
@@ -2780,6 +2919,249 @@ sequenceDiagram
             <tr><td>Config flag</td><td><code>IS_WEBHOOK_ENABLED_FOR_COPILOT=true</code></td><td>Uses submit/status endpoints directly</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <a href="#system-overview" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 17: Admin Console -->
+  <div class="section" id="admin-console">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">17. Admin Console</div>
+        <div class="section-subtitle">Super-admin / developer console for Copilot — 10 tabs covering Assistants, Config, Usage, FAQPilot, Prompts and more</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="info-box note">
+        <strong>Access URL:</strong> <code>https://&lt;host&gt;/action/adminAction.do?ACTION=copilot_assistant_admin&amp;request_action=admin_home</code><br>
+        This is a <strong>super-admin / developer console</strong> — not visible to practice end-users. It is rendered by <code>CopilotAssistantAdminConsole.jsp</code> and provides full system-level control over OpenAI Assistants, feature flags, billing config, usage data, prompts, and scheduler operations.
+      </div>
+
+      <p>The console is organized into <strong>10 horizontal tabs</strong>. Each tab is an independent functional panel that shows/hides via <code>changeAdminTask()</code>.</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>#</th><th>Tab Name</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Assistants</strong></td><td>View, create, and modify OpenAI Assistant objects registered in the system</td></tr>
+            <tr><td>2</td><td><strong>Thread Data</strong></td><td>Inspect OpenAI thread messages and runs by Thread ID</td></tr>
+            <tr><td>3</td><td><strong>Configurations</strong></td><td>Toggle global + practice feature flags; set pricing, model, transcription, and API endpoint configs</td></tr>
+            <tr><td>4</td><td><strong>ChartNote Formatting</strong></td><td>Edit AI formatting instructions for bullet-point and paragraph chart note output</td></tr>
+            <tr><td>5</td><td><strong>Practice Usage</strong></td><td>View paginated Copilot message logs with 15 advanced filters</td></tr>
+            <tr><td>6</td><td><strong>Subscription / Pat_Summary</strong></td><td>View subscription details and patient summary records for a practice</td></tr>
+            <tr><td>7</td><td><strong>FAQPilot</strong></td><td>View FAQ usage logs and trigger the web crawler for vector index updates</td></tr>
+            <tr><td>8</td><td><strong>Prompt Editor</strong></td><td>Auto-generate and dump system prompts for all Copilot modules to the DB</td></tr>
+            <tr><td>9</td><td><strong>CRUD API Config</strong></td><td>Define CRUD API mappings used by the AI for tool-calling (read/write patient data)</td></tr>
+            <tr><td>10</td><td><strong>Audio Transcript</strong></td><td>Start / stop / trigger the scheduled deletion job for audio files and transcripts</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="admin-terms">17.1 Tab: Assistants</h3>
+      <p>Manages the OpenAI Assistant objects that back each Copilot module. Three sub-sections:</p>
+
+      <h4>View All Assistants</h4>
+      <p>Clicking <strong>View All Assistants</strong> loads a paginated table of all registered assistants showing: S.No, Name, Model, Instructions (truncated), Created At, ID, and Actions. The <strong>Actions</strong> column has a <em>Details</em> button (opens a modal with full instructions and tool list) and a <em>Modify</em> button.</p>
+
+      <h4>Create New Assistant</h4>
+      <p>Inputs: <strong>Module Name</strong> (e.g. <code>chart_note</code>) and <strong>Model Version</strong> (e.g. <code>gpt-4o</code>). Clicking <strong>Create Assistant</strong> calls the OpenAI Assistants API and registers the new assistant in the DB.</p>
+
+      <h4>Add Tools to Assistant</h4>
+      <p>A form to attach function-calling tools to an existing assistant. Fields: Module Name, Model Version, Description (system prompt / instructions), and a dynamic <strong>Tools</strong> section where individual function definitions (name, parameters) can be added. <strong>Save Assistant Module</strong> persists everything.</p>
+
+      <h3 id="admin-member-config">17.2 Tab: Thread Data</h3>
+      <p>Debug tool for inspecting OpenAI Threads. Enter a <strong>Thread ID</strong> and use:</p>
+      <ul>
+        <li><strong>List Thread Messages</strong> — loads all messages in the thread (role: user/assistant, content, timestamps) in a scrollable view.</li>
+        <li><strong>List Thread Runs</strong> — shows all runs on the thread (run ID, status, model, created/completed time, tool calls triggered).</li>
+      </ul>
+
+      <h3 id="admin-general-settings">17.3 Tab: Configurations</h3>
+      <p>The most feature-rich tab. Divided into three panels:</p>
+
+      <h4>Global Level Configurations <code>[CharmProperties | publicSpace]</code></h4>
+      <p>Toggle switches that apply system-wide across all practices:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Group</th><th>Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="3"><strong>Access</strong></td><td><code>IS_COPILOT_ENABLED</code></td><td>Master on/off for Copilot globally</td></tr>
+            <tr><td><code>ENABLE FAQ FOR ALL</code></td><td>Enables FAQ for all practices without per-practice config</td></tr>
+            <tr><td><code>IS_COPILOT_SETTINGS_ENABLED</code></td><td>Shows/hides the Copilot Settings page in the EHR UI</td></tr>
+            <tr><td rowspan="3"><strong>Workflow</strong></td><td><code>IS_WEBHOOK_ENABLED_FOR_COPILOT</code></td><td>Enables webhook callbacks for async Copilot events</td></tr>
+            <tr><td><code>IS_AGENT_WORKFLOW_ENABLED</code></td><td>Enables multi-agent workflow engine</td></tr>
+            <tr><td><code>OLD_ENCOUNTER_PATIENT_SUMMARY_FETCH_DB</code></td><td>Fetches older encounter summaries from DB instead of regenerating</td></tr>
+            <tr><td rowspan="2"><strong>Transcription &amp; Recording</strong></td><td><code>USE_AZURE_FOR_TRANSCRIBER</code></td><td>Routes audio transcription to Azure Speech instead of OpenAI Whisper</td></tr>
+            <tr><td><code>COPILOT_BASIC_AMBIENT_RECORDING_ENABLED</code></td><td>Enables ambient recording for Basic-tier users</td></tr>
+            <tr><td rowspan="3"><strong>Features</strong></td><td><code>FAQ_PILOT_ENABLED</code></td><td>Enables the FAQPilot module globally</td></tr>
+            <tr><td><code>DOC_UPLOAD_COPILOT_ENABLED</code></td><td>Allows document uploads as Copilot context</td></tr>
+            <tr><td><code>DOC_UPLOAD_CHARTNOTE_ENABLED</code></td><td>Allows uploading documents for chart note generation</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A <strong>Refresh Copilot Instances</strong> button forces all cached config values to reload across running server instances.</p>
+
+      <h4>Practice Level Configurations <code>[PracticeProps | practiceSpace]</code></h4>
+      <p>Scoped to a specific Practice ID. Enter a Practice ID and click <strong>View Copilot PracticeProps</strong> to load current values, then toggle any switch to update.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Group</th><th>Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="4"><strong>Feature Access</strong></td><td><code>COPILOT_BASIC_ENABLED</code></td><td>Enables Basic Copilot (chat + FAQ) for this practice</td></tr>
+            <tr><td><code>COPILOT_ADVANCED_ENABLED</code></td><td>Enables Advanced Copilot (ambient recording, chart notes) for this practice</td></tr>
+            <tr><td><code>FAQ_ENABLED</code></td><td>Enables FAQ feature specifically for this practice</td></tr>
+            <tr><td><code>REALTIME_COPILOT_ENABLED</code></td><td>Enables real-time streaming Copilot for this practice</td></tr>
+            <tr><td rowspan="3"><strong>Chart Note &amp; Settings</strong></td><td><code>CHART_NOTE_ASSESSMENT_GENERATION</code> model</td><td>Input to override the AI model used for assessment section of chart notes (e.g. <code>gpt-o3</code>)</td></tr>
+            <tr><td><code>SHOW_COPILOT_SETTINGS_VIEW_PRACTICE</code></td><td>Shows/hides the Copilot Settings UI for this specific practice</td></tr>
+            <tr><td>Charm Copilot Settings Configuration</td><td>One-shot setup: enter Practice ID, COPILOT_ENABLED checkbox, Prescriber IDs (comma-separated), Subscription Mode → click <strong>Create Charm Copilot Roles</strong> to provision the practice. Enables <code>COPILOT_ENABLED</code> in PracticeProps, updates <code>CharmCopilotSubscription</code>, creates <em>Charm Copilot User</em> role for listed members, sets <code>IS_CHARM_COPILOT_ACTIVE</code> in PracticesList.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Copilot Global Props Configuration</h4>
+      <p>Two-column JSON and numeric config panel for system-wide pricing, billing, and model settings:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Section</th><th>Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="4"><strong>Pricing &amp; Billing</strong></td><td><code>COPILOT_USAGE_PRICING_CONFIG</code></td><td>JSON config defining per-action credit costs for different Copilot operations</td></tr>
+            <tr><td><code>COPILOT_AUDIT_ACTION_DESC_CONFIG</code></td><td>JSON config mapping audit action keys to human-readable descriptions</td></tr>
+            <tr><td><code>COPILOT_SUBSCRIBED_MODE_MONTHLY_CHARGE</code></td><td>Monthly subscription charge in USD (e.g. $120)</td></tr>
+            <tr><td><code>COPILOT_SUBSCRIPTION_DEFAULT_ALLOTTED_CREDIT</code></td><td>Default credit allotment per subscription period (e.g. 50 credits)</td></tr>
+            <tr><td rowspan="4"><strong>Encounter &amp; Chart Note</strong></td><td><code>COPILOT_MAX_ENCOUNTER_LIMIT</code></td><td>Maximum number of encounters a member can process with Copilot in a billing period</td></tr>
+            <tr><td><code>CHART_GENERATION_MODEL</code></td><td>Default AI model for chart note generation (e.g. <code>gpt-4o</code>)</td></tr>
+            <tr><td><code>CHART_NOTE_SUBJECTIVE_GENERATION</code></td><td>Model override for the Subjective section of chart notes</td></tr>
+            <tr><td><code>CHART_NOTE_ASSESSMENT_GENERATION</code></td><td>Model override for the Assessment section of chart notes</td></tr>
+            <tr><td rowspan="4"><strong>Transcription &amp; Realtime</strong></td><td><code>TRANSCRIBER_AUDIO_CHUNK</code></td><td>Audio chunk size in milliseconds sent to the transcription service</td></tr>
+            <tr><td><code>WHISPER_RECORDING_DURATION_LIMIT</code></td><td>Maximum ambient recording session duration in milliseconds</td></tr>
+            <tr><td><code>ENABLE_REALTIME_COPILOT</code></td><td>Boolean flag to enable/disable real-time streaming globally</td></tr>
+            <tr><td><code>REALTIME_MODEL_PREFERENCE</code></td><td>Preferred model for real-time sessions (e.g. <code>gpt-4o-realtime</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>JSON fields have an <strong>⛶ expand</strong> button that opens a full-screen textarea for editing large configs. <strong>Fetch Configuration</strong> loads current values; <strong>Save Configuration</strong> persists all changes.</p>
+
+      <h4>Copilot API Endpoint Configuration</h4>
+      <p>Configures the external AI provider connection. Fields: Provider Name, API Endpoint Type, API Base URL, API Access Key, API Version Number. Use <strong>Save Endpoints</strong> / <strong>View Endpoints</strong> to manage.</p>
+
+      <h3 id="admin-security-audit">17.4 Tab: ChartNote Formatting</h3>
+      <p>Two textarea editors for controlling how the AI formats generated chart notes, stored in <code>CharmProperties</code>:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Key</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>CHART_NOTE_FORMAT_BULLETS_INSTRUCTIONS</code></td><td>System-level instructions sent to the AI when the physician has selected <em>Bullet Points</em> as their chart note format. Controls how list items, indentation, and section structure are rendered.</td></tr>
+            <tr><td><code>CHART_NOTE_FORMAT_PARAGRAPHS_INSTRUCTIONS</code></td><td>Instructions for the <em>Paragraph</em> format mode. Controls narrative flow, sentence grouping, and section ordering.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="admin-usage">17.5 Tab: Practice Usage</h3>
+      <p>A paginated log viewer showing every Copilot AI call made by a practice. Enter a Practice ID, optionally expand <strong>Filters</strong>, and click <strong>View Copilot Usage</strong>. Displays 50 records per page with ◀ ▶ navigation.</p>
+      <h4>Available Filters</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Filter</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Module ID</td><td>Internal numeric ID of the Copilot module that handled the request</td></tr>
+            <tr><td>Module Name</td><td>Human-readable module name (e.g. <code>chart_note</code>, <code>faq</code>)</td></tr>
+            <tr><td>Assistant ID</td><td>OpenAI Assistant ID used for this call</td></tr>
+            <tr><td>Assistant Name</td><td>Name of the assistant object</td></tr>
+            <tr><td>Thread ID</td><td>OpenAI Thread ID for the conversation</td></tr>
+            <tr><td>Context Window</td><td>Context size used (token count)</td></tr>
+            <tr><td>Member ID</td><td>Practice member who made the request</td></tr>
+            <tr><td>Patient ID</td><td>Patient associated with the request</td></tr>
+            <tr><td>Patient Name</td><td>Patient name search (partial match)</td></tr>
+            <tr><td>Response Type</td><td>Type of response generated (e.g. <code>chart_note</code>, <code>summary</code>)</td></tr>
+            <tr><td>API Endpoint Type</td><td>Which AI API endpoint was called</td></tr>
+            <tr><td>Transcription Type</td><td>Transcription provider used (Whisper / Azure)</td></tr>
+            <tr><td>User Feedback</td><td>Thumbs up/down feedback submitted by the user</td></tr>
+            <tr><td>Timestamp From / To</td><td>Date range filter for the log entries</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="admin-subscription">17.6 Tab: Subscription / Pat_Summary</h3>
+      <p>Two sub-sections for a given Practice ID:</p>
+      <ul>
+        <li><strong>View Copilot Subscription Info</strong> — loads the <code>CharmCopilotSubscription</code> record for the practice showing subscription mode, credit balance, allotted credits, billing cycle, and member seat counts.</li>
+        <li><strong>Patient Summary</strong> — paginated table of all AI-generated patient summary objects for the practice (50/page). Each row shows the patient, the summary text, the model used, and generation timestamp. Long content has an expand button.</li>
+      </ul>
+
+      <h3 id="admin-faqpilot">17.7 Tab: FAQPilot</h3>
+      <p>Two side-by-side sections:</p>
+      <ul>
+        <li><strong>FAQPilot Usage</strong> — paginated log (50/page) of all FAQ queries made by a practice. Shows the question asked, the AI answer, feedback rating, and timestamp. Enter a Practice ID and click <strong>View FAQPilot Usage</strong>.</li>
+        <li><strong>FAQPilot Web Crawler</strong>:
+          <ul>
+            <li><strong>Run Vector Update</strong> — triggers <code>executeFAQWebCrawlerScheduler()</code> to re-crawl configured web sources and rebuild the vector index used for FAQ retrieval.</li>
+            <li><strong>Check Status</strong> — calls <code>checkFAQWebCrawlerStatus()</code> and displays current crawler state (running / idle / last run time).</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 id="admin-prompt">17.8 Tab: Prompt Editor</h3>
+      <p>Developer tool for managing the system prompts stored in the DB for each Copilot module.</p>
+      <ul>
+        <li><strong>Auto Generate Module List</strong> — introspects all registered modules and generates a consolidated prompt JSON listing each module's current system prompt. Displays the result in a textarea.</li>
+        <li><strong>Dump</strong> (shown after generation) — persists the generated prompts back to the DB, replacing existing entries. Use with caution as this overwrites all module prompts at once.</li>
+      </ul>
+
+      <h3 id="admin-crud">17.9 Tab: CRUD API Config</h3>
+      <p>Defines the API endpoints the AI uses when it needs to read from or write to patient clinical data during tool-calling. Each configuration entry specifies:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Key Name</strong></td><td>Unique identifier for this resource (e.g. <code>medical_history</code>)</td></tr>
+            <tr><td><strong>Title</strong></td><td>Display name shown to the AI in tool descriptions (e.g. <code>Medical History</code>)</td></tr>
+            <tr><td><strong>Data Component in Response</strong></td><td>The JSON key in the API response that contains the actual data</td></tr>
+            <tr><td><strong>Create API</strong></td><td>POST endpoint for creating new records</td></tr>
+            <tr><td><strong>Read API</strong></td><td>Endpoint URL, HTTP method, parameters (JSON), custom params function, and description used when the AI fetches data</td></tr>
+            <tr><td><strong>Update API</strong></td><td>PUT/PATCH endpoint for modifying existing records</td></tr>
+            <tr><td><strong>Delete API</strong></td><td>DELETE endpoint for removing records</td></tr>
+            <tr><td><strong>Views Configuration</strong> (optional)</td><td>Configures how results are displayed in the Copilot UI — Table View (display fields, hidden fields, title) and Form to Write View</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Use <em>+ Add Views Configuration</em> to expand the views section. An existing config can be loaded by key name via the <strong>Load Config</strong> dialog. All changes are saved to the DB and immediately used by the AI tool-calling engine.</p>
+
+      <h3 id="admin-audio-scheduler">17.10 Tab: Audio Transcript (Deletion Scheduler)</h3>
+      <p>Controls the scheduled job that purges old audio and transcript data. Enter a Practice ID then use the three action buttons:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Button</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Start Scheduler</strong></td><td>Registers and activates the deletion cron job for the given practice. The job runs daily at midnight (America/Los_Angeles timezone).</td></tr>
+            <tr><td><strong>Stop Scheduler</strong></td><td>Deactivates the scheduled job — no further automatic deletions will occur for this practice until restarted.</td></tr>
+            <tr><td><strong>Trigger Now</strong></td><td>Runs the deletion job immediately without waiting for the next scheduled midnight run. Useful for on-demand cleanup.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warn">
+        <strong>Deletion policy:</strong> The scheduler deletes Copilot audio files and transcripts for encounters older than <strong>30 days</strong>. This action is irreversible — only the generated chart note is retained.
+      </div>
+
+      <h3 id="admin-flow">17.11 Console Navigation Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart LR
+    A([Admin opens /copilot_assistant_admin]) --> NAV[10-tab navigation bar]
+    NAV --> T1[Assistants\nView / Create / Add Tools]
+    NAV --> T2[Thread Data\nMessages &amp; Runs by Thread ID]
+    NAV --> T3[Configurations\nGlobal + Practice toggles\nPricing &amp; Model config\nAPI endpoint config]
+    NAV --> T4[ChartNote Formatting\nBullets &amp; Paragraphs instructions]
+    NAV --> T5[Practice Usage\n15-filter paginated log]
+    NAV --> T6[Subscription / Pat Summary\nSubscription info + Patient summaries]
+    NAV --> T7[FAQPilot\nUsage log + Web crawler]
+    NAV --> T8[Prompt Editor\nAuto-generate &amp; dump prompts]
+    NAV --> T9[CRUD API Config\nDefine AI tool-call endpoints]
+    NAV --> T10[Audio Transcript\nStart / Stop / Trigger deletion scheduler]
+        </div>
       </div>
 
       <a href="#system-overview" class="back-top">&uarr; Back to top</a>
