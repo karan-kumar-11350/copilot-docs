@@ -1,0 +1,3315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart Assist — Technical Documentation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark" disabled>
+<style>
+:root {
+  --bg: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-sidebar: #1a1a2e;
+  --bg-topnav: #1a1a2e;
+  --text: #2d3748;
+  --text-muted: #718096;
+  --text-sidebar: #a8b2d1;
+  --text-sidebar-active: #64ffda;
+  --border: #e2e8f0;
+  --accent: #3182ce;
+  --accent-light: #ebf4ff;
+  --shadow: rgba(0,0,0,0.08);
+  --code-bg: #f7fafc;
+  --table-stripe: #f7fafc;
+  --table-hover: #ebf4ff;
+  --tag-get-bg: #e3f2fd;
+  --tag-get-text: #1565c0;
+  --tag-post-bg: #e8f5e9;
+  --tag-post-text: #2e7d32;
+  --tag-put-bg: #fff3e0;
+  --tag-put-text: #e65100;
+  --tag-delete-bg: #ffebee;
+  --tag-delete-text: #c62828;
+  --tag-async-bg: #fce4ec;
+  --tag-async-text: #c62828;
+  --search-bg: #ffffff;
+  --sidebar-hover: rgba(255,255,255,0.05);
+  --scrollbar-bg: #e2e8f0;
+  --scrollbar-thumb: #a0aec0;
+}
+[data-theme="dark"] {
+  --bg: #0a0a1a;
+  --bg-card: #16213e;
+  --bg-sidebar: #0d1117;
+  --bg-topnav: #0d1117;
+  --text: #e2e8f0;
+  --text-muted: #8892b0;
+  --text-sidebar: #8892b0;
+  --text-sidebar-active: #64ffda;
+  --border: #233554;
+  --accent: #64ffda;
+  --accent-light: #1a2744;
+  --shadow: rgba(0,0,0,0.4);
+  --code-bg: #0d1117;
+  --table-stripe: #1a2744;
+  --table-hover: #233554;
+  --tag-get-bg: #1a2744;
+  --tag-get-text: #90caf9;
+  --tag-post-bg: #1a2e1a;
+  --tag-post-text: #81c784;
+  --tag-put-bg: #2e2a1a;
+  --tag-put-text: #ffb74d;
+  --tag-delete-bg: #2e1a1a;
+  --tag-delete-text: #ef9a9a;
+  --tag-async-bg: #2e1a2a;
+  --tag-async-text: #f48fb1;
+  --search-bg: #16213e;
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --scrollbar-bg: #233554;
+  --scrollbar-thumb: #4a5568;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 60px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+
+/* Top Nav */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 52px; background: var(--bg-topnav);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.topnav h1 {
+  font-size: 15px; font-weight: 600; color: #ffffff;
+  white-space: nowrap; letter-spacing: 0.3px;
+}
+.topnav h1 span { color: var(--text-sidebar-active); }
+.nav-controls { display: flex; align-items: center; gap: 12px; }
+.theme-toggle {
+  background: none; border: 1px solid rgba(255,255,255,0.15);
+  color: #e2e8f0; cursor: pointer; font-size: 18px;
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.1); border-color: var(--text-sidebar-active); }
+.search-box {
+  position: relative; display: flex; align-items: center;
+}
+.search-box input {
+  width: 240px; padding: 7px 12px 7px 34px;
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+  background: rgba(255,255,255,0.06); color: #e2e8f0;
+  font-size: 13px; outline: none; transition: all 0.2s;
+}
+.search-box input::placeholder { color: rgba(255,255,255,0.35); }
+.search-box input:focus { border-color: var(--text-sidebar-active); background: rgba(255,255,255,0.1); width: 300px; }
+.search-box svg { position: absolute; left: 10px; width: 16px; height: 16px; color: rgba(255,255,255,0.35); pointer-events: none; }
+.search-results {
+  position: absolute; top: 42px; left: 0; right: 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; max-height: 400px; overflow-y: auto;
+  box-shadow: 0 8px 24px var(--shadow); display: none; z-index: 200;
+}
+.search-results.visible { display: block; }
+.search-results a {
+  display: block; padding: 10px 14px; text-decoration: none;
+  color: var(--text); font-size: 13px; border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.search-results a:hover { background: var(--accent-light); }
+.search-results a:last-child { border-bottom: none; }
+.search-results a .sr-section { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Sidebar */
+.sidebar {
+  position: fixed; left: 0; top: 52px; bottom: 0; width: 260px;
+  background: var(--bg-sidebar); overflow-y: auto;
+  padding: 16px 0; z-index: 50;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.sidebar-group { margin-bottom: 20px; }
+.sidebar-group h3 {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-sidebar-active); padding: 0 20px; margin-bottom: 8px;
+  font-weight: 700;
+}
+.sidebar a {
+  display: block; padding: 6px 20px; text-decoration: none;
+  color: var(--text-sidebar); font-size: 13px;
+  border-left: 3px solid transparent; transition: all 0.15s;
+  line-height: 1.4;
+}
+.sidebar a:hover { color: #e2e8f0; background: var(--sidebar-hover); }
+.sidebar a.active {
+  color: var(--text-sidebar-active);
+  border-left-color: var(--text-sidebar-active);
+  background: rgba(100,255,218,0.05);
+}
+.sidebar a .api-count {
+  font-size: 10px; color: var(--text-muted);
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px; border-radius: 10px; margin-left: 6px;
+}
+
+/* Main Content */
+.main {
+  margin-left: 260px; margin-top: 52px; padding: 28px 36px 60px;
+  max-width: 1100px;
+}
+
+/* Bulk actions row */
+.bulk-actions {
+  display: flex; gap: 8px; margin-bottom: 20px;
+  position: sticky; top: 52px; z-index: 10;
+  background: var(--bg); padding: 10px 0;
+}
+.bulk-btn {
+  padding: 6px 14px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text);
+  border-radius: 6px; cursor: pointer; font-size: 12px;
+  transition: all 0.15s;
+}
+.bulk-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Section Cards */
+.section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 20px;
+  box-shadow: 0 1px 3px var(--shadow);
+  overflow: hidden; transition: box-shadow 0.2s;
+}
+.section:hover { box-shadow: 0 4px 12px var(--shadow); }
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  user-select: none; transition: background 0.15s;
+}
+.section-header:hover { background: var(--accent-light); }
+.collapse-icon {
+  font-size: 12px; color: var(--text-muted);
+  transition: transform 0.3s; flex-shrink: 0;
+}
+.section.collapsed .collapse-icon { transform: rotate(-90deg); }
+.section-title {
+  font-size: 17px; font-weight: 700; color: var(--text);
+}
+.section-subtitle {
+  font-size: 13px; color: var(--text-muted); margin-top: 2px;
+}
+.section-body {
+  padding: 24px; max-height: 50000px;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  overflow: hidden;
+}
+.section.collapsed .section-body {
+  max-height: 0; padding: 0 24px;
+}
+
+/* Content styling */
+.section-body h3 {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent-light);
+}
+.section-body h3:first-child { margin-top: 0; }
+.section-body h4 {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  margin: 20px 0 8px;
+}
+.section-body p { margin-bottom: 12px; }
+.section-body ul, .section-body ol {
+  margin-bottom: 12px; padding-left: 24px;
+}
+.section-body li { margin-bottom: 4px; }
+.section-body strong { font-weight: 600; }
+
+/* Tables */
+.table-wrapper { overflow-x: auto; margin: 16px 0; border-radius: 8px; border: 1px solid var(--border); }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  background: var(--accent-light); color: var(--text);
+  font-weight: 600; text-align: left; padding: 10px 14px;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 9px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tbody tr:nth-child(even) { background: var(--table-stripe); }
+tbody tr:hover { background: var(--table-hover); }
+td code, th code {
+  background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+  font-size: 12px; font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  color: var(--accent);
+}
+
+/* Code Blocks */
+pre {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin: 14px 0;
+  overflow-x: auto; font-size: 13px; line-height: 1.6;
+}
+pre code {
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  background: none; padding: 0; color: var(--text);
+}
+code {
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+  font-size: 13px;
+}
+
+/* API Tags */
+.api-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.api-tag {
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 12px; font-family: 'SF Mono', Consolas, monospace;
+  letter-spacing: 0.3px;
+}
+.api-tag.get { background: var(--tag-get-bg); color: var(--tag-get-text); }
+.api-tag.post { background: var(--tag-post-bg); color: var(--tag-post-text); }
+.api-tag.put { background: var(--tag-put-bg); color: var(--tag-put-text); }
+.api-tag.delete { background: var(--tag-delete-bg); color: var(--tag-delete-text); }
+.api-tag.async { background: var(--tag-async-bg); color: var(--tag-async-text); }
+
+/* API Endpoint Cards */
+.endpoint-card {
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px; margin: 8px 0;
+  background: var(--bg); transition: border-color 0.2s;
+}
+.endpoint-card:hover { border-color: var(--accent); }
+.endpoint-card .ep-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.endpoint-card .ep-method {
+  font-size: 11px; font-weight: 700; padding: 3px 8px;
+  border-radius: 4px; font-family: 'SF Mono', Consolas, monospace;
+  min-width: 48px; text-align: center;
+}
+.endpoint-card .ep-method.get { background: var(--tag-get-bg); color: var(--tag-get-text); }
+.endpoint-card .ep-method.post { background: var(--tag-post-bg); color: var(--tag-post-text); }
+.endpoint-card .ep-url {
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 13px; font-weight: 500; color: var(--text);
+}
+.endpoint-card .ep-desc { font-size: 13px; color: var(--text-muted); }
+.endpoint-card .ep-params { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Mermaid */
+.mermaid-wrapper {
+  margin: 16px 0; padding: 20px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px;
+  overflow-x: auto; text-align: center;
+  position: relative;
+}
+.mermaid { font-size: 14px; }
+.mermaid svg { max-width: 100%; height: auto; }
+
+/* Expand button on diagram */
+.diagram-expand-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 5px; padding: 4px 10px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  opacity: 0.75; transition: opacity 0.15s;
+  display: flex; align-items: center; gap: 4px;
+  z-index: 2;
+}
+.diagram-expand-btn:hover { opacity: 1; }
+
+/* Diagram Modal */
+#diagram-modal {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.75);
+  align-items: center; justify-content: center;
+}
+#diagram-modal.open { display: flex; }
+#diagram-modal-box {
+  background: var(--bg-card); border-radius: 12px;
+  width: 95vw; height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+#diagram-modal-toolbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#diagram-modal-toolbar span {
+  font-size: 13px; font-weight: 600; color: var(--text-muted);
+  flex: 1;
+}
+.modal-tool-btn {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 12px;
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  color: var(--text); line-height: 1.2;
+  transition: background 0.15s;
+}
+.modal-tool-btn:hover { background: var(--accent-light); }
+#diagram-modal-zoom-label {
+  font-size: 12px; min-width: 42px; text-align: center;
+  color: var(--text-muted); font-weight: 600;
+}
+#diagram-modal-close-btn {
+  background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--text-muted); padding: 2px 6px;
+  border-radius: 4px;
+}
+#diagram-modal-close-btn:hover { color: var(--text); background: var(--bg); }
+#diagram-modal-viewport {
+  flex: 1; overflow: auto;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 24px;
+}
+#diagram-modal-svg-wrap {
+  display: inline-block;
+  line-height: 0;
+}
+#diagram-modal-svg-wrap svg {
+  display: block;
+  transition: width 0.15s ease, height 0.15s ease;
+}
+
+/* Info boxes */
+.info-box {
+  padding: 12px 16px; border-radius: 8px; margin: 14px 0;
+  font-size: 13px;
+}
+.info-box.note {
+  background: #ebf4ff; border-left: 4px solid #3182ce;
+  color: #2c5282;
+}
+[data-theme="dark"] .info-box.note {
+  background: #1a2744; border-left-color: #64ffda;
+  color: #a8b2d1;
+}
+.info-box.warn {
+  background: #fffbeb; border-left: 4px solid #d69e2e;
+  color: #744210;
+}
+[data-theme="dark"] .info-box.warn {
+  background: #2e2a1a; border-left-color: #fbd38d;
+  color: #fbd38d;
+}
+
+/* Version badge */
+.version-badge {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  padding: 2px 10px; border-radius: 12px;
+  background: var(--tag-get-bg); color: var(--tag-get-text);
+  margin-left: 10px;
+}
+
+/* Author chip */
+.author-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-sidebar);
+  white-space: nowrap;
+}
+.author-chip svg { opacity: 0.6; flex-shrink: 0; }
+.author-chip a {
+  color: var(--text-sidebar-active); text-decoration: none;
+  font-weight: 500;
+}
+.author-chip a:hover { text-decoration: underline; }
+
+/* Doc footer */
+.doc-footer {
+  text-align: center; padding: 32px 24px;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted); font-size: 13px;
+}
+.doc-footer strong { color: var(--text); }
+.doc-footer a { color: var(--accent); text-decoration: none; }
+.doc-footer a:hover { text-decoration: underline; }
+
+/* Back to top */
+.back-top {
+  display: inline-block; margin-top: 16px;
+  font-size: 12px; color: var(--accent);
+  text-decoration: none;
+}
+.back-top:hover { text-decoration: underline; }
+
+/* Section footer / chips */
+.section-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap; gap: 8px;
+}
+.section-footer .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.link-chip {
+  display: inline-block; padding: 4px 12px;
+  background: #f3e5f5; color: #6a1b9a;
+  border-radius: 16px; font-size: 12px; text-decoration: none;
+  transition: all 0.15s;
+}
+.link-chip:hover { background: #6a1b9a; color: white; }
+[data-theme="dark"] .link-chip { background: #2a1a2e; color: #ce93d8; }
+[data-theme="dark"] .link-chip:hover { background: #6a1b9a; color: white; }
+
+/* Feature divider */
+.feature-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 32px 0 24px;
+}
+.feature-divider-line {
+  flex: 1; height: 2px; background: var(--border);
+}
+.feature-divider-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 6px 16px;
+  border-radius: 20px; white-space: nowrap;
+}
+.feature-divider-label.dx {
+  background: #e3f2fd; color: #1565c0;
+  border: 1px solid #1565c0;
+}
+.feature-divider-label.plan {
+  background: #e8f5e9; color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+[data-theme="dark"] .feature-divider-label.dx { background: #1a2744; color: #90caf9; border-color: #90caf9; }
+[data-theme="dark"] .feature-divider-label.plan { background: #1a2e1a; color: #81c784; border-color: #81c784; }
+
+/* Section number badge */
+.section-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #e3f2fd; color: #1565c0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.section-num.plan { background: #e8f5e9; color: #2e7d32; }
+[data-theme="dark"] .section-num { background: #1a2744; color: #90caf9; }
+[data-theme="dark"] .section-num.plan { background: #1a2e1a; color: #81c784; }
+
+/* Pipeline Steps */
+.pipeline-steps { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+.pipeline-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.pipeline-step:last-child { border-bottom: none; }
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-content { flex: 1; font-size: 14px; }
+
+/* Phase Banners */
+.phase-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-radius: 8px;
+  margin: 12px 0; font-size: 13px; font-weight: 500;
+}
+.phase-banner.phase1 { background: #e3f2fd; color: #1565c0; border-left: 4px solid #1565c0; }
+.phase-banner.phase2 { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+.phase-banner.phase3 { background: #fff3e0; color: #e65100; border-left: 4px solid #e65100; }
+.phase-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+  background: rgba(0,0,0,0.08);
+}
+[data-theme="dark"] .phase-banner.phase1 { background: #1a2744; color: #90caf9; border-left-color: #90caf9; }
+[data-theme="dark"] .phase-banner.phase2 { background: #1a2e1a; color: #81c784; border-left-color: #81c784; }
+[data-theme="dark"] .phase-banner.phase3 { background: #2e2a1a; color: #ffb74d; border-left-color: #ffb74d; }
+
+/* Print */
+@media print {
+  .sidebar, .topnav, .bulk-actions, .search-box, .theme-toggle, .back-top { display: none !important; }
+  .main { margin-left: 0 !important; margin-top: 0 !important; padding: 10px !important; }
+  .section { break-inside: avoid; page-break-inside: avoid; box-shadow: none !important; }
+  .section.collapsed .section-body { max-height: none !important; padding: 24px !important; }
+  .mermaid-wrapper { border: 1px solid #ccc; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px; }
+  .search-box input { width: 160px; }
+  .search-box input:focus { width: 200px; }
+}
+</style>
+</head>
+<body id="top">
+
+<!-- Top Navigation -->
+<nav class="topnav">
+  <h1><span>Chart</span> Assist &mdash; Technical Documentation <span class="version-badge">v1.0</span></h1>
+  <div class="author-chip">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Karan Kumar &mdash; <a href="mailto:karan.kumar@zohocorp.com">karan.kumar@zohocorp.com</a></span>
+  </div>
+  <div class="nav-controls">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" aria-label="Search sections" placeholder="Search sections..." onkeyup="handleSearch(this.value)" onfocus="handleSearch(this.value)" onblur="setTimeout(()=>document.getElementById('searchResults').classList.remove('visible'),200)">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="theme-icon">&#9790;</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-group">
+    <h3>Master Flow</h3>
+    <a href="#master">Master Diagram</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>DX Suggestion</h3>
+    <a href="#dx-overview">1. Feature Overview</a>
+    <a href="#dx-architecture">2. Architecture</a>
+    <a href="#dx-api">3. API Endpoints <span class="api-count">6 APIs</span></a>
+    <a href="#dx-data-flow">4. Complete Data Flow</a>
+    <a href="#dx-backend-classes">5. Backend Classes</a>
+    <a href="#metamap-nlp">6. MetaMap NLP Engine</a>
+    <a href="#snomed-mapping">7. SNOMED to ICD-10</a>
+    <a href="#notes-parsing-order">8. Notes Parsing Order</a>
+    <a href="#dx-optimization">9. Optimization</a>
+    <a href="#dx-frontend">10. Frontend (JS)</a>
+    <a href="#dx-handlebars">11. Handlebars Templates</a>
+    <a href="#dx-db-tables">12. Database Tables</a>
+    <a href="#dx-config">13. Configuration</a>
+    <a href="#dx-errors">14. Error Handling</a>
+    <a href="#dx-security">15. Security Config</a>
+    <a href="#dx-two-server">16. Two-Server Architecture</a>
+    <a href="#dx-memory-issues">17. Known Memory Issues</a>
+    <a href="#dx-admin-console">18. Admin Console</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Plan Suggestion</h3>
+    <a href="#plan-overview">1. Feature Overview</a>
+    <a href="#plan-architecture">2. Architecture</a>
+    <a href="#plan-knn">3. KNN Algorithm</a>
+    <a href="#plan-db-tables">4. Database Tables</a>
+    <a href="#plan-config">5. Practice Config</a>
+    <a href="#plan-phases">6. Complete Workflow</a>
+    <a href="#plan-phase1">7. Phase 1 — Migration</a>
+    <a href="#plan-phase2">8. Phase 2 — Training</a>
+    <a href="#plan-phase3">9. Phase 3 — Prediction <span class="api-count">3 APIs</span></a>
+    <a href="#plan-optimization">10. Optimization</a>
+    <a href="#plan-drug-allergy">11. Drug Allergy Safety</a>
+    <a href="#plan-api">12. API Endpoints <span class="api-count">3 APIs</span></a>
+    <a href="#plan-frontend">13. Frontend (JS)</a>
+    <a href="#plan-handlebars">14. Handlebars Template</a>
+    <a href="#plan-classes">15. Key Classes</a>
+    <a href="#plan-admin-console">16. Admin Console</a>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+  <div class="bulk-actions">
+    <button class="bulk-btn" onclick="expandAll()">Expand All</button>
+    <button class="bulk-btn" onclick="collapseAll()">Collapse All</button>
+  </div>
+
+  <!-- Master Flow -->
+  <div class="section" id="master">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">Master Flow &mdash; Chart Assist Features</div>
+        <div class="section-subtitle">Click blue/green nodes to jump to detailed sections</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    Doctor([Doctor Opens Encounter]) --> AVAIL[Check Recommendations Available]
+    AVAIL --> DX_CHECK{DX Bot\nEnabled?}
+    AVAIL --> PLAN_CHECK{Plan Bot\nEnabled?}
+
+    DX_CHECK -->|Yes| DX_FLOW[DX Suggestion Flow]
+    DX_CHECK -->|No| DX_DISABLED([DX Panel Hidden])
+
+    PLAN_CHECK -->|Yes + DX codes exist| PLAN_FLOW[Plan Suggestion Flow]
+    PLAN_CHECK -->|No| PLAN_DISABLED([Plan Panel Hidden])
+
+    DX_FLOW --> DX_NOTES[Fetch Encounter Notes\nAN, CC, HPI, PE, SN]
+    DX_NOTES --> DX_METAMAP[MetaMap NLP\nassist.charmtracker.com]
+    DX_METAMAP --> DX_CUI[CUI Extraction]
+    DX_CUI --> DX_SNOMED[CUI to SNOMED Mapping]
+    DX_SNOMED --> DX_ICD[SNOMED to ICD-10\nRule Processing]
+    DX_ICD --> DX_DEDUP[Deduplicate and Rank]
+    DX_DEDUP --> DX_UI([Show ICD-10 Suggestions\nCheckbox List])
+
+    PLAN_FLOW --> PLAN_MIGRATE[AIDXDERIVATIVES\nMigrated Data]
+    PLAN_MIGRATE --> PLAN_VECTOR[Build DX Query Vector\nBinary Sparse SVM]
+    PLAN_VECTOR --> PLAN_KNN[ZLabs KNN API\nml.charmtracker.com]
+    PLAN_KNN --> PLAN_FILTER[Filter by 80%\nMatch Threshold]
+    PLAN_FILTER --> PLAN_ALLERGY[Drug Allergy Check\nLEXI API]
+    PLAN_ALLERGY --> PLAN_RANK[Rank by Frequency\nDate Boost]
+    PLAN_RANK --> PLAN_UI([Show Rx, Labs, Images,\nNotes Suggestions])
+
+    click DX_FLOW "#dx-overview"
+    click DX_NOTES "#notes-parsing-order"
+    click DX_METAMAP "#metamap-nlp"
+    click DX_CUI "#metamap-nlp"
+    click DX_SNOMED "#snomed-mapping"
+    click DX_ICD "#snomed-mapping"
+    click DX_DEDUP "#dx-optimization"
+    click PLAN_FLOW "#plan-overview"
+    click PLAN_MIGRATE "#plan-phase1"
+    click PLAN_VECTOR "#plan-phase3"
+    click PLAN_KNN "#plan-knn"
+    click PLAN_FILTER "#plan-phase3"
+    click PLAN_ALLERGY "#plan-drug-allergy"
+    click PLAN_RANK "#plan-optimization"
+
+    style DX_FLOW fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DX_NOTES fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DX_METAMAP fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DX_CUI fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DX_SNOMED fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DX_ICD fill:#e3f2fd,stroke:#1565c0,color:#000
+    style DX_DEDUP fill:#e3f2fd,stroke:#1565c0,color:#000
+    style PLAN_FLOW fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style PLAN_MIGRATE fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style PLAN_VECTOR fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style PLAN_KNN fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style PLAN_FILTER fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style PLAN_ALLERGY fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style PLAN_RANK fill:#e8f5e9,stroke:#2e7d32,color:#000
+        </div>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-overview" class="link-chip">DX Suggestion</a>
+          <a href="#plan-overview" class="link-chip">Plan Suggestion</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Divider: DX -->
+  <div class="feature-divider">
+    <div class="feature-divider-line"></div>
+    <div class="feature-divider-label dx">DX SUGGESTION &mdash; MetaMap NLP Pipeline</div>
+    <div class="feature-divider-line"></div>
+  </div>
+
+  <!-- DX Section 1: Feature Overview -->
+  <div class="section" id="dx-overview">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">1</div>
+      <div style="flex:1">
+        <div class="section-title">Feature Overview &mdash; DX Suggestion</div>
+        <div class="section-subtitle">Automatically suggests ICD-10 codes from encounter notes using MetaMap NLP</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">
+        Chart Assist (DX Suggestion) reads physician encounter notes, runs them through MetaMap Lite NLP, and converts identified medical concepts into ICD-10 diagnosis codes that the doctor can accept with one click.
+      </div>
+      <h3>What it does</h3>
+      <ol>
+        <li>Extracts text from note sections: Assessment Notes, Chief Complaints, HPI, Physical Exam, Subjective Notes</li>
+        <li>Runs text through <strong>MetaMap Lite</strong> (NIH/NLM local NLP library) to extract CUIs</li>
+        <li>Maps CUIs &rarr; SNOMED CT codes &rarr; ICD-10 codes</li>
+        <li>Presents suggestions as checkboxes; doctor clicks to add to the encounter</li>
+      </ol>
+      <h3>Key Technologies</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Technology</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><strong>MetaMap Lite</strong></td><td>Local Java NLP library from NIH/NLM for biomedical text processing. No external API calls.</td></tr>
+            <tr><td><strong>UMLS Metathesaurus</strong></td><td>Unified Medical Language System &mdash; concept database backing MetaMap</td></tr>
+            <tr><td><strong>SNOMED CT</strong></td><td>Clinical terminology standard &mdash; intermediate mapping layer</td></tr>
+            <tr><td><strong>ICD-10</strong></td><td>International Classification of Diseases &mdash; final output codes for diagnosis</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Simplified Pipeline</h3>
+      <div class="pipeline-steps">
+        <div class="pipeline-step"><div class="step-dot">1</div><div class="step-content"><strong>Doctor writes notes</strong> &mdash; Assessment, Chief Complaints, HPI, PE, Subjective</div></div>
+        <div class="pipeline-step"><div class="step-dot">2</div><div class="step-content"><strong>Clean text</strong> &mdash; Strip HTML, remove non-ASCII, replace medical abbreviations (pt&rarr;patient, hx&rarr;history)</div></div>
+        <div class="pipeline-step"><div class="step-dot">3</div><div class="step-content"><strong>MetaMap NLP</strong> &mdash; Sentence detection &rarr; Tokenization &rarr; POS tagging &rarr; Chunking &rarr; UMLS concept identification &rarr; CUI extraction</div></div>
+        <div class="pipeline-step"><div class="step-dot">4</div><div class="step-content"><strong>CUI &rarr; SNOMED</strong> &mdash; Lookup in <code>cuiSnomedMap.bin</code></div></div>
+        <div class="pipeline-step"><div class="step-dot">5</div><div class="step-content"><strong>SNOMED &rarr; ICD-10</strong> &mdash; Rule evaluation in <code>icd10SnomedMap.bin</code> (gender, age, laterality rules)</div></div>
+        <div class="pipeline-step"><div class="step-dot">6</div><div class="step-content"><strong>ICD-10 &rarr; Diagnosis ID</strong> &mdash; Lookup in <code>DIAGNOSISLIST</code> table</div></div>
+        <div class="pipeline-step"><div class="step-dot">7</div><div class="step-content"><strong>Deduplicate &amp; rank</strong> &mdash; Merge across note types, promote codes appearing 3+ times</div></div>
+      </div>
+      <h3>Detailed API Flow</h3>
+      <div class="api-tags">
+        <span class="api-tag get">GET /encounters/{id}/recommendations/diagnoses</span>
+        <span class="api-tag get">GET /encounters/{id}/recommendations/available</span>
+        <span class="api-tag get">GET /metamap/parse_notes</span>
+        <span class="api-tag get">GET /metamap/check_notes</span>
+      </div>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant Doc as Doctor
+    participant UI as CharmEHR UI
+    participant EHR as EHR Server (AiAPI)
+    participant MM as MetaMap Server
+    participant DB as Database
+
+    Doc->>UI: Opens encounter, writes notes
+    UI->>EHR: GET /recommendations/available
+    Note right of UI: params: encounter_id
+    EHR->>DB: Check IS_CHART_BOT_ENABLED
+    DB-->>EHR: Practice config
+    EHR-->>UI: {chart_note_bot: true}
+
+    UI->>EHR: GET /recommendations/diagnoses
+    Note right of UI: params: encounter_id, notes_parse_order, is_soap_encounter
+    EHR->>DB: fetchConsultationNotes()
+    DB-->>EHR: Notes (AN, CC, HPI...)
+    EHR->>DB: fetchNotesParsingOrder()
+    DB-->>EHR: ["AN","CC"]
+
+    loop For each note type in order
+        EHR->>MM: GET /metamap/parse_notes
+        Note right of EHR: notes, patient_id, encounter_id, gender, dob
+        MM->>MM: EncounterSuggestion.suggest()
+        MM->>MM: MetaMap NLP to CUIs
+        MM->>MM: CUI to SNOMED to ICD-10
+        MM-->>EHR: {mappings, code_vs_id}
+        EHR->>DB: addEntriesIntoEncounterVsConcepts()
+    end
+
+    EHR->>DB: fetchDiagnosesCodes() existing DX
+    DB-->>EHR: Already-added codes
+    EHR->>EHR: optimizeRecommendationsJSON()
+    EHR-->>UI: {mappings: [...], code_vs_id: {...}}
+    UI->>UI: Render dxView.handlebars
+    UI-->>Doc: Show ICD-10 checkboxes
+    Doc->>UI: Clicks to add DX
+        </div>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-architecture" class="link-chip">Architecture</a>
+          <a href="#metamap-nlp" class="link-chip">MetaMap NLP</a>
+          <a href="#snomed-mapping" class="link-chip">SNOMED Mapping</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 2: Architecture -->
+  <div class="section" id="dx-architecture">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">2</div>
+      <div style="flex:1">
+        <div class="section-title">High-Level Architecture</div>
+        <div class="section-subtitle">Two-server design: EHR Server (primary) + MetaMap Server (NLP)</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart LR
+    subgraph Browser["Frontend (Browser)"]
+        JS["chartnotesuggestion.js\nAPIUtil.doGet()"]
+        HBS["dxView.handlebars"]
+    end
+
+    subgraph EHR["EHR Server (Primary)"]
+        direction TB
+        AIAPI["AiAPI.java\n(REST Handler)"]
+        AIUTIL["AIUtil.java\n(Orchestrator)"]
+        DB[(MySQL DB)]
+        AIAPI --> AIUTIL
+        AIUTIL --> DB
+    end
+
+    subgraph MM["MetaMap Server\nassist.charmtracker.com"]
+        direction TB
+        MMAPI["AiAPI.java\n(MetaMap endpoints)"]
+        ES["EncounterSuggestion.java"]
+        MMIMPL["MetaMapImpl.java\n(NLP Engine)"]
+        SNOMED["SnomedSuggestions.java\n(CUI to SNOMED to ICD-10)"]
+        MMAPI --> ES
+        ES --> MMIMPL
+        ES --> SNOMED
+    end
+
+    JS -->|REST calls| AIAPI
+    AIUTIL -->|HTTP GET| MMAPI
+    MMAPI -.->|JSON response| AIUTIL
+    AIUTIL -.->|DX suggestions| JS
+    JS --> HBS
+        </div>
+      </div>
+      <h3>Component Responsibilities</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Component</th><th>File</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><code>AiAPI.java</code> (EHR)</td><td>source/com/medicalmine/api/rest/ehr/ai/</td><td>Routes frontend requests, calls AIUtil, returns JSON</td></tr>
+            <tr><td><code>AIUtil.java</code></td><td>source/com/medicalmine/api/rest/ehr/ai/</td><td>Orchestrates note fetching, MetaMap calls, deduplication</td></tr>
+            <tr><td><code>AiAPI.java</code> (MetaMap)</td><td>Same codebase, different active endpoints</td><td>Receives parse/check requests from EHR server</td></tr>
+            <tr><td><code>EncounterSuggestion.java</code></td><td>source/com/adventnet/charm/nlp/</td><td>Full NLP pipeline entry point</td></tr>
+            <tr><td><code>MetaMapImpl.java</code></td><td>source/com/adventnet/charm/nlp/metamap/</td><td>MetaMap Lite singleton wrapper, CUI extraction</td></tr>
+            <tr><td><code>SnomedSuggestions.java</code></td><td>source/com/adventnet/charm/nlp/snomed/</td><td>CUI &rarr; SNOMED &rarr; ICD-10 mapping pipeline</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note">
+        The same codebase is deployed on both servers. On the EHR Server, only the <code>/encounters/...</code> endpoints are active. On the MetaMap Server, only <code>/metamap/parse_notes</code> and <code>/metamap/check_notes</code> are active.
+      </div>
+      <h3>MetaMap Server Data Files</h3>
+      <pre><code>&lt;catalina.base&gt;/../../../../public_mm_lite/data/
+&#9500;&#9472;&#9472; ivf/            (UMLS index &#8212; CUI concepts)
+&#9500;&#9472;&#9472; srcmf/          (UMLS source metadata)
+&#9500;&#9472;&#9472; stsmf/          (Semantic types)
+&#9500;&#9472;&#9472; varsf/          (Variants)
+&#9500;&#9472;&#9472; meshtcrelaxed/  (MeSH tree code relaxed index)
+&#9492;&#9472;&#9472; models/         (OpenNLP models)
+    &#9500;&#9472;&#9472; en-sent.bin       (sentence detector)
+    &#9500;&#9472;&#9472; en-token.bin      (tokenizer)
+    &#9500;&#9472;&#9472; en-pos-maxent.bin (POS tagger)
+    &#9492;&#9472;&#9472; en-chunker.bin    (chunker)
+
+&lt;catalina.base&gt;/../../../../nlp/dataset/
+&#9500;&#9472;&#9472; cuiSnomedMap.bin        HashMap&lt;String, HashSet&lt;String&gt;&gt;
+&#9500;&#9472;&#9472; icd10SnomedMap.bin      HashMap&lt;String, ArrayList&lt;String[]&gt;&gt;
+&#9500;&#9472;&#9472; snomedCodeVsDesc.bin    HashMap&lt;String, String&gt;
+&#9500;&#9472;&#9472; icd7thCharMap.bin       HashMap&lt;String, ArrayList&lt;String&gt;&gt;
+&#9492;&#9472;&#9472; ICD10ParentChildMap.bin HashMap&lt;String, ArrayList&lt;String&gt;&gt;</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-two-server" class="link-chip">Two-Server Architecture</a>
+          <a href="#dx-api" class="link-chip">API Endpoints</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 3: API Endpoints -->
+  <div class="section" id="dx-api">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">3</div>
+      <div style="flex:1">
+        <div class="section-title">API Endpoints</div>
+        <div class="section-subtitle">6 endpoints across EHR Server and MetaMap Server</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /encounters/{id}/recommendations/diagnoses</span>
+        <span class="api-tag get">GET /encounters/{id}/recommendations/available</span>
+        <span class="api-tag get">GET /encounters/recommendations/parsingOrder</span>
+        <span class="api-tag get">GET /encounters/recommendations/updateParsingOrder</span>
+        <span class="api-tag get">GET /metamap/parse_notes</span>
+        <span class="api-tag get">GET /metamap/check_notes</span>
+      </div>
+      <div class="info-box note">
+        All endpoints are prefixed with <code>/api/ehr/v1/</code>. Routing: <code>APIRequestByGet.xml</code>. Security: <code>security-api-ai.xml</code>. Handler Bean: <code>com.medicalmine.api.rest.ehr.ai.AiAPI</code>
+      </div>
+      <h3>Main DX Suggestion Endpoints</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>#</th><th>Endpoint</th><th>Handler Method</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>/encounters/{id}/recommendations/diagnoses</code></td><td><code>fetchDiagnosesRecommendations()</code></td><td>Get DX suggestions &mdash; main endpoint</td></tr>
+            <tr><td>2</td><td><code>/encounters/{id}/recommendations/available</code></td><td><code>fetchRecommendationsAvailable()</code></td><td>Quick check &mdash; are suggestions available?</td></tr>
+            <tr><td>3</td><td><code>/encounters/recommendations/parsingOrder</code></td><td><code>fetchNotesParisingOrder()</code></td><td>Get current note parsing order for encounter type</td></tr>
+            <tr><td>4</td><td><code>/encounters/recommendations/updateParsingOrder</code></td><td><code>updateNotesParisingOrder()</code></td><td>Save new note parsing order</td></tr>
+            <tr><td>5</td><td><code>/metamap/parse_notes</code></td><td><code>fetchDiagnosesForNotes()</code></td><td>Full NLP parsing + ICD-10 mapping (MetaMap server)</td></tr>
+            <tr><td>6</td><td><code>/metamap/check_notes</code></td><td><code>isDiagnosesAvailableForNotes()</code></td><td>Quick check if any DX available (MetaMap server)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Parameter Details</h3>
+      <h4>/encounters/{id}/recommendations/diagnoses</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Param</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>encounter_id</code></td><td>regex</td><td>Yes</td><td>The encounter ID</td></tr>
+            <tr><td><code>notes_parse_order</code></td><td>string</td><td>No</td><td>Comma-separated note type codes (AN, CC, HPI...)</td></tr>
+            <tr><td><code>is_soap_encounter</code></td><td>boolean</td><td>No</td><td>Whether this is a SOAP encounter</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4>/metamap/parse_notes and /metamap/check_notes</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Param</th><th>Type</th><th>Max Length</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>notes</code></td><td>string (XSS filtered)</td><td>10,000</td><td>Clinical notes text</td></tr>
+            <tr><td><code>patient_id</code></td><td>long</td><td>&mdash;</td><td>Patient ID</td></tr>
+            <tr><td><code>encounter_id</code></td><td>long</td><td>&mdash;</td><td>Encounter ID</td></tr>
+            <tr><td><code>gender</code></td><td>regex (genderValues)</td><td>&mdash;</td><td>Patient gender (used in ICD-10 rule processing)</td></tr>
+            <tr><td><code>date_of_birth</code></td><td>regex YYYY-MM-DD</td><td>&mdash;</td><td>Patient DOB (used in age-based ICD-10 rules)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warn">
+        <strong>Note on CSRF:</strong> <code>updateParsingOrder</code> has <code>csrf="false"</code> &mdash; it is a write operation via GET. All other endpoints have CSRF enabled.
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-security" class="link-chip">Security Config</a>
+          <a href="#dx-data-flow" class="link-chip">Data Flow</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 4: Complete Data Flow -->
+  <div class="section" id="dx-data-flow">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">4</div>
+      <div style="flex:1">
+        <div class="section-title">Complete Data Flow</div>
+        <div class="section-subtitle">End-to-end: Doctor writes notes &rarr; ICD-10 suggestions appear</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant Doc as Doctor
+    participant UI as CharmEHR UI
+    participant EHR as AiAPI + AIUtil
+    participant MM as EncounterSuggestion
+    participant DB as Database
+
+    Doc->>UI: Writes notes in encounter
+    UI->>UI: dx_suggestions.notes_changed()
+    Note right of UI: Compares current vs previousNotes
+
+    UI->>EHR: GET /recommendations/available
+    EHR->>DB: Read IS_CHART_BOT_ENABLED from PRACTICEPROPS
+    DB-->>EHR: {chart_note_bot: true}
+    EHR-->>UI: available types
+
+    UI->>EHR: GET /recommendations/diagnoses
+    Note right of UI: encounter_id, notes_parse_order, is_soap_encounter
+
+    EHR->>DB: fetchConsultationNotes(encounterId, isSOAP)
+    Note right of EHR: PHYSICIANNOTES + PHYSICIANNOTESEXT or SOAPUtil for SOAP
+    DB-->>EHR: Notes by section
+
+    EHR->>DB: fetchNotesParsingOrder()
+    Note right of EHR: CHARTNOTE_ASSIST_DATA.Dx.NOTES_ORDER
+    DB-->>EHR: ["AN","CC"]
+
+    loop For each note type in parsing order
+        EHR->>EHR: cleanNotes() -- strip HTML, remove non-ASCII
+        EHR->>MM: GET /metamap/parse_notes
+        Note right of EHR: notes, patient_id, encounter_id, gender, dob
+        MM->>MM: cleanNotes()
+        MM->>MM: MetaMapImpl.getMappingForNotes()
+        Note right of MM: Abbrev expand to BioCDocument to MetaMapLite.processDocumentList() to Negation filter to CUIs
+        MM->>MM: SnomedSuggestions.getImagicSnomedMappings()
+        Note right of MM: CUI to SNOMED to ICD-10 RuleProcessor: gender, age, laterality
+        MM-->>EHR: {mappings, code_vs_id, metamap_output}
+        EHR->>DB: addEntriesIntoEncounterVsConcepts()
+    end
+
+    EHR->>DB: fetchDiagnosesCodes()
+    Note right of EHR: CONSULTATIONDIAGNOSISMAP + PATIENTDIAGNOSISMAP
+    DB-->>EHR: Already-added DX codes
+
+    EHR->>EHR: optimizeRecommendationsJSON()
+    Note right of EHR: Merge across note types, promote codes 3+ times, sort by duplication_count
+
+    EHR-->>UI: {recommendation_type: "diagnoses", recommendations: {...}}
+    UI->>UI: Render dxView.handlebars
+    UI-->>Doc: ICD-10 checkbox list
+    Doc->>UI: dx_suggestions.addToChart(objId)
+        </div>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-optimization" class="link-chip">Optimization Algorithm</a>
+          <a href="#notes-parsing-order" class="link-chip">Parsing Order</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 5: Backend Classes -->
+  <div class="section" id="dx-backend-classes">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">5</div>
+      <div style="flex:1">
+        <div class="section-title">Backend Classes &amp; Methods</div>
+        <div class="section-subtitle">AiAPI, AIUtil, EncounterSuggestion, MetaMapImpl, SnomedSuggestions</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>AiAPI.java &mdash; REST Handler</h3>
+      <p><code>source/com/medicalmine/api/rest/ehr/ai/AiAPI.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>fetchNotesParisingOrder()</code></td><td>~91</td><td>Returns current parsing order for encounter type</td></tr>
+            <tr><td><code>fetchDiagnosesRecommendations()</code></td><td>~97</td><td>Main endpoint &mdash; fetches notes, calls MetaMap, returns DX suggestions</td></tr>
+            <tr><td><code>fetchDiagnosesForNotes()</code></td><td>~296</td><td>Local MetaMap processing (served on MetaMap server)</td></tr>
+            <tr><td><code>isDiagnosesAvailableForNotes()</code></td><td>~303</td><td>Quick check if any DX available (served on MetaMap server)</td></tr>
+            <tr><td><code>updateNotesParisingOrder()</code></td><td>~316</td><td>Persist new parsing order to DB</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>AIUtil.java &mdash; Central Orchestrator</h3>
+      <p><code>source/com/medicalmine/api/rest/ehr/ai/AIUtil.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>suggest(notes, patientId, encounterId, gender, dob)</code></td><td>~2553</td><td>HTTP GET to MetaMap server /parse_notes</td></tr>
+            <tr><td><code>available(notes, patientId, encounterId, gender, dob)</code></td><td>~2611</td><td>HTTP GET to MetaMap server /check_notes</td></tr>
+            <tr><td><code>fetchConsultationNotes(consultationId, isSOAP)</code></td><td>~2425</td><td>Reads encounter notes from DB</td></tr>
+            <tr><td><code>fetchDiagnosesCodes(dataObject)</code></td><td>~2533</td><td>Gets already-added DX codes from encounter</td></tr>
+            <tr><td><code>addEntriesIntoEncounterVsConcepts()</code></td><td>~2578</td><td>Stores MetaMap results in ENCOUNTERVSCONCEPTIDS</td></tr>
+            <tr><td><code>cleanNotes(notes, urlEncode)</code></td><td>~2633</td><td>Cleans notes text, optionally URL-encodes</td></tr>
+            <tr><td><code>optimizeRecommendationsJSON()</code></td><td>~2725</td><td>Deduplicates DX suggestions across note types</td></tr>
+            <tr><td><code>isChartNoteOrPlanEnabled()</code></td><td>~3859</td><td>Checks if Chart Note Bot / Plan Bot is enabled for practice</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>EncounterSuggestion.java &mdash; NLP Pipeline Entry</h3>
+      <p><code>source/com/adventnet/charm/nlp/encountersuggestion/EncounterSuggestion.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>suggest(notes, patientId, consultationId, gender, dob)</code></td><td>~31</td><td>Full pipeline: clean &rarr; MetaMap &rarr; SNOMED &rarr; ICD-10</td></tr>
+            <tr><td><code>hasSuggestions(notes, patientId, consultationId, gender, dob)</code></td><td>~86</td><td>Quick check: clean &rarr; MetaMap &rarr; SNOMED &rarr; returns boolean on first match</td></tr>
+            <tr><td><code>cleanNotes(note)</code></td><td>~112</td><td>HTML &rarr; plain text, remove non-ASCII, replace tabs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>MetaMapImpl.java &mdash; NLP Engine</h3>
+      <p><code>source/com/adventnet/charm/nlp/encountersuggestion/metamap/MetaMapImpl.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>getInstance()</code></td><td>~174</td><td>Lazy singleton (see Memory Issues &mdash; not synchronized!)</td></tr>
+            <tr><td><code>getMappingForNotes(notes, logUniqueKey)</code></td><td>~225</td><td>Full MetaMap processing pipeline</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>SnomedSuggestions.java &mdash; Code Mapping Engine</h3>
+      <p><code>source/com/adventnet/charm/nlp/encountersuggestion/snomed/SnomedSuggestions.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>getImagicSnomedMappings(uniqueCuis, gender, dob)</code></td><td>~52</td><td>Full CUI &rarr; SNOMED &rarr; ICD-10 mapping</td></tr>
+            <tr><td><code>hasImagicSnomedMappings(uniqueCuis, gender, dob)</code></td><td>~247</td><td>Quick boolean check &mdash; stops at first match</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#metamap-nlp" class="link-chip">MetaMap NLP Details</a>
+          <a href="#snomed-mapping" class="link-chip">SNOMED Mapping</a>
+          <a href="#dx-memory-issues" class="link-chip">Memory Issues</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 6: MetaMap NLP Engine -->
+  <div class="section" id="metamap-nlp">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">6</div>
+      <div style="flex:1">
+        <div class="section-title">MetaMap NLP Engine</div>
+        <div class="section-subtitle">7-step NLP pipeline: abbreviation expansion &rarr; CUI extraction with negation detection</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">
+        <strong>MetaMap Lite</strong> is a local Java library from NIH/NLM. It maps biomedical text to concepts in the UMLS Metathesaurus. No external API calls &mdash; all processing is in-process on the MetaMap server.
+      </div>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    INPUT["Input: Doctor Notes\ne.g. Patient has persistent cough and mild fever"]
+    A1["Step 1: Abbreviation Replacement\npt to patient, hx to history\nTrieWordSearcher with notesAbbreviations.properties"]
+    A2["Step 2: Sentence Detection\nOpenNLP en-sent.bin"]
+    A3["Step 3: Tokenization\nOpenNLP en-token.bin"]
+    A4["Step 4: POS Tagging\nOpenNLP en-pos-maxent.bin"]
+    A5["Step 5: Chunking\nOpenNLP en-chunker.bin\npersistent cough to NP noun phrase"]
+    A6["Step 6: UMLS Concept Identification\npersistent cough to CUI: C0010200\nmild fever to CUI: C0015967"]
+    A7["Step 7: Negation Detection\nno fever to negated to SKIP\npersistent cough to NOT negated to KEEP"]
+    OUT["Output: JSON Array\n[{cui: C0010200, cui_desc: Cough}, {cui: C0015967, cui_desc: Fever}]"]
+
+    INPUT --> A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7 --> OUT
+        </div>
+      </div>
+      <h3>Negation Detection Examples</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Notes Text</th><th>Negated?</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>"Patient has fever"</td><td>No</td><td>Include CUI for fever</td></tr>
+            <tr><td>"No fever"</td><td><strong>Yes</strong></td><td>Skip &mdash; do not suggest DX for fever</td></tr>
+            <tr><td>"Denies chest pain"</td><td><strong>Yes</strong></td><td>Skip</td></tr>
+            <tr><td>"History of diabetes"</td><td>No</td><td>Include CUI for diabetes</td></tr>
+            <tr><td>"No history of smoking"</td><td><strong>Yes</strong></td><td>Skip</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>MetaMap Processing Steps Inside getMappingForNotes()</h3>
+      <ol>
+        <li>Replace medical abbreviations using <code>TrieWordSearcher.replaceString()</code></li>
+        <li>Create <code>BioCDocument</code> from text via <code>FreeText.instantiateBioCDocument()</code></li>
+        <li>Run <code>MetaMapLite.processDocumentList()</code>:
+          <ul>
+            <li>Sentence detection (OpenNLP model)</li>
+            <li>Tokenization (OpenNLP model)</li>
+            <li>POS tagging (OpenNLP model)</li>
+            <li>Chunking (OpenNLP model)</li>
+            <li>UMLS concept identification against index files</li>
+          </ul>
+        </li>
+        <li>Iterate through detected entities</li>
+        <li><strong>Filter negated entities</strong> &mdash; <code>entity.isNegated() = true</code> &rarr; skip</li>
+        <li>Extract CUI and description for each non-negated entity</li>
+        <li>Return <code>JSONArray</code> of <code>{cui: "C0015967", cui_desc: "Fever"}</code></li>
+      </ol>
+      <div class="info-box warn">
+        <strong>Memory Warning:</strong> MetaMapLite loads the entire UMLS index (hundreds of MBs) into the JVM heap per instance. The singleton pattern in MetaMapImpl.java is not synchronized, which causes multiple instances under concurrent load. See Section 17 &mdash; Memory Issues.
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#snomed-mapping" class="link-chip">SNOMED &rarr; ICD-10</a>
+          <a href="#dx-memory-issues" class="link-chip">Memory Issues</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 7: SNOMED Mapping -->
+  <div class="section" id="snomed-mapping">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">7</div>
+      <div style="flex:1">
+        <div class="section-title">SNOMED to ICD-10 Mapping</div>
+        <div class="section-subtitle">CUI &rarr; SNOMED &rarr; MapGroups &rarr; MapItems &rarr; RuleProcessor &rarr; ICD-10</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    CUI["CUI from MetaMap\ne.g. C0010200 Cough"]
+    SNOMED["SNOMED Codes\ncuiSnomedMap.bin\nOne CUI to multiple SNOMED codes"]
+    GROUPS["MapGroups\nicd10SnomedMap.bin\nEach SNOMED code to one or more MapGroups"]
+    ITEMS["MapItems\nEach MapGroup to ordered MapItems with rules"]
+    RULES{"RuleProcessor\nEvaluates rule conditions"}
+    GENDER["Gender rule\nIFA 248153007 = Male only\nIFA 248152002 = Female only"]
+    AGE["Age rule\nIFA 445518008 = age criteria"]
+    DEFAULT["OTHERWISE TRUE\nDefault fallback"]
+    ICD10["ICD-10 Code + Description"]
+    ADVICE{"Advice?"}
+    LAT["LATERALITY\nleft/right/unspecified children"]
+    EPI["EPISODE OF CARE\n7th character: initial/subsequent/sequela"]
+    TRIM["TRIMESTER\n1st/2nd/3rd"]
+    FINAL["Diagnosis ID from DIAGNOSISLIST"]
+
+    CUI --> SNOMED --> GROUPS --> ITEMS --> RULES
+    RULES -->|IFA gender| GENDER
+    RULES -->|IFA age| AGE
+    RULES -->|no rule| DEFAULT
+    GENDER --> ICD10
+    AGE --> ICD10
+    DEFAULT --> ICD10
+    ICD10 --> ADVICE
+    ADVICE -->|CONSIDER LATERALITY| LAT
+    ADVICE -->|EPISODE OF CARE| EPI
+    ADVICE -->|TRIMESTER| TRIM
+    ADVICE -->|no advice| FINAL
+    LAT --> FINAL
+    EPI --> FINAL
+    TRIM --> FINAL
+        </div>
+      </div>
+      <h3>Binary Mapping Files</h3>
+      <p>Path: <code>&lt;catalina.base&gt;/../../../../nlp/dataset/</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>File</th><th>Java Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>cuiSnomedMap.bin</code></td><td><code>cuiVsSnomedMap</code></td><td><code>HashMap&lt;String, HashSet&lt;String&gt;&gt;</code></td><td>CUI &rarr; SNOMED codes</td></tr>
+            <tr><td><code>icd10SnomedMap.bin</code></td><td><code>snomedCodeVsICDMapping</code></td><td><code>HashMap&lt;String, ArrayList&lt;String[]&gt;&gt;</code></td><td>SNOMED &rarr; ICD-10 mapping rules</td></tr>
+            <tr><td><code>snomedCodeVsDesc.bin</code></td><td><code>snomedCodeVsDesc</code></td><td><code>HashMap&lt;String, String&gt;</code></td><td>SNOMED code descriptions</td></tr>
+            <tr><td><code>icd7thCharMap.bin</code></td><td><code>icd10VsSeventhChar</code></td><td><code>HashMap&lt;String, ArrayList&lt;String&gt;&gt;</code></td><td>ICD-10 7th character extensions</td></tr>
+            <tr><td><code>ICD10ParentChildMap.bin</code></td><td><code>icd10ParentChildMap</code></td><td><code>HashMap&lt;String, ArrayList&lt;String&gt;&gt;</code></td><td>ICD-10 parent-child hierarchy</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Mapping Advice Types</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Advice</th><th>UI Action</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>CONSIDER LATERALITY SPECIFICATION</td><td>Show left/right/unspecified child codes</td><td>Knee pain &rarr; M79.661, M79.662, M79.669</td></tr>
+            <tr><td>EPISODE OF CARE INFORMATION NEEDED</td><td>Show episode variants via 7th character</td><td>Fracture &rarr; initial, subsequent, sequela</td></tr>
+            <tr><td>CONSIDER TRIMESTER SPECIFICATION</td><td>Show trimester variants</td><td>Pregnancy condition &rarr; 1st, 2nd, 3rd trimester</td></tr>
+            <tr><td>CONSIDER WHICH FETUS IS AFFECTED</td><td>Show fetus identification variants</td><td>Multi-fetal pregnancy complications</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>These are presented as <strong>"Refinement"</strong> options in the UI with a "Refine" button.</p>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#metamap-nlp" class="link-chip">MetaMap NLP</a>
+          <a href="#dx-optimization" class="link-chip">Optimization</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 8: Notes Parsing Order -->
+  <div class="section" id="notes-parsing-order">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">8</div>
+      <div style="flex:1">
+        <div class="section-title">Notes Parsing Order</div>
+        <div class="section-subtitle">Which note sections to parse (AN, CC, HPI, PE, SN) and in what order</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Note Type Codes</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Code</th><th>Full Name</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AN</strong></td><td>Assessment Notes</td><td>Doctor's assessment/impression &mdash; most medically specific. Default first.</td></tr>
+            <tr><td><strong>CC</strong></td><td>Chief Complaints</td><td>Patient's primary reason for visit. Default second.</td></tr>
+            <tr><td><strong>PE</strong></td><td>Physical Examination</td><td>Physical exam findings</td></tr>
+            <tr><td><strong>HPI</strong></td><td>History of Present Illness</td><td>Detailed history of current condition. Not available in Brief encounters.</td></tr>
+            <tr><td><strong>SN</strong></td><td>Subjective Notes</td><td>Patient-reported symptoms</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note">
+        <strong>Default order:</strong> <code>["AN", "CC"]</code> &mdash; Assessment Notes first (most precise), then Chief Complaints. The doctor can customize this in settings.
+      </div>
+      <h3>Encounter Type Availability</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Encounter Type</th><th>Available Note Types</th></tr></thead>
+          <tbody>
+            <tr><td>Comprehensive</td><td>AN, CC, PE, HPI, SN &mdash; all 5</td></tr>
+            <tr><td>Brief</td><td>AN, CC, PE, SN &mdash; HPI hidden</td></tr>
+            <tr><td>SOAP</td><td>AN, CC, PE, HPI, SN &mdash; uses SOAPUtil for extraction</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Storage in PRACTICEPROPS</h3>
+      <pre><code>// Key: CHARTNOTE_ASSIST_DATA
+{
+  "Dx": {
+    "NOTES_ORDER": ["AN", "CC", "HPI"],
+    "IS_CHART_BOT_ENABLED": true
+  },
+  "PLAN": {
+    "IS_PLAN_BOT_ENABLED": true
+  }
+}</code></pre>
+      <h3>Why Order Matters</h3>
+      <ol>
+        <li><strong>Priority:</strong> Suggestions from earlier note types appear first in the display</li>
+        <li><strong>Deduplication:</strong> The same DX code appearing across multiple note types gets a higher <code>duplication_count</code> and is promoted to the top if it appears more than 2 times</li>
+        <li><strong>Relevance:</strong> Assessment Notes contain the most medically precise language, so parsing them first yields the best initial results</li>
+      </ol>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-optimization" class="link-chip">Deduplication Algorithm</a>
+          <a href="#dx-config" class="link-chip">Configuration</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 9: Optimization -->
+  <div class="section" id="dx-optimization">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">9</div>
+      <div style="flex:1">
+        <div class="section-title">Optimization &amp; Deduplication</div>
+        <div class="section-subtitle">optimizeRecommendationsJSON() &mdash; two-tier ranking by duplication count</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    INPUT["Input: Results from each note type\nAN results, CC results, HPI results"]
+    INIT["Initialize two ordered maps\ncountOrderedList: codes appearing more than 2 times\noriginalOrderedList: codes appearing 1-2 times"]
+    ITER["For each note type results\nFor each DX code in results"]
+    EXISTS{Code already\nin a list?}
+    INC["Increment duplication_count"]
+    CHK{duplication_count\n> 2?}
+    PROMOTE["Promote to countOrderedList\nRemove from originalOrderedList"]
+    NEW["Add to originalOrderedList\ncount = 1"]
+    MERGE["Merge both maps\ncountOrderedList first (most frequent)\nthen originalOrderedList"]
+    OUT["Output: {mappings: [...], code_vs_id: {...}}"]
+
+    INPUT --> INIT --> ITER --> EXISTS
+    EXISTS -->|Yes| INC --> CHK
+    CHK -->|Yes| PROMOTE --> ITER
+    CHK -->|No| ITER
+    EXISTS -->|No| NEW --> ITER
+    ITER -->|Done| MERGE --> OUT
+        </div>
+      </div>
+      <h3>Result JSON Structure</h3>
+      <pre><code>{
+  "recommendation_type": "diagnoses",
+  "recommendations": {
+    "mappings": [
+      {
+        "is_mapping": true,
+        "map_target": "R05.9",
+        "map_target_name": "Cough, unspecified",
+        "snomed_code": "49727002",
+        "snomed_desc": "Cough",
+        "cui": "C0010200",
+        "cui_desc": "Cough",
+        "duplication_count": 3,
+        "note_type": "AN"
+      },
+      {
+        "is_mapping": false,
+        "all_refinements": [
+          {"code": "M79.661", "name": "Pain in right lower leg"},
+          {"code": "M79.662", "name": "Pain in left lower leg"},
+          {"code": "M79.669", "name": "Pain in unspecified lower leg"}
+        ],
+        "snomed_code": "10601006",
+        "cui": "C0030193",
+        "map_advice": "CONSIDER LATERALITY SPECIFICATION"
+      }
+    ],
+    "code_vs_id": {
+      "R05.9": 12345,
+      "M79.661": 23456
+    }
+  },
+  "added_dx": ["E11.9", "I10"]
+}</code></pre>
+      <h3>Two Mapping Types</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Type</th><th>Field</th><th>UI behavior</th></tr></thead>
+          <tbody>
+            <tr><td><code>is_mapping: true</code></td><td><code>map_target</code> &mdash; single ICD-10 code</td><td>Direct checkbox to add the code</td></tr>
+            <tr><td><code>is_mapping: false</code></td><td><code>all_refinements</code> &mdash; multiple code options</td><td>Show OTHERWISE TRUE code + "Refine" button for alternatives</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#notes-parsing-order" class="link-chip">Parsing Order</a>
+          <a href="#dx-frontend" class="link-chip">Frontend Implementation</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 10: Frontend -->
+  <div class="section" id="dx-frontend">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">10</div>
+      <div style="flex:1">
+        <div class="section-title">Frontend Implementation</div>
+        <div class="section-subtitle">chartnotesuggestion.js &mdash; chartNoteSuggestions object and dx_suggestions sub-object</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>File: <code>webapps/ehr/js/chartnotesuggestion.js</code> &mdash; Main object: <code>chartNoteSuggestions</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>isChartNoteBotEnabled()</code></td><td>~291</td><td>Checks <code>#isChartNoteBotEnabled</code> hidden input</td></tr>
+            <tr><td><code>isPlanBotEnabled()</code></td><td>~295</td><td>Checks <code>#isPlanBotEnabled</code> hidden input</td></tr>
+            <tr><td><code>displaySuggestions(successFn, showErrorData, forceRefresh)</code></td><td>~339</td><td>Entry point &mdash; calls /recommendations/available first</td></tr>
+            <tr><td><code>dx_suggestions.initView(refresh)</code></td><td>~512</td><td>Calls /recommendations/diagnoses, renders results</td></tr>
+            <tr><td><code>dx_suggestions.loadDxSettings(successFn)</code></td><td>~830</td><td>Calls /recommendations/parsingOrder</td></tr>
+            <tr><td><code>dx_suggestions.applyDxSettings(force)</code></td><td>~876</td><td>Applies new parsing order, re-fetches suggestions</td></tr>
+            <tr><td><code>dx_suggestions.markDxSettingsAsDefault()</code></td><td>~895</td><td>Calls /recommendations/updateParsingOrder to persist</td></tr>
+            <tr><td><code>dx_suggestions.notes_changed()</code></td><td>~715</td><td>Detects if notes have changed since last fetch</td></tr>
+            <tr><td><code>dx_suggestions.addToChart(objId)</code></td><td>~957</td><td>Adds a DX suggestion to the encounter</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Frontend API Call Pattern</h3>
+      <pre><code>// 1. Check if feature is enabled
+if (chartNoteSuggestions.isChartNoteBotEnabled()) {
+
+    // 2. Check if suggestions are available
+    chartNoteSuggestions.displaySuggestions(function() {
+
+        // 3. Fetch actual DX suggestions
+        chartNoteSuggestions.dx_suggestions.initView(false);
+    });
+}
+
+// 4. When notes change, detect and refresh
+chartNoteSuggestions.dx_suggestions.notes_changed(); // returns boolean
+
+// 5. API call pattern
+APIUtil.doGet(
+    "/api/ehr/v1/encounters/" + encounterId + "/recommendations/diagnoses",
+    {notes_parse_order: orderOfNotes, is_soap_encounter: isSOAP},
+    function(response) {
+        var html = Handlebars.templates["nlp/chart_suggestions/dxView"](response);
+        container.html(html);
+    }
+);</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-handlebars" class="link-chip">Handlebars Templates</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 11: Handlebars -->
+  <div class="section" id="dx-handlebars">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">11</div>
+      <div style="flex:1">
+        <div class="section-title">Handlebars Templates</div>
+        <div class="section-subtitle">webapps/ehr/handlebars/nlp/chart_suggestions/ &mdash; 9 templates</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Template</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>frame.handlebars</code></td><td>Main frame/wrapper for the suggestions panel</td></tr>
+            <tr><td><code>chatBotView.handlebars</code></td><td>Outer container for the suggestions panel</td></tr>
+            <tr><td><code>dxView.handlebars</code></td><td><strong>Main DX suggestions list</strong> &mdash; renders checkboxes for each ICD-10 code</td></tr>
+            <tr><td><code>dxViewRefinements.handlebars</code></td><td>Refinement options (laterality, episode, trimester)</td></tr>
+            <tr><td><code>dxSettingsView.handlebars</code></td><td>Settings panel &mdash; draggable, toggleable list of note types</td></tr>
+            <tr><td><code>preview.handlebars</code></td><td>Preview panel</td></tr>
+            <tr><td><code>AIDxSuggestions.handlebars</code></td><td>AI-based DX suggestions view (Plan + DX combined)</td></tr>
+            <tr><td><code>CharmAssistNewView.handlebars</code></td><td>Newer Charm Assist UI view</td></tr>
+            <tr><td><code>chartNoteGptSuggestion.handlebars</code></td><td>GPT-based suggestions (newer feature)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>dxView.handlebars &mdash; Key Template Logic</h3>
+      <ul>
+        <li>Iterates through <code>mappings</code> array</li>
+        <li>For <code>is_mapping: true</code> &rarr; Shows direct ICD-10 code with checkbox to add</li>
+        <li>For <code>is_mapping: false</code> (refinements) &rarr; Shows OTHERWISE TRUE code as default + "Refine" button</li>
+        <li>Shows <code>duplication_count</code> badge for frequently appearing codes</li>
+        <li>"Add Dx" link for manual DX code addition</li>
+      </ul>
+      <h3>dxSettingsView.handlebars &mdash; Settings Template</h3>
+      <ul>
+        <li>Draggable list of note types (AN, CC, HPI, PE, SN)</li>
+        <li>Toggle switch for each note type (enable/disable)</li>
+        <li>HPI is hidden for Brief encounter types</li>
+        <li>"Mark as default" checkbox</li>
+        <li>Apply / Cancel buttons</li>
+      </ul>
+      <h3>Template Rendering</h3>
+      <pre><code>Handlebars.templates["nlp/chart_suggestions/dxView"](response)</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-frontend" class="link-chip">JS Controller</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 12: DB Tables -->
+  <div class="section" id="dx-db-tables">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">12</div>
+      <div style="flex:1">
+        <div class="section-title">Database Tables</div>
+        <div class="section-subtitle">9 tables involved in DX suggestion storage and retrieval</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Table</th><th>Purpose</th><th>Key Columns</th></tr></thead>
+          <tbody>
+            <tr><td><code>PHYSICIANNOTES</code></td><td>Encounter notes</td><td>CONSULTATION_ID, CHIEFCOMPLAINTS, ASSESSMENTNOTES, PHYSICALEXAM, SUBJECTIVENOTES</td></tr>
+            <tr><td><code>PHYSICIANNOTESEXT</code></td><td>Extended notes</td><td>CONSULTATION_ID, HPI (History of Present Illness)</td></tr>
+            <tr><td><code>CONSULTATIONHISTORY</code></td><td>Encounter records</td><td>CONSULTATION_ID, PATIENT_ID, PRACTICE_ID</td></tr>
+            <tr><td><code>PRACTICEPATIENTSLIST</code></td><td>Patient demographics</td><td>PATIENT_ID, GENDER, DATEOFBIRTH</td></tr>
+            <tr><td><code>CONSULTATIONDIAGNOSISMAP</code></td><td>Encounter-to-DX mapping</td><td>CONSULTATION_ID, PATIENTDIAGNOSIS_ID</td></tr>
+            <tr><td><code>PATIENTDIAGNOSISMAP</code></td><td>Patient DX records</td><td>PATIENTDIAGNOSIS_ID, ICD_CODE, DIAGNOSIS_ID</td></tr>
+            <tr><td><code>ENCOUNTERVSCONCEPTIDS</code></td><td>Stored MetaMap results cache</td><td>ENCOUNTER_ID, NOTE_TYPE, CONCEPT_IDS, IMAGIC_DX</td></tr>
+            <tr><td><code>PRACTICEPROPS</code></td><td>Practice settings</td><td>PROPERTY_NAME, PROPERTY_VALUE (stores CHARTNOTE_ASSIST_DATA)</td></tr>
+            <tr><td><code>DIAGNOSISLIST</code></td><td>Master DX/ICD code list</td><td>DIAGNOSIS_ID, ICD_CODE, DESCRIPTION</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Query Flow</h3>
+      <ol>
+        <li><strong>Read notes:</strong> <code>PHYSICIANNOTES</code> JOIN <code>PHYSICIANNOTESEXT</code> WHERE CONSULTATION_ID = X</li>
+        <li><strong>Get patient context:</strong> <code>PRACTICEPATIENTSLIST</code> &rarr; gender, date_of_birth</li>
+        <li><strong>Store MetaMap output:</strong> INSERT/UPDATE <code>ENCOUNTERVSCONCEPTIDS</code> per note_type</li>
+        <li><strong>Get already-added DX:</strong> <code>CONSULTATIONDIAGNOSISMAP</code> JOIN <code>PATIENTDIAGNOSISMAP</code></li>
+        <li><strong>Get diagnosis details:</strong> <code>DIAGNOSISLIST</code> WHERE ICD_CODE IN (suggested codes)</li>
+        <li><strong>Get/save parsing order:</strong> <code>PRACTICEPROPS</code> WHERE PROPERTY_NAME = 'CHARTNOTE_ASSIST_DATA'</li>
+      </ol>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-config" class="link-chip">Configuration Properties</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 13: Configuration -->
+  <div class="section" id="dx-config">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">13</div>
+      <div style="flex:1">
+        <div class="section-title">Configuration Properties</div>
+        <div class="section-subtitle">MetaMap server URL resolution, kill switch, parsing order defaults</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Property</th><th>Storage</th><th>Purpose</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><code>CHARTNOTE_ASSIST_DATA</code></td><td>PRACTICEPROPS</td><td>JSON config: DX bot enablement + notes order</td><td><code>{"Dx":{"NOTES_ORDER":["AN","CC"],"IS_CHART_BOT_ENABLED":true}}</code></td></tr>
+            <tr><td><code>DISABLE_CHARTNOTE_ASSIST</code></td><td>CharmProperties</td><td>Global kill switch &mdash; disables feature entirely</td><td><code>false</code></td></tr>
+            <tr><td><code>METAMAP_SERVER_URL</code></td><td>CharmProperties</td><td>Base URL of the remote MetaMap server</td><td>See URL resolution below</td></tr>
+            <tr><td><code>NOTES_PARSING_ORDER</code></td><td>PRACTICEPROPS</td><td>Separate storage for parsing order</td><td>&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>MetaMap Server URL Resolution</h3>
+      <pre><code>Priority:
+1. DB property METAMAP_SERVER_URL (if set and domain is whitelisted)
+2. Hardcoded fallback URLs:
+   - Dev:  https://karan-11350.csez.zohocorpin.com:8443/api/ehr/v1/metamap/...
+   - Live: http://pre-assist.charmtracker.com/api/ehr/v1/metamap/...</code></pre>
+      <h3>Whitelisted MetaMap Server Domains</h3>
+      <pre><code>assist.charmtracker.com
+assist.localzoho.com
+aiml.localzoho.com
+karan-11350.csez.zohocorpin.com:8443
+dl.charmtracker.com</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-errors" class="link-chip">Error Handling</a>
+          <a href="#dx-security" class="link-chip">Security Config</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 14: Error Handling -->
+  <div class="section" id="dx-errors">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">14</div>
+      <div style="flex:1">
+        <div class="section-title">Error Handling</div>
+        <div class="section-subtitle">Error codes 90001&ndash;90006 from FinanceErrorConstants.java</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Code</th><th>Constant</th><th>Scenario</th><th>Handling</th></tr></thead>
+          <tbody>
+            <tr><td>90001</td><td><code>PHYSICIAN_NOTES_EMPTY</code></td><td>Notes are empty</td><td>Return error, skip MetaMap call</td></tr>
+            <tr><td>90002</td><td><code>PHYSICIAN_NOTES_GT_MAX</code></td><td>Notes &gt; 10,000 chars</td><td>Return error (also enforced by security XML max-len)</td></tr>
+            <tr><td>90003</td><td><code>METAMAP_NO_OUTPUT</code></td><td>MetaMap server unreachable</td><td>Return error, no suggestions shown</td></tr>
+            <tr><td>90006</td><td><code>NO_SUGGESTIONS_FOUND</code></td><td>MetaMap returns no CUIs</td><td>Return error, no suggestions to show</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Scenario</th><th>Handling</th></tr></thead>
+          <tbody>
+            <tr><td>SNOMED mapping yields no ICD-10</td><td>Return empty mappings array</td></tr>
+            <tr><td>Feature disabled globally</td><td><code>isChartNoteOrPlanEnabled()</code> returns false; frontend hides panel</td></tr>
+            <tr><td>Feature disabled for practice</td><td><code>IS_CHART_BOT_ENABLED = false</code> in CHARTNOTE_ASSIST_DATA</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note">
+        Error constants are defined in <code>FinanceErrorConstants.java</code>. The DX suggestion errors use the 90000&ndash;90006 range. These are returned as structured JSON error responses to the frontend.
+      </div>
+      <div class="section-footer">
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 15: Security -->
+  <div class="section" id="dx-security">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">15</div>
+      <div style="flex:1">
+        <div class="section-title">Security Configuration</div>
+        <div class="section-subtitle">security-api-ai.xml &mdash; authentication, XSS filtering, parameter validation</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">File: <code>webapps/api/WEB-INF/security-api-ai.xml</code> &mdash; All endpoints require <code>authentication="required"</code> and <code>oauthscope="patient.chartnote"</code></div>
+      <h3>Parameter Validation</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Parameter</th><th>Validation</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>encounter_type</code></td><td><code>regex="(Comprehensive|Brief|SOAP)"</code></td><td>Only 3 allowed values</td></tr>
+            <tr><td><code>notes</code></td><td><code>xss="charm_antisamyfilter"</code>, <code>max-len="10000"</code></td><td>XSS protection + 10K char limit</td></tr>
+            <tr><td><code>patient_id</code></td><td><code>type="long"</code></td><td>Numeric only</td></tr>
+            <tr><td><code>encounter_id</code></td><td><code>type="long"</code></td><td>Numeric only</td></tr>
+            <tr><td><code>gender</code></td><td><code>regex="genderValues"</code></td><td>Predefined gender values only</td></tr>
+            <tr><td><code>date_of_birth</code></td><td><code>regex="date_In_YYYY_MM_DD"</code></td><td>Date format validation</td></tr>
+            <tr><td><code>notes_order</code></td><td><code>regex="charmRegexString"</code>, <code>max-len="200"</code></td><td>General string regex</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>CSRF Configuration</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Endpoint</th><th>CSRF</th><th>Reason</th></tr></thead>
+          <tbody>
+            <tr><td>Most endpoints</td><td>Enabled (default)</td><td>Standard protection</td></tr>
+            <tr><td><code>updateParsingOrder</code></td><td><code>csrf="false"</code></td><td>Write operation via GET &mdash; CSRF disabled by design</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 16: Two-Server Architecture -->
+  <div class="section" id="dx-two-server">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">16</div>
+      <div style="flex:1">
+        <div class="section-title">Two-Server Architecture</div>
+        <div class="section-subtitle">EHR Server (primary) + MetaMap Server (assist.charmtracker.com) separation</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">MetaMap Lite is a resource-intensive NLP process. Running it on the EHR server would degrade patient-facing performance. The architecture isolates NLP processing to a dedicated server.</div>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart LR
+    subgraph EHR["EHR Server (Primary)"]
+        UI_SVC["Serves UI\nBusiness logic\nDB operations\nResult caching in\nENCOUNTERVSCONCEPTIDS"]
+    end
+    subgraph MM_SRV["MetaMap Server\nassist.charmtracker.com"]
+        MM_SVC["MetaMap Lite\nUMLS indexes\nOpenNLP models\nSNOMED mapping\nBinary datasets"]
+    end
+    EHR -->|"HTTP GET\nnotes + patient context\nIAM ticket auth"| MM_SRV
+    MM_SRV -.->|JSON response ICD-10 mappings| EHR
+        </div>
+      </div>
+      <h3>parse_notes vs check_notes</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Aspect</th><th>/metamap/parse_notes</th><th>/metamap/check_notes</th></tr></thead>
+          <tbody>
+            <tr><td>Called by</td><td><code>AIUtil.suggest()</code></td><td><code>AIUtil.available()</code></td></tr>
+            <tr><td>Processing</td><td>Full: MetaMap &rarr; SNOMED &rarr; all ICD-10 mappings</td><td>Partial: MetaMap &rarr; SNOMED &rarr; stops at first match</td></tr>
+            <tr><td>Returns</td><td>Full JSON: mappings, code_vs_id, metamap_output</td><td>Simple string: "True" or "False"</td></tr>
+            <tr><td>Performance</td><td>Heavy</td><td>Lightweight</td></tr>
+            <tr><td>When used</td><td>When showing actual DX suggestions</td><td>When checking if suggestions panel should appear</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note"><strong>Usage pattern:</strong> <code>check_notes</code> is called first. Only if it returns "True" does the system call <code>parse_notes</code> for full results &mdash; avoids expensive NLP when notes contain no mappable medical concepts.</div>
+      <h3>Communication Details</h3>
+      <ul>
+        <li>EHR Server &rarr; MetaMap Server: HTTP GET with notes + patient context</li>
+        <li>Authentication: IAM ticket passed as query parameter</li>
+        <li>URL whitelist prevents connecting to unauthorized MetaMap servers</li>
+        <li>Same codebase deployed on both servers &mdash; different endpoints are active per server</li>
+      </ul>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-memory-issues" class="link-chip">Memory Issues on MetaMap Server</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 17: Memory Issues -->
+  <div class="section" id="dx-memory-issues">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">17</div>
+      <div style="flex:1">
+        <div class="section-title">Known Memory Issues &mdash; MetaMap JVM Overload</div>
+        <div class="section-subtitle">MetaMapLite architectural constraints that cause high JVM heap consumption under load</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note"><strong>Context:</strong> MetaMapLite is an NLP library from the NIH National Library of Medicine. Its memory characteristics are inherent to its design and are not configurable. Understanding these constraints is important when planning server sizing and concurrency limits for the MetaMap server.</div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>#</th><th>Architectural Characteristic</th><th>Memory Impact</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Each <code>MetaMapImpl</code> instance loads the <strong>entire UMLS concept index</strong> into JVM heap on initialization</td><td>Hundreds of MBs per instance &mdash; the UMLS dictionary is large by design; MetaMapLite makes no attempt to lazy-load or page it</td></tr>
+            <tr><td>2</td><td><code>processDocumentList()</code> is <strong>not thread-safe</strong></td><td>Concurrent NLP calls cannot share a single instance; each concurrent thread requires its own isolated instance, multiplying the base heap cost</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warn"><strong>Scaling Implication:</strong> Because each <code>MetaMapImpl</code> instance independently loads the full UMLS index and <code>processDocumentList()</code> is not thread-safe, the memory footprint scales linearly with the number of concurrent NLP requests. Under high physician load this can cause sustained GC pressure, heap exhaustion, and MetaMap server OutOfMemoryErrors. The MetaMap server is therefore kept on a separate JVM (see Two-Server Architecture) to isolate these constraints from the main Charm EHR server.</div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#dx-two-server" class="link-chip">Two-Server Architecture</a>
+          <a href="#metamap-nlp" class="link-chip">MetaMap NLP</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DX Section 18: Admin Console -->
+  <div class="section" id="dx-admin-console">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num">18</div>
+      <div style="flex:1">
+        <div class="section-title">Admin Console &mdash; Chart Parser Admin</div>
+        <div class="section-subtitle">Internal tool to manage MetaMap NLP, practice access, server config, and parsed encounter data</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">
+        <strong>Access URL:</strong> <code>https://&lt;server&gt;:8443/action/adminAction.do?ACTION=chart_parser_admin&amp;request_action=admin_home</code><br>
+        JSP: <code>webapps/ehr/common/nlp/EncounterParserAdminConsole.jsp</code>
+      </div>
+
+      <h3>Parse Notes View <span style="font-size:12px;font-weight:400;color:var(--text-muted)">(Default Tab)</span></h3>
+      <p>The main view for inspecting how encounters have been processed by MetaMap for a given practice.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Action</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Fetch Details</strong></td><td>Lists all encounters that have been parsed for the practice. Inputs: Practice ID, Start Range, Count of Records (max 99). Note types to include: Chief Complaints (always on), Assessment Notes, History of Present Illness, Physical Examination.</td></tr>
+            <tr><td><strong>View Encounter Details</strong></td><td>Click any encounter to drill in and see the raw MetaMap output — all extracted CUI concept IDs stored in <code>ENCOUNTERVSCONCEPTIDS</code>. Includes a copy-to-clipboard button for the JSON.</td></tr>
+            <tr><td><strong>Parse New Encounters</strong></td><td>Trigger NLP parsing for N additional encounters for the practice. Select which note types to include and drag-drop to set the parsing priority order.</td></tr>
+            <tr><td><strong>Recalculate Statistics</strong></td><td>Recomputes aggregate statistics for the practice's parsed encounters using the current note priority order.</td></tr>
+            <tr><td><strong>Delete Parsed Encounters</strong></td><td>Wipes all parsed encounter data (<code>ENCOUNTERVSCONCEPTIDS</code>) for the practice. Use before a full re-parse.</td></tr>
+            <tr><td><strong>Export as CSV</strong></td><td>Downloads all parsed encounter data for the practice as a CSV file for offline analysis.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Add Practice IDs to AI</h3>
+      <p>Controls which practices have DX Suggestion enabled at the admin level.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Action</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Add</strong></td><td>Enter a Practice ID and click Add to allowlist the practice for DX Suggestion (enables MetaMap NLP processing for their encounters).</td></tr>
+            <tr><td><strong>Remove</strong></td><td>Remove a Practice ID from the admin allowlist to disable DX Suggestion for that practice.</td></tr>
+            <tr><td><strong>View Practices</strong></td><td>Displays all practices currently enabled for DX Suggestion AI.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Modify Server URL</h3>
+      <p>Updates the MetaMap server endpoint that Charm EHR connects to for NLP processing. Useful when the MetaMap instance is moved to a different server.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Action</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Update</strong></td><td>Set a new MetaMap server URL. Format: <code>https://&lt;server&gt;:8443/api/ehr/v1/metamap/</code>. Takes effect immediately (stored in CharmProperties).</td></tr>
+            <tr><td><strong>View Current URL</strong></td><td>Displays the currently configured MetaMap server URL to verify the active endpoint.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Refresh MetaMap Instance</h3>
+      <p>One-click button available in the top nav bar at all times. Calls the backend to reset the <code>MetaMapImpl</code> singleton — discards any in-memory UMLS index and forces re-initialization on the next NLP request. Use this when MetaMap is behaving unexpectedly or after a server-side memory incident.</p>
+
+      <a href="#top" class="back-top">&#8593; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Feature Divider: Plan -->
+  <div class="feature-divider">
+    <div class="feature-divider-line"></div>
+    <div class="feature-divider-label plan">PLAN SUGGESTION &mdash; KNN Machine Learning Pipeline</div>
+    <div class="feature-divider-line"></div>
+  </div>
+
+  <!-- Plan Section 1: Feature Overview -->
+  <div class="section" id="plan-overview">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">1</div>
+      <div style="flex:1">
+        <div class="section-title">Feature Overview &mdash; Plan Suggestion</div>
+        <div class="section-subtitle">KNN + Jaccard Distance ML recommends Rx, Labs, Images, and Notes from similar encounters</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">Plan Suggestion uses K-Nearest Neighbors ML to recommend treatment plans based on a patient's current DX codes. It finds the most similar historical consultations in the practice and suggests what was prescribed/ordered for those encounters.</div>
+      <h3>What it recommends</h3>
+      <ul>
+        <li><strong>Prescriptions (Rx)</strong> &mdash; with drug allergy safety checks via LEXI API</li>
+        <li><strong>Lab Orders</strong> &mdash; with specific test names</li>
+        <li><strong>Image Orders</strong> &mdash; X-ray, MRI, CT, etc.</li>
+        <li><strong>Treatment Notes</strong> &mdash; physician notes from similar encounters</li>
+        <li><strong>Patient Notes / Instructions</strong> &mdash; patient-facing instructions</li>
+        <li><strong>Diet Notes</strong> &mdash; dietary recommendations</li>
+        <li><strong>Lifestyle Notes</strong> &mdash; lifestyle modification suggestions</li>
+      </ul>
+      <h3>3-Phase ML Pipeline</h3>
+      <div class="pipeline-steps">
+        <div class="pipeline-step"><div class="step-dot">1</div><div class="step-content"><strong>Data Migration</strong> &mdash; Flatten historical consultations into <code>AIDXDERIVATIVES</code> table. Assign numeric indices to DX codes in <code>DXCONDITIONINDEXER</code>.</div></div>
+        <div class="pipeline-step"><div class="step-dot">2</div><div class="step-content"><strong>Model Training</strong> &mdash; Generate SVM sparse vectors from migrated data. Upload to ZLabs KNN API with <code>distanceMetric=JACCARD_DISTANCE</code>. Store model ID in <code>AITRAINEDMODELDETAILS</code>.</div></div>
+        <div class="pipeline-step"><div class="step-dot">3</div><div class="step-content"><strong>Prediction</strong> &mdash; Build query vector from current encounter's DX codes. Query ZLabs KNN model (top 30 neighbors). Filter by 80% match threshold. Assemble plan data with drug allergy checks.</div></div>
+      </div>
+      <h3>Detailed API Sequence</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant Doc as Doctor
+    participant UI as CharmEHR UI
+    participant EHR as AiAPI + AIUtil
+    participant ZL as ZLabs KNN API
+    participant LEXI as LEXI Drug API
+    participant DB as Database
+
+    Doc->>UI: Opens encounter with DX codes
+
+    par Check Recommendations
+        UI->>EHR: GET /recommendations_available
+        EHR->>DB: Fetch DX codes from ConsultationDiagnosisMap
+        DB-->>EHR: [J06.9, R05, J02.9]
+        EHR->>EHR: fetchMLQueryFromDxs() to binary vector
+        Note right of EHR: "0,1,0,0,1,0,0,1"
+        EHR->>ZL: GET KNN query
+        Note right of EHR: queryValue, modelId, nearestNeighbors=30
+        ZL-->>EHR: 30 nearest consultations + distances
+        EHR->>EHR: Filter by 80% match threshold
+        EHR->>DB: Fetch AIDXDERIVATIVES for matching indices
+        DB-->>EHR: Treatment plans (Rx, labs, images, notes)
+        EHR->>LEXI: Check drug allergies for each Rx
+        LEXI-->>EHR: Severity (Severe/Moderate/Mild)
+        EHR->>EHR: Rank by frequency + date boost
+        EHR-->>UI: Plan suggestions JSON
+    end
+
+    UI->>UI: Render AIDxSuggestions.handlebars
+    UI-->>Doc: Show Rx, Labs, Images, Notes
+        </div>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-knn" class="link-chip">KNN Algorithm</a>
+          <a href="#plan-phases" class="link-chip">Complete Workflow</a>
+          <a href="#plan-drug-allergy" class="link-chip">Drug Allergy Safety</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 2: Architecture -->
+  <div class="section" id="plan-architecture">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">2</div>
+      <div style="flex:1">
+        <div class="section-title">Architecture Overview</div>
+        <div class="section-subtitle">Single EHR server integrating with ZLabs ML API and LEXI Drug API</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    subgraph EHR_SRV["Charm EHR Server"]
+        FE["Frontend\nchartnotesuggestion.js\nAIDxSuggestions.handlebars"]
+        REST["AiAPI.java\nREST Handler"]
+        ORCH["AIUtil.java\nOrchestrator"]
+        ADMIN["AdminConsoleUtil.java\nMigration + Training"]
+        DB[(MySQL DB\nAIDXDERIVATIVES\nDXCONDITIONINDEXER\nAITRAINEDMODELDETAILS)]
+    end
+    ZL["ZLabs ML API\nml.charmtracker.com\nKNN Model Hosting"]
+    LEXI["LEXI Drug API\nDrug Interaction Checking"]
+
+    FE -->|REST calls| REST
+    REST --> ORCH
+    ORCH --> ADMIN
+    ORCH <--> DB
+    ADMIN <-->|Train/Query/Delete| ZL
+    ORCH <-->|Allergy checks| LEXI
+    REST -.->|Response| FE
+        </div>
+      </div>
+      <h3>Component Responsibilities</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Component</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><code>AiAPI.java</code></td><td>REST endpoint handler &mdash; routes requests to AIUtil</td></tr>
+            <tr><td><code>AIUtil.java</code></td><td>Central orchestrator &mdash; migration, training, prediction, plan assembly</td></tr>
+            <tr><td><code>AdminConsoleUtil.java</code></td><td>Data migration, SVM file generation, ZLabs API interaction</td></tr>
+            <tr><td><code>ZLabs ML API</code></td><td>External ML service hosting KNN models with Jaccard Distance</td></tr>
+            <tr><td><code>LEXI Drug API</code></td><td>Drug interaction checking service for allergy safety</td></tr>
+            <tr><td><code>chartnotesuggestion.js</code></td><td>Frontend controller &mdash; API calls, plan rendering, mode switching</td></tr>
+            <tr><td><code>AIDxSuggestions.handlebars</code></td><td>459-line template rendering Rx, Labs, Images, Notes categories</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note">Unlike the DX Suggestion feature (which uses a separate MetaMap server), Plan Suggestion runs entirely on the EHR server &mdash; only the ZLabs KNN API and LEXI Drug API are external calls.</div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase1" class="link-chip">Phase 1: Migration</a>
+          <a href="#plan-phase2" class="link-chip">Phase 2: Training</a>
+          <a href="#plan-phase3" class="link-chip">Phase 3: Prediction</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 3: KNN Algorithm -->
+  <div class="section" id="plan-knn">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">3</div>
+      <div style="flex:1">
+        <div class="section-title">Key Concepts &mdash; KNN with Jaccard Distance</div>
+        <div class="section-subtitle">Jaccard Distance = 1 &minus; (|A &cap; B| / |A &cup; B|). Match% = (1 &minus; distance) &times; 100</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart LR
+    subgraph Query["Current Encounter"]
+        QDX["DX Codes\nJ06.9, R05, J02.9"]
+        QVEC["Binary Vector\n0,1,0,0,1,0,0,1,0..."]
+    end
+    subgraph Model["KNN Model (ZLabs)"]
+        TRAIN["Training Data\nHistorical Consultations\nas SVM sparse vectors"]
+    end
+    subgraph Results["Nearest Neighbors"]
+        NN1["Consult #42 - distance 0.1\nMatch: 90%"]
+        NN2["Consult #108 - distance 0.33\nMatch: 67%"]
+        NN3["Consult #217 - distance 0.5\nMatch: 50%"]
+    end
+    QDX --> QVEC
+    QVEC -->|"Jaccard Distance\nto each training point"| Model
+    Model -->|"30 nearest\nneighbors"| Results
+        </div>
+      </div>
+      <h3>Jaccard Distance Example</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Query DX codes</td><td>{J06.9, R05, J02.9}</td></tr>
+            <tr><td>Historical consultation DX codes</td><td>{J06.9, R05, R50.9}</td></tr>
+            <tr><td>Intersection |A &cap; B|</td><td>{J06.9, R05} &rarr; size = 2</td></tr>
+            <tr><td>Union |A &cup; B|</td><td>{J06.9, R05, J02.9, R50.9} &rarr; size = 4</td></tr>
+            <tr><td>Jaccard Distance</td><td>1 &minus; (2/4) = <strong>0.5</strong></td></tr>
+            <tr><td>Match Percentage</td><td>(1 &minus; 0.5) &times; 100 = <strong>50%</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Why KNN with Jaccard Distance?</h3>
+      <ul>
+        <li><strong>Sparse binary data:</strong> DX codes are naturally represented as binary presence/absence vectors</li>
+        <li><strong>Set similarity:</strong> Jaccard measures set overlap &mdash; exactly what's needed for "how similar are two DX profiles?"</li>
+        <li><strong>Interpretable:</strong> The distance directly translates to a match percentage doctors can understand</li>
+        <li><strong>No training bias:</strong> KNN is instance-based, adapts immediately when new data is migrated</li>
+        <li><strong>Simple to retrain:</strong> Just re-upload the dataset; no complex model tuning needed</li>
+      </ul>
+      <h3>Sparse Vector Format (SVM Format)</h3>
+      <pre><code>// Training data format - one line per consultation
+// consultation_index feature_index_1:1 feature_index_2:1 ...
+42 3:1 7:1 15:1
+108 1:1 3:1 9:1 22:1
+
+// Query vector format - dense binary string
+// One position per indexed DX code (1 = present, 0 = absent)
+0,1,0,0,1,0,0,0,1,1</code></pre>
+      <h3>Default Thresholds</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Config Property</th><th>Default</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>DX_MATCH_PERCENTAGE</code></td><td>80%</td><td>Minimum match % to include a consultation's plans in recommendations</td></tr>
+            <tr><td><code>CHART_ASSIST_NEARESTNEIGHBORS_COUNT</code></td><td>30</td><td>Number of nearest neighbors to retrieve from ZLabs KNN</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase3" class="link-chip">Prediction Phase</a>
+          <a href="#plan-config" class="link-chip">Configuration</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 4: DB Tables -->
+  <div class="section" id="plan-db-tables">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">4</div>
+      <div style="flex:1">
+        <div class="section-title">Database Tables</div>
+        <div class="section-subtitle">3 core tables + 10+ source tables read during migration</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Core Tables</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Table</th><th>Purpose</th><th>Key Columns</th></tr></thead>
+          <tbody>
+            <tr><td><code>DXCONDITIONINDEXER</code></td><td>Maps DX/condition codes to sequential numeric indices</td><td>CODE, INDEX, IS_DX, DESC</td></tr>
+            <tr><td><code>AIDXDERIVATIVES</code></td><td>Flattened consultation data for plan extraction (denormalized)</td><td>INDEX, CONSULTATION_ID, TREATMENT_NOTES, PATIENT_NOTES, DIET_NOTES, LIFE_STYLE, RX_DATA, LAB_DATA, IMAGE_DATA, HANDOUTS</td></tr>
+            <tr><td><code>AITRAINEDMODELDETAILS</code></td><td>Trained KNN model metadata</td><td>MODEL_ID, TRAINING_FILE, LAST_TRAINED_TIME, TRAINED_DERIVATIVE</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note"><strong>Why denormalized?</strong> During prediction, plans are assembled from many consultations simultaneously. Joining 10+ tables per suggestion request would be too slow. AIDXDERIVATIVES is a read-optimized cache rebuilt fresh each migration (DELETE ALL then re-migrate).</div>
+      <h3>Source Tables Read During Migration</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Table</th><th>Data Extracted</th></tr></thead>
+          <tbody>
+            <tr><td><code>ConsultationHistory</code></td><td>Consultation IDs, dates, encounter types</td></tr>
+            <tr><td><code>AppointmentHistory</code></td><td>Appointment details, practice-patient linking</td></tr>
+            <tr><td><code>PracticePatientsList</code></td><td>Patient demographics</td></tr>
+            <tr><td><code>PhysicianNotes</code></td><td>Treatment notes, patient notes, diet, lifestyle</td></tr>
+            <tr><td><code>ConsultationDiagnosisMap &rarr; PatientDiagnosisMap</code></td><td>ICD codes per consultation</td></tr>
+            <tr><td><code>ConsultationCptMap &rarr; CptConsultationDiagnosisMap</code></td><td>CPT-to-DX mapping</td></tr>
+            <tr><td><code>ConsultationMedicationMap &rarr; PatientMedications &rarr; DrugDetails</code></td><td>Rx with drug details and sigs</td></tr>
+            <tr><td><code>LabOrders &rarr; LabOrdersTestMap</code></td><td>Lab orders and specific tests</td></tr>
+            <tr><td><code>ImageOrders &rarr; ImageOrdersTestMap &rarr; ImageTests &rarr; ImageTypes</code></td><td>Image orders with types</td></tr>
+            <tr><td><code>AppointmentDocumentMap</code></td><td>Handout documents</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase1" class="link-chip">Migration Phase</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 5: Configuration -->
+  <div class="section" id="plan-config">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">5</div>
+      <div style="flex:1">
+        <div class="section-title">Practice Configuration</div>
+        <div class="section-subtitle">CHARTNOTE_ASSIST_DATA.PLAN &mdash; master toggle, allergy setting, match threshold</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <pre><code>{
+  "PLAN": {
+    "IS_PLAN_BOT_ENABLED": true,
+    "IS_ALLERGY_PRESC_ALLOWED": false,
+    "DX_MATCH_PERCENTAGE": 80
+  }
+}</code></pre>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>IS_PLAN_BOT_ENABLED</code></td><td><code>true</code></td><td>Master toggle for plan suggestions</td></tr>
+            <tr><td><code>IS_ALLERGY_PRESC_ALLOWED</code></td><td><code>false</code></td><td>Whether to show Rx with known drug allergies</td></tr>
+            <tr><td><code>DX_MATCH_PERCENTAGE</code></td><td><code>80</code></td><td>Minimum Jaccard match % threshold to include a consultation's plans</td></tr>
+            <tr><td><code>CHART_ASSIST_NEARESTNEIGHBORS_COUNT</code></td><td><code>30</code></td><td>Number of nearest neighbors from KNN (separate property)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warn">When <code>IS_ALLERGY_PRESC_ALLOWED = false</code> and a patient has a drug allergy interaction, the Rx is still shown in the UI but flagged with a severity badge (red/orange/green). The doctor can still review it but is warned.</div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-drug-allergy" class="link-chip">Drug Allergy Safety</a>
+          <a href="#plan-knn" class="link-chip">KNN Thresholds</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 6: Complete Workflow -->
+  <div class="section" id="plan-phases">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">6</div>
+      <div style="flex:1">
+        <div class="section-title">Complete Workflow Diagram</div>
+        <div class="section-subtitle">All three phases: Migration &rarr; Training &rarr; Prediction</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    subgraph P1["Phase 1 - Data Migration (offline)"]
+        M1["dumpUniqueDxsAndIndexes()\nAssign numeric index to each ICD code\nto DXCONDITIONINDEXER"]
+        M2["dumpDxDerivatives()\nFlatten consultations: notes, Rx, labs, images\nBatch 1000, sleep 1s between batches\nto AIDXDERIVATIVES"]
+        M3["Return SVM training string\n42 3:1 7:1 15:1"]
+        M1 --> M2 --> M3
+    end
+
+    subgraph P2["Phase 2 - Model Training (offline)"]
+        T1["generateTrainingFile()\nSVM sparse vectors from DXCONDITIONINDEXER\n+ AIDXDERIVATIVES"]
+        T2["Upload to DFS\nDistributed File Storage"]
+        T3["deleteModelFromZlabs()\nRemove old model"]
+        T4["POST to ZLabs\nml.charmtracker.com\ndistanceMetric=JACCARD_DISTANCE"]
+        T5["storeTrainedModelDetails()\nto AITRAINEDMODELDETAILS\nMODEL_ID, TRAINING_FILE, timestamp"]
+        T1 --> T2 --> T3 --> T4 --> T5
+    end
+
+    subgraph P3["Phase 3 - Prediction (real-time per encounter)"]
+        R1["GET /recommendations_available\nFetch DX codes from encounter"]
+        R2["fetchMLQueryFromDxs()\nBuild binary vector from DX indices"]
+        R3["GET ZLabs KNN query\nnearestNeighbors=30"]
+        R4["getOptimalConsultationIndicesFromResponse()\nFilter by 80% match threshold"]
+        R5["fetchDxDerivativesFromConsDB()\nFetch plans from AIDXDERIVATIVES"]
+        R6["getLEXIDrugAllergyInteractions()\nCheck drug allergies"]
+        R7["optimisePlanRecommnendation()\nRank by frequency + date boost"]
+        R8["planResponse()\nAssemble final sorted plan"]
+        R1 --> R2 --> R3 --> R4 --> R5 --> R6 --> R7 --> R8
+    end
+
+    P1 --> P2 --> P3
+        </div>
+      </div>
+      <div class="phase-banner phase1"><div class="phase-icon">1</div>Phase 1: Data Migration &mdash; AIUtil.migrateAndTrain() &rarr; AdminConsoleUtil.dumpUniqueDxsAndIndexes() + dumpDxDerivatives()</div>
+      <div class="phase-banner phase2"><div class="phase-icon">2</div>Phase 2: Model Training &mdash; AdminConsoleUtil.trainDxDerivatives() &rarr; generateTrainingFile() &rarr; ZLabs POST &rarr; storeTrainedModelDetails()</div>
+      <div class="phase-banner phase3"><div class="phase-icon">3</div>Phase 3: Prediction &mdash; AiAPI.fetchRecommendationsAvailable() &rarr; AIUtil.fetchDxRecommendationsFromDxs() &rarr; ZLabs GET &rarr; fetchDxDerivativesFromConsDB()</div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase1" class="link-chip">Phase 1 Details</a>
+          <a href="#plan-phase2" class="link-chip">Phase 2 Details</a>
+          <a href="#plan-phase3" class="link-chip">Phase 3 Details</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 7: Phase 1 Migration -->
+  <div class="section" id="plan-phase1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">7</div>
+      <div style="flex:1">
+        <div class="section-title">Phase 1 &mdash; Data Migration Pipeline</div>
+        <div class="section-subtitle">dumpUniqueDxsAndIndexes() + dumpDxDerivatives() &mdash; batch 1000, up to 1500 consultations</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="phase-banner phase1"><div class="phase-icon">1</div>Entry: <code>AIUtil.migrateAndTrain(practiceId)</code> &mdash; default batch size 1000, max 1500 consultations</div>
+      <h3>Step 1: Index DX Codes &mdash; dumpUniqueDxsAndIndexes()</h3>
+      <p>File: <code>AdminConsoleUtil.java:2489</code></p>
+      <ol>
+        <li>Read existing DX codes from <code>DXCONDITIONINDEXER</code> table</li>
+        <li>Query <code>PatientDiagnosisMap</code> for all distinct ICD codes NOT already indexed</li>
+        <li>Assign sequential indices via <code>Counter.nextValue("{practiceId}.DXConditionIndexer.INDEX")</code></li>
+        <li>Persist new rows: INDEX, CODE, DESC, IS_DX=true</li>
+      </ol>
+      <h3>Step 2: Migrate Consultation Data &mdash; dumpDxDerivatives()</h3>
+      <p>File: <code>AdminConsoleUtil.java:2698</code></p>
+      <ol>
+        <li><strong>Clean slate:</strong> DELETE ALL existing AIDXDERIVATIVES rows for the practice</li>
+        <li><strong>Paginated loop</strong> (batches of 1000):
+          <ul>
+            <li>Complex JOIN: ConsultationHistory + AppointmentHistory + PracticePatientsList + PhysicianNotes + ConsultationDiagnosisMap + PatientDiagnosisMap + ConsultationCptMap + CptConsultationDiagnosisMap</li>
+            <li>For each consultation: assign sequential index, create AIDXDERIVATIVES row, extract physician notes, build SVM training vector</li>
+            <li>Fetch lab orders, image orders, handouts, Rx in bulk for the batch</li>
+            <li>Remove empty consultation rows (no derivative data)</li>
+            <li>Persist batch</li>
+          </ul>
+        </li>
+        <li><strong>Sleep 1 second</strong> between batches (MySQL connection management)</li>
+      </ol>
+      <h3>Data Extraction Per Consultation</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Category</th><th>Source Table(s)</th><th>Query Method</th></tr></thead>
+          <tbody>
+            <tr><td>Treatment Notes</td><td>PhysicianNotes (or SOAPUtil)</td><td>Direct column read</td></tr>
+            <tr><td>Patient Notes</td><td>PhysicianNotes</td><td>Direct column read</td></tr>
+            <tr><td>Diet Notes</td><td>PhysicianNotes</td><td>Direct column read</td></tr>
+            <tr><td>Lifestyle Notes</td><td>PhysicianNotes</td><td>Direct column read</td></tr>
+            <tr><td>Lab Orders</td><td>LabOrders + LabOrdersTestMap</td><td>FetchConsultationLabOrders XML query</td></tr>
+            <tr><td>Image Orders</td><td>ImageOrders + ImageOrdersTestMap + ImageTests + ImageTypes</td><td>FetchConsultationImageOrders XML query</td></tr>
+            <tr><td>Handouts</td><td>AppointmentDocumentMap</td><td>FetchConsultationHandouts XML query</td></tr>
+            <tr><td>Prescriptions</td><td>ConsultationMedicationMap + PatientMedications + DrugDetails</td><td>FetchConsultationRx XML query</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase2" class="link-chip">Phase 2: Training</a>
+          <a href="#plan-db-tables" class="link-chip">Database Tables</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 8: Phase 2 Training -->
+  <div class="section" id="plan-phase2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">8</div>
+      <div style="flex:1">
+        <div class="section-title">Phase 2 &mdash; Model Training Pipeline</div>
+        <div class="section-subtitle">generateTrainingFile() &rarr; DFS &rarr; ZLabs POST &rarr; storeTrainedModelDetails()</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="phase-banner phase2"><div class="phase-icon">2</div>Entry: <code>AdminConsoleUtil.trainDxDerivatives(practiceId, numOfObjects, pcaCount, isConditionTrain)</code></div>
+      <div class="pipeline-steps">
+        <div class="pipeline-step"><div class="step-dot">1</div><div class="step-content"><strong>Generate Training File</strong> &mdash; <code>generateTrainingFile()</code> at line 3638. Reads DXCONDITIONINDEXER + AIDXDERIVATIVES. Outputs SVM sparse vectors: <code>42 3:1 7:1 15:1</code></div></div>
+        <div class="pipeline-step"><div class="step-dot">2</div><div class="step-content"><strong>Upload to DFS</strong> &mdash; Save SVM training file to Distributed File System (practice-specific path)</div></div>
+        <div class="pipeline-step"><div class="step-dot">3</div><div class="step-content"><strong>Delete Old Model</strong> &mdash; <code>deleteModelFromZlabs()</code> removes the previously trained model from ZLabs</div></div>
+        <div class="pipeline-step"><div class="step-dot">4</div><div class="step-content"><strong>Train via ZLabs</strong> &mdash; HTTP POST to <code>ml.charmtracker.com/api/v2/algorithm/nearestneighbors/models?method=train</code> with <code>distanceMetric=JACCARD_DISTANCE</code>. Returns new <code>model_id</code>.</div></div>
+        <div class="pipeline-step"><div class="step-dot">5</div><div class="step-content"><strong>Store Model Details</strong> &mdash; Persist MODEL_ID, TRAINING_FILE path, LAST_TRAINED_TIME, TRAINED_DERIVATIVE to <code>AITRAINEDMODELDETAILS</code></div></div>
+      </div>
+      <h3>ZLabs ML API &mdash; Training Call</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>URL</td><td><code>ml.charmtracker.com/api/v2/algorithm/nearestneighbors/models?method=train</code></td></tr>
+            <tr><td>Method</td><td>HTTP POST (multipart)</td></tr>
+            <tr><td>Params</td><td><code>distanceMetric=JACCARD_DISTANCE</code>, <code>iscsignature={accessCode}</code></td></tr>
+            <tr><td>Body</td><td>SVM training file content</td></tr>
+            <tr><td>Response</td><td>JSON with <code>model_id</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>SVM Training File Format</h3>
+      <pre><code>// One line per consultation
+// consultation_index dx_index_1:1 dx_index_2:1 ...
+42 3:1 7:1 15:1
+108 1:1 3:1 9:1 22:1
+217 5:1 8:1 11:1 19:1 28:1</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase1" class="link-chip">Phase 1: Migration</a>
+          <a href="#plan-phase3" class="link-chip">Phase 3: Prediction</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 9: Phase 3 Prediction -->
+  <div class="section" id="plan-phase3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">9</div>
+      <div style="flex:1">
+        <div class="section-title">Phase 3 &mdash; Prediction Pipeline</div>
+        <div class="section-subtitle">fetchMLQueryFromDxs() &rarr; ZLabs KNN GET &rarr; Filter &rarr; AIDXDERIVATIVES &rarr; LEXI allergy check &rarr; rank</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="phase-banner phase3"><div class="phase-icon">3</div>Entry: <code>AiAPI.fetchRecommendationsAvailable()</code> &rarr; <code>AIUtil.fetchDxRecommendationsFromDxs()</code> &mdash; real-time per encounter</div>
+      <div class="api-tags">
+        <span class="api-tag get">GET /encounters/{id}/recommendations/available</span>
+        <span class="api-tag get">GET /encounters/{id}/recommendations/plans</span>
+        <span class="api-tag get">GET ml.charmtracker.com/api/v2/algorithm/nearestneighbors/models/{id}/query</span>
+      </div>
+      <h3>Prediction Steps</h3>
+      <div class="pipeline-steps">
+        <div class="pipeline-step"><div class="step-dot">1</div><div class="step-content"><strong>Fetch DX Codes</strong> &mdash; Read current encounter's ICD-10 codes from <code>ConsultationDiagnosisMap</code></div></div>
+        <div class="pipeline-step"><div class="step-dot">2</div><div class="step-content"><strong>Build Query Vector</strong> &mdash; <code>fetchMLQueryFromDxs()</code> maps each ICD code to its numeric index in <code>DXCONDITIONINDEXER</code>. Produces binary sparse SVM string: <code>"0,1,0,0,1,0,0,1"</code></div></div>
+        <div class="pipeline-step"><div class="step-dot">3</div><div class="step-content"><strong>KNN Query</strong> &mdash; GET to ZLabs: <code>ml.charmtracker.com/api/v2/algorithm/nearestneighbors/models/{modelId}/query?queryValue={vector}&amp;nearestNeighbors=30&amp;iscsignature={key}</code>. Returns 30 nearest consultations with Jaccard distances.</div></div>
+        <div class="pipeline-step"><div class="step-dot">4</div><div class="step-content"><strong>Filter by Threshold</strong> &mdash; <code>getOptimalConsultationIndicesFromResponse()</code> keeps only consultations where Jaccard similarity &ge; <code>DX_MATCH_PERCENTAGE</code> (default 80%)</div></div>
+        <div class="pipeline-step"><div class="step-dot">5</div><div class="step-content"><strong>Fetch Plans</strong> &mdash; <code>fetchDxDerivativesFromConsDB()</code> reads <code>AIDXDERIVATIVES</code> for all matched consultation indices. Returns notes, Rx, labs, images.</div></div>
+        <div class="pipeline-step"><div class="step-dot">6</div><div class="step-content"><strong>Drug Allergy Check</strong> &mdash; <code>getLEXIDrugAllergyInteractions()</code> calls LEXI API for each Rx. Tags severity: Severe / Moderate / Mild / None.</div></div>
+        <div class="pipeline-step"><div class="step-dot">7</div><div class="step-content"><strong>Rank &amp; Assemble</strong> &mdash; <code>optimisePlanRecommnendation()</code> sorts by frequency of appearance + date boost. <code>planResponse()</code> assembles final sorted plan object.</div></div>
+      </div>
+      <h3>ZLabs KNN API &mdash; Query Call</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>URL</td><td><code>ml.charmtracker.com/api/v2/algorithm/nearestneighbors/models/{modelId}/query</code></td></tr>
+            <tr><td>Method</td><td>HTTP GET</td></tr>
+            <tr><td>Params</td><td><code>queryValue={binaryVector}</code>, <code>nearestNeighbors=30</code>, <code>iscsignature={accessCode}</code></td></tr>
+            <tr><td>Response</td><td>JSON array of <code>{index, distance}</code> objects</td></tr>
+            <tr><td>Distance Metric</td><td>Jaccard Distance (1 &minus; Jaccard Similarity)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Prediction Sequence Diagram</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant UI as CharmEHR UI
+    participant API as AiAPI.java
+    participant Util as AIUtil.java
+    participant ZL as ZLabs KNN
+    participant LEXI as LEXI Drug API
+    participant DB as Database
+
+    UI->>API: GET /encounters/{id}/recommendations/plans
+    API->>Util: fetchDxRecommendationsFromDxs(encounterId)
+    Util->>DB: Fetch ICD codes from ConsultationDiagnosisMap
+    DB-->>Util: [J06.9, R05, J02.9]
+    Util->>Util: fetchMLQueryFromDxs()
+    Note right of Util: DX codes to binary SVM vector "0,1,0,0,1,0,0,1"
+    Util->>ZL: GET /models/{modelId}/query
+    Note right of Util: queryValue, nearestNeighbors=30
+    ZL-->>Util: [{index:42, dist:0.1}, {index:108, dist:0.15}, ...]
+    Util->>Util: getOptimalConsultationIndicesFromResponse()
+    Note right of Util: Filter: keep distance <= (1 - 0.80) = 0.20
+    Util->>DB: fetchDxDerivativesFromConsDB(indices)
+    DB-->>Util: Plans from AIDXDERIVATIVES
+    Util->>LEXI: getLEXIDrugAllergyInteractions()
+    LEXI-->>Util: Allergy severity per Rx
+    Util->>Util: optimisePlanRecommnendation()
+    Note right of Util: Sort by frequency + date boost
+    Util-->>API: planResponse()
+    API-->>UI: {rx_data, lab_data, image_data, notes}
+        </div>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase2" class="link-chip">Phase 2: Training</a>
+          <a href="#plan-drug-allergy" class="link-chip">Drug Allergy Safety</a>
+          <a href="#plan-optimization" class="link-chip">Optimization / Ranking</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 10: Optimization -->
+  <div class="section" id="plan-optimization">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">10</div>
+      <div style="flex:1">
+        <div class="section-title">Optimization &amp; Ranking Algorithm</div>
+        <div class="section-subtitle">optimisePlanRecommnendation() &mdash; frequency count + date boost + deduplication</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">All plan items (Rx, labs, images, notes) pass through the same ranking pipeline. Items appearing more frequently across matched consultations rank higher. More recent consultations receive a date boost.</div>
+      <h3>Ranking Logic</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    INPUT["Plan items from AIDXDERIVATIVES\n(Rx, Labs, Images, Notes)"]
+    COUNT["Count frequency of each item\nacross all matched consultations"]
+    DATE["Apply date boost\nMore recent consultation = higher weight"]
+    SORT["Sort descending by\n(frequency * date_weight)"]
+    DEDUP["Deduplicate items\nKeep highest-ranked copy per item"]
+    ALLERGY["Drug allergy flag injection\nSevere / Moderate / Mild / None"]
+    OUTPUT["Final ranked plan\nplanResponse()"]
+
+    INPUT --> COUNT --> DATE --> SORT --> DEDUP --> ALLERGY --> OUTPUT
+        </div>
+      </div>
+      <h3>Score Computation</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Factor</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Frequency count</td><td>Number of matched consultations containing this item. Higher = more common treatment for these DX codes.</td></tr>
+            <tr><td>Date boost</td><td>More recent consultations contribute a multiplier. Ensures newer clinical patterns rank above older ones.</td></tr>
+            <tr><td>Deduplication</td><td>Same drug / lab / image deduplicated by key (drug name + strength for Rx, test name for labs/images). Highest-ranked copy kept.</td></tr>
+            <tr><td>Allergy flag</td><td>Injected after ranking. Does NOT affect rank order &mdash; doctor sees the item regardless (with warning badge).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase3" class="link-chip">Phase 3: Prediction</a>
+          <a href="#plan-drug-allergy" class="link-chip">Drug Allergy Safety</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 11: Drug Allergy Safety -->
+  <div class="section" id="plan-drug-allergy">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">11</div>
+      <div style="flex:1">
+        <div class="section-title">Drug Allergy Safety</div>
+        <div class="section-subtitle">getLEXIDrugAllergyInteractions() &mdash; LEXI API checks every suggested Rx against patient allergies</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box warn">Drug allergy checking is performed for <strong>every Rx suggestion</strong> before the response is returned to the UI. When <code>IS_ALLERGY_PRESC_ALLOWED = false</code>, allergic Rx are still shown but flagged with a severity badge. The doctor is never blocked &mdash; only warned.</div>
+      <h3>Allergy Check Flow</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    RX_LIST["Ranked Rx suggestions list"]
+    LEXI_CALL["getLEXIDrugAllergyInteractions(patientId, rxList)"]
+    LEXI_API["LEXI Drug API\ndrug allergy interaction lookup"]
+    SEV{"Severity?"}
+    SEVERE["Tag: SEVERE\nRed badge in UI"]
+    MOD["Tag: MODERATE\nOrange badge in UI"]
+    MILD["Tag: MILD\nYellow badge in UI"]
+    NONE["Tag: NONE\nNo badge (safe)"]
+    CONFIG{"IS_ALLERGY_PRESC_ALLOWED?"}
+    HIDE["Suppress from response\n(remove from list)"]
+    SHOW["Include in response\n(with severity tag)"]
+    FINAL["Final Rx list in planResponse()"]
+
+    RX_LIST --> LEXI_CALL --> LEXI_API
+    LEXI_API --> SEV
+    SEV -->|Severe| SEVERE
+    SEV -->|Moderate| MOD
+    SEV -->|Mild| MILD
+    SEV -->|None| NONE
+    SEVERE --> CONFIG
+    CONFIG -->|false| HIDE
+    CONFIG -->|true| SHOW
+    MOD --> SHOW
+    MILD --> SHOW
+    NONE --> SHOW
+    HIDE --> FINAL
+    SHOW --> FINAL
+        </div>
+      </div>
+      <h3>LEXI API Call Details</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Called from</td><td><code>AIUtil.getLEXIDrugAllergyInteractions()</code></td></tr>
+            <tr><td>Input</td><td>Patient ID, list of suggested drug IDs</td></tr>
+            <tr><td>Output</td><td>Map of drug ID &rarr; severity string (SEVERE / MODERATE / MILD / NONE)</td></tr>
+            <tr><td>Config toggle</td><td><code>IS_ALLERGY_PRESC_ALLOWED</code> in <code>CHARTNOTE_ASSIST_DATA.PLAN</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-config" class="link-chip">Configuration</a>
+          <a href="#plan-phase3" class="link-chip">Phase 3: Prediction</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 12: API Endpoints -->
+  <div class="section" id="plan-api">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">12</div>
+      <div style="flex:1">
+        <div class="section-title">API Endpoints</div>
+        <div class="section-subtitle">3 REST endpoints for plan suggestions &mdash; same AiAPI handler as DX</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /encounters/{id}/recommendations/available</span>
+        <span class="api-tag get">GET /encounters/{id}/recommendations/plans</span>
+        <span class="api-tag post">POST /admin/ai/migrate_and_train</span>
+      </div>
+      <div class="info-box note">
+        All endpoints are prefixed with <code>/api/ehr/v1/</code>. Routing: <code>APIRequestByGet.xml</code> (GET) and <code>APIRequestByPost.xml</code> (admin POST). Security: <code>security-api-ai.xml</code>. Handler Bean: <code>com.medicalmine.api.rest.ehr.ai.AiAPI</code>
+      </div>
+      <h3>Endpoint Reference</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>#</th><th>Endpoint</th><th>Handler Method</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>/encounters/{id}/recommendations/available</code></td><td><code>fetchRecommendationsAvailable()</code></td><td>Check if plan (and DX) suggestions are available for this encounter</td></tr>
+            <tr><td>2</td><td><code>/encounters/{id}/recommendations/plans</code></td><td><code>fetchPlanRecommendations()</code></td><td>Full plan suggestion pipeline: DX vector &rarr; KNN &rarr; filter &rarr; allergy check &rarr; rank</td></tr>
+            <tr><td>3</td><td><code>/admin/ai/migrate_and_train</code></td><td><code>migrateAndTrain()</code></td><td>Admin-only: trigger migration + training pipeline (Phase 1 + Phase 2)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Parameter Details</h3>
+      <h4>/encounters/{id}/recommendations/plans</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Param</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>encounter_id</code></td><td>regex</td><td>Yes</td><td>The encounter ID (from URL path)</td></tr>
+            <tr><td><code>is_soap_encounter</code></td><td>boolean</td><td>No</td><td>Whether this is a SOAP encounter type</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4>/admin/ai/migrate_and_train</h4>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Param</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>practice_id</code></td><td>string</td><td>Yes</td><td>The practice to migrate and train</td></tr>
+            <tr><td><code>num_of_objects</code></td><td>int</td><td>No</td><td>Batch size (default 1000)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-phase3" class="link-chip">Phase 3: Prediction</a>
+          <a href="#dx-api" class="link-chip">DX API Endpoints</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 13: Frontend -->
+  <div class="section" id="plan-frontend">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">13</div>
+      <div style="flex:1">
+        <div class="section-title">Frontend Implementation</div>
+        <div class="section-subtitle">chartnotesuggestion.js &mdash; plan_suggestions sub-object and isPlanBotEnabled() gating</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>File: <code>webapps/ehr/js/chartnotesuggestion.js</code> &mdash; Plan sub-object: <code>chartNoteSuggestions.plan_suggestions</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>isPlanBotEnabled()</code></td><td>~295</td><td>Checks <code>#isPlanBotEnabled</code> hidden input &mdash; master gate for all plan UI</td></tr>
+            <tr><td><code>plan_suggestions.initView(refresh)</code></td><td>~600</td><td>Entry point &mdash; calls /recommendations/plans, renders <code>AIDxSuggestions.handlebars</code></td></tr>
+            <tr><td><code>plan_suggestions.renderPlans(data)</code></td><td>~640</td><td>Renders Rx, labs, images, notes sections from response</td></tr>
+            <tr><td><code>plan_suggestions.addRxToChart(rxId)</code></td><td>~680</td><td>Adds a suggested Rx to the encounter prescription list</td></tr>
+            <tr><td><code>plan_suggestions.addLabToChart(labId)</code></td><td>~710</td><td>Adds a suggested lab order to the encounter</td></tr>
+            <tr><td><code>plan_suggestions.addImageToChart(imageId)</code></td><td>~740</td><td>Adds a suggested image order to the encounter</td></tr>
+            <tr><td><code>plan_suggestions.addNoteToChart(noteType, text)</code></td><td>~770</td><td>Appends a suggested note to the appropriate note section</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Frontend API Call Pattern</h3>
+      <pre><code>// 1. Guard: check plan bot is enabled for this practice
+if (chartNoteSuggestions.isPlanBotEnabled()) {
+
+    // 2. Check overall availability first (shared with DX)
+    chartNoteSuggestions.displaySuggestions(function() {
+
+        // 3. Fetch plan suggestions
+        chartNoteSuggestions.plan_suggestions.initView(false);
+    });
+}
+
+// 4. API call pattern (inside initView)
+APIUtil.doGet(
+    "/api/ehr/v1/encounters/" + encounterId + "/recommendations/plans",
+    {is_soap_encounter: isSOAP},
+    function(response) {
+        var html = Handlebars.templates["nlp/chart_suggestions/AIDxSuggestions"](response);
+        container.html(html);
+        chartNoteSuggestions.plan_suggestions.renderPlans(response);
+    }
+);</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-handlebars" class="link-chip">Handlebars Templates</a>
+          <a href="#dx-frontend" class="link-chip">DX Frontend</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 14: Handlebars -->
+  <div class="section" id="plan-handlebars">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">14</div>
+      <div style="flex:1">
+        <div class="section-title">Handlebars Templates</div>
+        <div class="section-subtitle">AIDxSuggestions.handlebars &mdash; unified plan display for Rx, Labs, Images, Notes</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Template</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>AIDxSuggestions.handlebars</code></td><td><strong>Main plan template</strong> &mdash; renders all plan categories: Rx, lab orders, image orders, treatment notes, patient notes, diet &amp; lifestyle</td></tr>
+            <tr><td><code>CharmAssistNewView.handlebars</code></td><td>Newer combined UI view for both DX and Plan suggestions in a single panel</td></tr>
+            <tr><td><code>chatBotView.handlebars</code></td><td>Outer container for the suggestions panel (shared with DX)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>AIDxSuggestions.handlebars &mdash; Key Template Logic</h3>
+      <ul>
+        <li>Iterates <code>rx_data</code> array: shows drug name, strength, sig. Allergy badge injected when <code>allergy_severity</code> is present.</li>
+        <li>Iterates <code>lab_data</code> array: shows lab name + test names. "Add to Chart" button per lab.</li>
+        <li>Iterates <code>image_data</code> array: shows modality + body part. "Add to Chart" button per image.</li>
+        <li>Renders <code>treatment_notes</code>, <code>patient_notes</code>, <code>diet_notes</code>, <code>lifestyle_notes</code> as collapsible text blocks.</li>
+        <li>Frequency badge: shows <code>frequency_count</code> if &gt; 1 (how many matched consultations had this item).</li>
+      </ul>
+      <h3>Template Rendering</h3>
+      <pre><code>Handlebars.templates["nlp/chart_suggestions/AIDxSuggestions"](planResponse)</code></pre>
+      <h3>Allergy Badge Rendering (in template)</h3>
+      <pre><code>{{#if allergy_severity}}
+  &lt;span class="allergy-badge {{allergy_severity}}"&gt;
+    {{allergy_severity}}
+  &lt;/span&gt;
+{{/if}}</code></pre>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-frontend" class="link-chip">JS Controller</a>
+          <a href="#dx-handlebars" class="link-chip">DX Templates</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 15: Key Classes -->
+  <div class="section" id="plan-classes">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">15</div>
+      <div style="flex:1">
+        <div class="section-title">Key Classes &amp; Methods</div>
+        <div class="section-subtitle">AiAPI, AIUtil, AdminConsoleUtil &mdash; Plan Suggestion backend entry points</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>AiAPI.java &mdash; Plan REST Handler</h3>
+      <p><code>source/com/medicalmine/api/rest/ehr/ai/AiAPI.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>fetchRecommendationsAvailable()</code></td><td>~60</td><td>Returns which recommendation types are enabled (DX + Plan)</td></tr>
+            <tr><td><code>fetchPlanRecommendations()</code></td><td>~200</td><td>Main Plan endpoint &mdash; triggers prediction pipeline</td></tr>
+            <tr><td><code>migrateAndTrain()</code></td><td>~400</td><td>Admin endpoint &mdash; initiates Phase 1 + Phase 2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>AIUtil.java &mdash; Plan Orchestration Methods</h3>
+      <p><code>source/com/medicalmine/api/rest/ehr/ai/AIUtil.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>fetchDxRecommendationsFromDxs(encounterId)</code></td><td>~3200</td><td>Full prediction pipeline: fetch DX &rarr; vector &rarr; KNN &rarr; filter &rarr; fetch plans &rarr; allergy check &rarr; rank</td></tr>
+            <tr><td><code>fetchMLQueryFromDxs(dxCodes)</code></td><td>~3300</td><td>Converts ICD codes to binary SVM sparse vector using DXCONDITIONINDEXER</td></tr>
+            <tr><td><code>getOptimalConsultationIndicesFromResponse(knnResponse)</code></td><td>~3380</td><td>Filters KNN results by DX_MATCH_PERCENTAGE threshold</td></tr>
+            <tr><td><code>fetchDxDerivativesFromConsDB(indices)</code></td><td>~3440</td><td>Reads AIDXDERIVATIVES rows for matched consultation indices</td></tr>
+            <tr><td><code>getLEXIDrugAllergyInteractions(patientId, rxList)</code></td><td>~3520</td><td>Calls LEXI API for drug allergy check on each Rx suggestion</td></tr>
+            <tr><td><code>optimisePlanRecommnendation(plans)</code></td><td>~3600</td><td>Ranks by frequency + date boost, deduplicates</td></tr>
+            <tr><td><code>planResponse(rankedPlans)</code></td><td>~3680</td><td>Assembles final JSON response: rx_data, lab_data, image_data, notes</td></tr>
+            <tr><td><code>migrateAndTrain(practiceId)</code></td><td>~3750</td><td>Orchestrates Phase 1 (migration) + Phase 2 (training) sequentially</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>AdminConsoleUtil.java &mdash; Migration &amp; Training</h3>
+      <p><code>source/com/medicalmine/charm/service/AdminConsoleUtil.java</code></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Line</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>dumpUniqueDxsAndIndexes(practiceId)</code></td><td>~2489</td><td>Phase 1a: assign numeric indices to all ICD codes in DXCONDITIONINDEXER</td></tr>
+            <tr><td><code>dumpDxDerivatives(practiceId, batchSize)</code></td><td>~2698</td><td>Phase 1b: flatten consultations into AIDXDERIVATIVES (batch 1000, sleep 1s)</td></tr>
+            <tr><td><code>generateTrainingFile(practiceId)</code></td><td>~3638</td><td>Phase 2a: build SVM sparse vector file from DXCONDITIONINDEXER + AIDXDERIVATIVES</td></tr>
+            <tr><td><code>trainDxDerivatives(practiceId, numObj, pcaCount, isConditionTrain)</code></td><td>~3700</td><td>Phase 2b: upload to DFS, delete old model from ZLabs, POST new training file, store model ID</td></tr>
+            <tr><td><code>deleteModelFromZlabs(practiceId, modelId)</code></td><td>~3760</td><td>Removes old KNN model from ZLabs ML API before retraining</td></tr>
+            <tr><td><code>storeTrainedModelDetails(practiceId, modelId, trainingFile)</code></td><td>~3800</td><td>Persists MODEL_ID, TRAINING_FILE, LAST_TRAINED_TIME to AITRAINEDMODELDETAILS</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-footer">
+        <div class="chips">
+          <a href="#plan-overview" class="link-chip">Feature Overview</a>
+          <a href="#plan-phase1" class="link-chip">Phase 1: Migration</a>
+          <a href="#plan-phase2" class="link-chip">Phase 2: Training</a>
+          <a href="#plan-phase3" class="link-chip">Phase 3: Prediction</a>
+          <a href="#dx-backend-classes" class="link-chip">DX Backend Classes</a>
+        </div>
+        <a href="#top" class="back-top">&#8593; Back to top</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plan Section 16: Admin Console -->
+  <div class="section" id="plan-admin-console">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div class="section-num plan">16</div>
+      <div style="flex:1">
+        <div class="section-title">Admin Console &mdash; Dx Derivatives Admin</div>
+        <div class="section-subtitle">Internal tool to manage migration, model training, practice enablement, and scheduler for Plan Suggestion</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-box note">
+        <strong>Access URL:</strong> <code>https://&lt;server&gt;:8443/action/adminAction.do?ACTION=dx_trainer_admin&amp;request_action=admin_home</code><br>
+        JSP: <code>webapps/ehr/common/nlp/DxDerivativesAdminConsole.jsp</code>
+      </div>
+
+      <h3>Migrate Data <span style="font-size:12px;font-weight:400;color:var(--text-muted)">(Default Tab)</span></h3>
+      <p>Runs Phase 1 of the Plan Suggestion pipeline — indexes DX codes and flattens consultations into <code>AIDXDERIVATIVES</code>.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Input</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Span of Migration</strong></td><td>Radio option: migrate the last <strong>6 months</strong>, <strong>1 year</strong>, or <strong>Whole data</strong> of consultations.</td></tr>
+            <tr><td><strong>Migrate for Consultations</strong></td><td>Alternative radio option: migrate a fixed number of consultations (1–10,000).</td></tr>
+            <tr><td><strong>Records per Migration batch</strong></td><td>Number of consultations processed per batch (1–1000, default 1000). Each batch pauses 1 second.</td></tr>
+            <tr><td><strong>Check total no. of Consultation</strong></td><td>Preview how many consultations exist for the practice before starting migration.</td></tr>
+            <tr><td><strong>Migrate</strong></td><td>Runs Phase 1a (index DX codes into <code>DXCONDITIONINDEXER</code>) then Phase 1b (flatten consultations into <code>AIDXDERIVATIVES</code>).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Show Migrated Data</h3>
+      <p>Browse the <code>AIDXDERIVATIVES</code> table to verify migration output. Inputs: Start Range, Number of Records (max 1000).</p>
+
+      <h3>Fetch Training File</h3>
+      <p>Downloads the latest SVM-format training file generated for the practice. Useful for debugging the training data or verifying that the file was built correctly before model training.</p>
+
+      <h3>Train Model</h3>
+      <p>Runs Phase 2 of the pipeline — generates the SVM file and uploads it to ZLabs to train the KNN model.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Input</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Records per Iteration</strong></td><td>Batch size for SVM file generation (1–1000).</td></tr>
+            <tr><td><strong>PCA Count</strong></td><td>Number of PCA dimensions for dimensionality reduction. Set to <code>0</code> to disable PCA.</td></tr>
+            <tr><td><strong>Train with</strong></td><td>Select whether to build the model using <strong>Diagnosis codes</strong> (default) or <strong>Conditions</strong>.</td></tr>
+            <tr><td><strong>Train Model</strong></td><td>Generates the training file, deletes the old ZLabs model, uploads the new file, stores the new <code>MODEL_ID</code> in <code>AITRAINEDMODELDETAILS</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Test with Dxs</h3>
+      <p>Live query the trained model with a set of ICD-10 codes to see what plan suggestions would be returned. Select query mode: <strong>Diagnosis</strong> / <strong>Conditions with Dx</strong> / <strong>Conditions with Conditions</strong>. Results show the nearest-neighbor consultations and their associated plans — useful to verify the model is working correctly before enabling for a practice.</p>
+
+      <h3>Additional Queries</h3>
+      <p>Search the <code>AIDXDERIVATIVES</code> table by any field to inspect migrated consultation data. Supports multi-condition filtering (Add Queries button). Searchable fields:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Category</th><th>Fields</th></tr></thead>
+          <tbody>
+            <tr><td>Treatment content</td><td>Treatment Notes, Patient Notes, Diet Notes, Life Style, Handouts</td></tr>
+            <tr><td>Orders</td><td>RX, Injections, Vaccines, Lab Tests, Image Orders, CPT</td></tr>
+            <tr><td>Patient vitals</td><td>Gender, Age, Temperature, BP Systolic, BP Diastolic, Pulse Rate, BMI</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Add Practice in Admin</h3>
+      <p>Add or Remove a Practice ID from the Plan Bot admin allowlist. Shows all practices currently in the admin list.</p>
+
+      <h3>Enable for Practice</h3>
+      <p>Fully onboards a practice for Chart Note Assist (DX + Plan Suggestion together). Configure settings as a JSON object:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Setting</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>IS_CHART_BOT_ENABLED</code></td><td>Enable DX Suggestion for the practice (true/false)</td></tr>
+            <tr><td><code>NOTES_ORDER</code></td><td>Order of note sections for MetaMap parsing (e.g. <code>["AN","CC"]</code>)</td></tr>
+            <tr><td><code>IS_PLAN_BOT_ENABLED</code></td><td>Enable Plan Suggestion for the practice (true/false)</td></tr>
+            <tr><td><code>IS_ALLERGY_PRESC_ALLOWED</code></td><td>Whether to show Rx suggestions when drug allergies are detected (true/false)</td></tr>
+            <tr><td><code>DX_MATCH_PERCENTAGE</code></td><td>Minimum Jaccard similarity threshold for KNN neighbors (default: 80)</td></tr>
+            <tr><td><strong>Migrate and Train checkbox</strong></td><td>Immediately triggers Phase 1 + Phase 2 after enabling</td></tr>
+            <tr><td><strong>Send Mail checkbox</strong></td><td>Sends a notification email after enablement</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Requested Practices</h3>
+      <p>Queue management for bulk practice onboarding. Add multiple practice IDs (comma-separated) for migration + training. Editable lists for:</p>
+      <ul>
+        <li><strong>Requested Practice IDs</strong> — practices waiting to be migrated and trained</li>
+        <li><strong>Failed Practice IDs</strong> — practices where migration/training failed (can edit and retry)</li>
+      </ul>
+
+      <h3>Retraining Practices</h3>
+      <p>Queue management for re-training existing models. Add practice IDs for re-training, trigger <strong>Re-Train</strong>, and monitor lists of enabled and retrained practices.</p>
+
+      <h3>View Scheduler</h3>
+      <p>Monitor and control the two background schedulers that automate onboarding and retraining:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Scheduler</th><th>Purpose</th><th>Controls</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Enabling Scheduler</strong></td><td>Picks up practices from the Requested list and runs migration + training automatically</td><td>View migrating IDs, next run time, Trigger / Start / Stop</td></tr>
+            <tr><td><strong>Retraining Scheduler</strong></td><td>Periodically retrains models for active practices as new consultation data accumulates</td><td>View retraining IDs, next run time, Trigger / Start / Stop</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box warn"><strong>Warning:</strong> Use <strong>Start</strong> only once when no scheduler is currently running. Starting a second scheduler creates duplicate concurrent runs.</div>
+
+      <h3>GPT Prompt Update</h3>
+      <p>Update the GPT prompts used by Chart Assist without a code deployment. Fields: Prompt Name, Prompt Type (USER / SYSTEM), GPT Version (GPT-3.5 / GPT-4), Max Tokens, Prompt Text. Changes take effect immediately and are stored in the database.</p>
+
+      <h3>Prompts Management</h3>
+      <p>Bulk import/export for all GPT prompts:</p>
+      <ul>
+        <li><strong>Dump to Files</strong> — export all current prompts from the database to disk files (useful for backup or version control)</li>
+        <li><strong>Load from Files</strong> — import prompts from disk files into the database (used after deploying a new prompt set)</li>
+      </ul>
+
+      <a href="#top" class="back-top">&#8593; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="doc-footer">
+    <div style="margin-bottom:6px;">
+      <strong>CharmEHR &mdash; Chart Assist Technical Documentation</strong> &nbsp;&middot;&nbsp; v1.0 &nbsp;&middot;&nbsp; 2026-05-27
+    </div>
+    <div>
+      Author: <strong>Karan Kumar</strong> &nbsp;&mdash;&nbsp;
+      <a href="mailto:karan.kumar@zohocorp.com">karan.kumar@zohocorp.com</a>
+    </div>
+  </footer>
+
+</main>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+// ─── Mermaid Init ────────────────────────────────────────────────────────────
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'loose',
+  flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+  sequence: {
+    useMaxWidth: false,
+    wrap: false,
+    actorMargin: 80,
+    messageMargin: 40,
+    noteMargin: 10,
+    mirrorActors: false
+  }
+});
+
+// ─── Highlight.js Init ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('pre code').forEach(function (el) {
+    hljs.highlightElement(el);
+  });
+  initScrollSpy();
+  // Save original Mermaid source on every diagram BEFORE first render
+  // (after render, innerHTML becomes SVG — we can never recover source from it)
+  document.querySelectorAll('.mermaid').forEach(function(el) {
+    el.setAttribute('data-mermaid-source', el.textContent.trim());
+  });
+  mermaid.run({ querySelector: '.mermaid' }).then(addExpandButtons).catch(function() { addExpandButtons(); });
+});
+
+// ─── Theme Toggle ────────────────────────────────────────────────────────────
+function toggleTheme() {
+  var html = document.documentElement;
+  var isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '☾' : '☀';
+
+  // swap hljs stylesheet
+  document.getElementById('hljs-light').disabled = !isDark;
+  document.getElementById('hljs-dark').disabled = isDark;
+
+  updateMermaidTheme();
+}
+
+function updateMermaidTheme() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+    sequence: {
+      useMaxWidth: false,
+      wrap: false,
+      actorMargin: 80,
+      messageMargin: 40,
+      mirrorActors: false
+    }
+  });
+  // Restore original Mermaid source (saved before first render) then re-render
+  document.querySelectorAll('.mermaid').forEach(function(el) {
+    var src = el.getAttribute('data-mermaid-source');
+    if (!src) return; // never rendered, skip
+    el.removeAttribute('data-processed');
+    el.innerHTML = '';
+    el.textContent = src;
+  });
+  mermaid.run({ querySelector: '.mermaid' }).then(addExpandButtons).catch(function() { addExpandButtons(); });
+}
+
+// ─── Section Toggle ──────────────────────────────────────────────────────────
+function toggleSection(header) {
+  var section = header.closest('.section');
+  var wasCollapsed = section.classList.contains('collapsed');
+  section.classList.toggle('collapsed');
+  // If we just expanded, re-run mermaid on any unprocessed diagrams inside
+  if (wasCollapsed) {
+    var unprocessed = section.querySelectorAll('.mermaid:not([data-processed])');
+    if (unprocessed.length > 0) {
+      mermaid.run({ nodes: Array.from(unprocessed) }).then(addExpandButtons).catch(function() { addExpandButtons(); });
+    }
+  }
+}
+
+function expandAll() {
+  document.querySelectorAll('.section').forEach(function (s) {
+    s.classList.remove('collapsed');
+  });
+}
+
+function collapseAll() {
+  document.querySelectorAll('.section').forEach(function (s) {
+    s.classList.add('collapsed');
+  });
+}
+
+// ─── Search ──────────────────────────────────────────────────────────────────
+var searchIndex = [];
+
+function buildSearchIndex() {
+  if (searchIndex.length > 0) return;
+  document.querySelectorAll('.section').forEach(function (section) {
+    var id = section.id;
+    var title = section.querySelector('.section-title');
+    var subtitle = section.querySelector('.section-subtitle');
+    var bodyText = section.querySelector('.section-body');
+    if (!title) return;
+
+    // Also index h3 headings inside each section
+    section.querySelectorAll('h3, h4').forEach(function (h) {
+      searchIndex.push({
+        id: id,
+        title: h.textContent.trim(),
+        section: title.textContent.trim(),
+        anchor: id
+      });
+    });
+
+    searchIndex.push({
+      id: id,
+      title: title.textContent.trim(),
+      section: subtitle ? subtitle.textContent.trim() : '',
+      anchor: id
+    });
+  });
+
+  // Also index API endpoints from endpoint cards
+  document.querySelectorAll('.endpoint-card').forEach(function (card) {
+    var url = card.querySelector('.ep-url');
+    var method = card.querySelector('.ep-method');
+    var desc = card.querySelector('.ep-desc');
+    var section = card.closest('.section');
+    if (!url || !section) return;
+    searchIndex.push({
+      id: section.id,
+      title: (method ? method.textContent + ' ' : '') + url.textContent.trim(),
+      section: desc ? desc.textContent.trim() : '',
+      anchor: section.id
+    });
+  });
+}
+
+function handleSearch(query) {
+  buildSearchIndex();
+  var results = document.getElementById('searchResults');
+
+  if (!query || query.length < 2) {
+    results.classList.remove('visible');
+    return;
+  }
+
+  var q = query.toLowerCase();
+  var matches = searchIndex.filter(function (item) {
+    return item.title.toLowerCase().includes(q) ||
+           item.section.toLowerCase().includes(q);
+  }).slice(0, 12);
+
+  if (matches.length === 0) {
+    results.innerHTML = '<a href="#" style="color:var(--text-muted);cursor:default">No results found</a>';
+  } else {
+    results.innerHTML = matches.map(function (m) {
+      var highlighted = m.title.replace(
+        new RegExp('(' + escapeRegex(query) + ')', 'gi'),
+        '<mark style="background:rgba(255,235,59,0.5);border-radius:2px">$1</mark>'
+      );
+      return '<a href="#' + m.anchor + '" onclick="document.getElementById(\'searchResults\').classList.remove(\'visible\')">' +
+        highlighted +
+        (m.section ? '<div class="sr-section">' + m.section + '</div>' : '') +
+        '</a>';
+    }).join('');
+  }
+
+  results.classList.add('visible');
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// ─── Scroll Spy ──────────────────────────────────────────────────────────────
+function initScrollSpy() {
+  var sections = document.querySelectorAll('.section[id]');
+  var sidebarLinks = document.querySelectorAll('.sidebar a');
+
+  if (!sections.length || !sidebarLinks.length) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        sidebarLinks.forEach(function (link) {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(function (s) { observer.observe(s); });
+}
+
+// ─── Keyboard shortcut: / to focus search ────────────────────────────────────
+document.addEventListener('keydown', function (e) {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('searchInput').blur();
+    document.getElementById('searchResults').classList.remove('visible');
+  }
+});
+
+// ─── Diagram Modal ────────────────────────────────────────────────────────────
+var _modalNatW = 800;  // natural SVG width  (from viewBox)
+var _modalNatH = 400;  // natural SVG height (from viewBox)
+var _modalUserZoom = 1; // user zoom multiplier on top of fit scale
+var _modalFitScale = 1; // scale that makes it fit with no scroll
+var _modalZoomStep = 0.2;
+var _modalZoomMin  = 0.1;
+var _modalZoomMax  = 4;
+
+function openDiagramModal(wrapper) {
+  var svg = wrapper.querySelector('svg');
+  if (!svg) return;
+
+  var clone = svg.cloneNode(true);
+
+  // Read natural dimensions from viewBox (always present in Mermaid SVGs)
+  var vb = clone.viewBox && clone.viewBox.baseVal;
+  if (vb && vb.width) {
+    _modalNatW = vb.width;
+    _modalNatH = vb.height;
+  } else {
+    // fallback: read width/height attributes
+    _modalNatW = parseFloat(clone.getAttribute('width'))  || 800;
+    _modalNatH = parseFloat(clone.getAttribute('height')) || 400;
+  }
+
+  // Strip fixed size — we'll set it ourselves
+  clone.removeAttribute('width');
+  clone.removeAttribute('height');
+  clone.style.display = 'block';
+
+  var wrap = document.getElementById('diagram-modal-svg-wrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(clone);
+
+  document.getElementById('diagram-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Fit on next frame (modal must be visible to measure viewport)
+  requestAnimationFrame(function() {
+    _modalUserZoom = 1;
+    _fitModal();
+  });
+}
+
+function _fitModal() {
+  var viewport = document.getElementById('diagram-modal-viewport');
+  var availW = viewport.clientWidth  - 48; // 24px padding each side
+  var availH = viewport.clientHeight - 48;
+  var scaleW = availW / _modalNatW;
+  var scaleH = availH / _modalNatH;
+  _modalFitScale = Math.min(scaleW, scaleH); // fit entirely, no scroll
+  _modalFitScale = Math.max(_modalFitScale, _modalZoomMin);
+  _applyModalSize();
+}
+
+function _applyModalSize() {
+  var svgEl = document.querySelector('#diagram-modal-svg-wrap svg');
+  if (!svgEl) return;
+  var scale = _modalFitScale * _modalUserZoom;
+  // Set actual SVG dimensions — this affects layout (no transform tricks)
+  svgEl.setAttribute('width',  Math.round(_modalNatW * scale));
+  svgEl.setAttribute('height', Math.round(_modalNatH * scale));
+  document.getElementById('diagram-modal-zoom-label').textContent =
+    Math.round(scale * 100) + '%';
+}
+
+function modalZoomIn() {
+  _modalUserZoom = Math.min(_modalUserZoom + _modalZoomStep, _modalZoomMax / _modalFitScale);
+  _applyModalSize();
+}
+
+function modalZoomOut() {
+  _modalUserZoom = Math.max(_modalUserZoom - _modalZoomStep, _modalZoomMin / _modalFitScale);
+  _applyModalSize();
+}
+
+function modalZoomReset() {
+  _modalUserZoom = 1;
+  _fitModal();
+}
+
+function closeDiagramModal() {
+  document.getElementById('diagram-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.getElementById('diagram-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDiagramModal();
+});
+
+// Keyboard shortcuts inside modal
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('diagram-modal').classList.contains('open')) return;
+  if (e.key === 'Escape') closeDiagramModal();
+  if (e.key === '+' || e.key === '=') modalZoomIn();
+  if (e.key === '-') modalZoomOut();
+  if (e.key === '0') modalZoomReset();
+});
+
+// Inject expand buttons after Mermaid renders
+function addExpandButtons() {
+  document.querySelectorAll('.mermaid-wrapper').forEach(function(wrapper) {
+    if (wrapper.querySelector('.diagram-expand-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'diagram-expand-btn';
+    btn.innerHTML = '&#8599; Expand';
+    btn.title = 'View full diagram';
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openDiagramModal(wrapper);
+    });
+    wrapper.appendChild(btn);
+  });
+}
+</script>
+
+<!-- Diagram Modal -->
+<div id="diagram-modal">
+  <div id="diagram-modal-box">
+    <div id="diagram-modal-toolbar">
+      <span>Diagram</span>
+      <button class="modal-tool-btn" onclick="modalZoomOut()" title="Zoom out (-)">&#8722;</button>
+      <span id="diagram-modal-zoom-label">100%</span>
+      <button class="modal-tool-btn" onclick="modalZoomIn()" title="Zoom in (+)">&#43;</button>
+      <button class="modal-tool-btn" onclick="modalZoomReset()" title="Fit to window (0)" style="font-size:13px;padding:4px 10px;">Fit</button>
+      <button id="diagram-modal-close-btn" onclick="closeDiagramModal()" title="Close (Esc)">&#x2715;</button>
+    </div>
+    <div id="diagram-modal-viewport">
+      <div id="diagram-modal-svg-wrap"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

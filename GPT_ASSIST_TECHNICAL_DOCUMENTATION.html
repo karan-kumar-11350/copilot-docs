@@ -1,0 +1,2564 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT Assist — Complete Technical Documentation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark" disabled>
+<style>
+:root {
+  --bg: #f5f7fa; --bg-card: #ffffff; --bg-sidebar: #1a1a2e; --bg-topnav: #1a1a2e;
+  --text: #2d3748; --text-muted: #718096; --text-sidebar: #a8b2d1; --text-sidebar-active: #64ffda;
+  --border: #e2e8f0; --shadow: rgba(0,0,0,0.08); --accent: #3182ce; --accent-light: #ebf4ff;
+  --code-bg: #f7fafc; --table-stripe: #f7fafc; --table-hover: #ebf4ff;
+  --tag-get-bg: #e3f2fd; --tag-get-text: #1565c0;
+  --tag-post-bg: #e8f5e9; --tag-post-text: #2e7d32;
+  --tag-put-bg: #fff3e0; --tag-put-text: #e65100;
+  --tag-delete-bg: #ffebee; --tag-delete-text: #c62828;
+  --tag-async-bg: #fce4ec; --tag-async-text: #c62828;
+  --search-bg: #ffffff; --sidebar-hover: rgba(255,255,255,0.05);
+  --scrollbar-bg: #e2e8f0; --scrollbar-thumb: #a0aec0;
+}
+[data-theme="dark"] {
+  --bg: #0a0a1a; --bg-card: #16213e; --bg-sidebar: #0d1117; --bg-topnav: #0d1117;
+  --text: #e2e8f0; --text-muted: #8892b0; --text-sidebar: #8892b0; --text-sidebar-active: #64ffda;
+  --border: #233554; --shadow: rgba(0,0,0,0.4); --accent: #64ffda; --accent-light: #1a2744;
+  --code-bg: #0d1117; --table-stripe: #1a2744; --table-hover: #233554;
+  --tag-get-bg: #1a2744; --tag-get-text: #90caf9;
+  --tag-post-bg: #1a2e1a; --tag-post-text: #81c784;
+  --tag-put-bg: #2e2a1a; --tag-put-text: #ffb74d;
+  --tag-delete-bg: #2e1a1a; --tag-delete-text: #ef9a9a;
+  --tag-async-bg: #2e1a2a; --tag-async-text: #f48fb1;
+  --search-bg: #16213e; --sidebar-hover: rgba(255,255,255,0.08);
+  --scrollbar-bg: #233554; --scrollbar-thumb: #4a5568;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 60px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+.topnav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 52px; background: var(--bg-topnav); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.topnav h1 { font-size: 15px; font-weight: 600; color: #ffffff; white-space: nowrap; letter-spacing: 0.3px; }
+.topnav h1 span { color: var(--text-sidebar-active); }
+.nav-controls { display: flex; align-items: center; gap: 12px; }
+.theme-toggle { background: none; border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; cursor: pointer; font-size: 18px; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.theme-toggle:hover { background: rgba(255,255,255,0.1); border-color: var(--text-sidebar-active); }
+.search-box { position: relative; display: flex; align-items: center; }
+.search-box input { width: 240px; padding: 7px 12px 7px 34px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; background: rgba(255,255,255,0.06); color: #e2e8f0; font-size: 13px; outline: none; transition: all 0.2s; }
+.search-box input::placeholder { color: rgba(255,255,255,0.35); }
+.search-box input:focus { border-color: var(--text-sidebar-active); background: rgba(255,255,255,0.1); width: 300px; }
+.search-box svg { position: absolute; left: 10px; width: 16px; height: 16px; color: rgba(255,255,255,0.35); pointer-events: none; }
+.search-results { position: absolute; top: 42px; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; max-height: 400px; overflow-y: auto; box-shadow: 0 8px 24px var(--shadow); display: none; z-index: 200; }
+.search-results.visible { display: block; }
+.search-results a { display: block; padding: 10px 14px; text-decoration: none; color: var(--text); font-size: 13px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.search-results a:hover { background: var(--accent-light); }
+.search-results a .sr-section { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.author-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-sidebar); white-space: nowrap; }
+.author-chip svg { opacity: 0.6; flex-shrink: 0; }
+.author-chip a { color: var(--text-sidebar-active); text-decoration: none; font-weight: 500; }
+.author-chip a:hover { text-decoration: underline; }
+.sidebar { position: fixed; left: 0; top: 52px; bottom: 0; width: 260px; background: var(--bg-sidebar); overflow-y: auto; padding: 16px 0; z-index: 50; border-right: 1px solid rgba(255,255,255,0.04); }
+.sidebar-group { margin-bottom: 20px; }
+.sidebar-group h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-sidebar-active); padding: 0 20px; margin-bottom: 8px; font-weight: 700; }
+.sidebar a { display: block; padding: 6px 20px; text-decoration: none; color: var(--text-sidebar); font-size: 13px; border-left: 3px solid transparent; transition: all 0.15s; line-height: 1.4; }
+.sidebar a:hover { color: #e2e8f0; background: var(--sidebar-hover); }
+.sidebar a.active { color: var(--text-sidebar-active); border-left-color: var(--text-sidebar-active); background: rgba(100,255,218,0.05); }
+.sidebar a .api-count { font-size: 10px; color: var(--text-muted); background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 10px; margin-left: 6px; }
+.main { margin-left: 260px; margin-top: 52px; padding: 28px 36px 60px; max-width: 1100px; }
+@media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; padding: 20px 16px; } .search-box input { width: 160px; } .search-box input:focus { width: 200px; } }
+.bulk-actions { display: flex; gap: 8px; margin-bottom: 20px; position: sticky; top: 52px; z-index: 10; background: var(--bg); padding: 10px 0; }
+.bulk-btn { padding: 6px 14px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.15s; }
+.bulk-btn:hover { border-color: var(--accent); color: var(--accent); }
+.section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; box-shadow: 0 1px 3px var(--shadow); overflow: hidden; transition: box-shadow 0.2s; }
+.section:hover { box-shadow: 0 4px 12px var(--shadow); }
+.section-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; cursor: pointer; border-bottom: 1px solid var(--border); user-select: none; transition: background 0.15s; }
+.section-header:hover { background: var(--accent-light); }
+.collapse-icon { font-size: 12px; color: var(--text-muted); transition: transform 0.3s; flex-shrink: 0; }
+.section.collapsed .collapse-icon { transform: rotate(-90deg); }
+.section-title { font-size: 17px; font-weight: 700; color: var(--text); }
+.section-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.section-body { padding: 24px; max-height: 50000px; transition: max-height 0.4s ease, padding 0.3s ease; overflow: hidden; }
+.section.collapsed .section-body { max-height: 0; padding: 0 24px; }
+.section-body h3 { font-size: 16px; font-weight: 700; color: var(--text); margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent-light); }
+.section-body h3:first-child { margin-top: 0; }
+.section-body h4 { font-size: 14px; font-weight: 600; color: var(--text); margin: 20px 0 8px; }
+.section-body p { margin-bottom: 12px; }
+.section-body ul, .section-body ol { margin-bottom: 12px; padding-left: 24px; }
+.section-body li { margin-bottom: 4px; }
+.section-body strong { font-weight: 600; }
+.section-toggle { display: flex; gap: 4px; }
+.section-toggle button { padding: 4px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.15s; }
+.section-toggle button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.diagram-normal, .diagram-detailed { display: none; }
+.diagram-normal.active, .diagram-detailed.active { display: block; }
+.table-wrapper { overflow-x: auto; margin: 16px 0; border-radius: 8px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: var(--accent-light); color: var(--text); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--border); white-space: nowrap; }
+tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tbody tr:nth-child(even) { background: var(--table-stripe); }
+tbody tr:hover { background: var(--table-hover); }
+td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: 'SF Mono','Fira Code',Consolas,monospace; color: var(--accent); }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 14px 0; overflow-x: auto; font-size: 13px; line-height: 1.6; }
+pre code { font-family: 'SF Mono','Fira Code',Consolas,monospace; background: none; padding: 0; color: var(--text); }
+code { font-family: 'SF Mono','Fira Code',Consolas,monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+.mermaid-wrapper { margin: 16px 0; padding: 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; text-align: center; position: relative; }
+.mermaid { font-size: 14px; }
+.mermaid svg { max-width: 100%; height: auto; }
+.diagram-expand-btn { position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; opacity: 0.75; transition: opacity 0.15s; display: flex; align-items: center; gap: 4px; z-index: 2; }
+.diagram-expand-btn:hover { opacity: 1; }
+#diagram-modal { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; }
+#diagram-modal.open { display: flex; }
+#diagram-modal-box { background: var(--bg-card); border-radius: 12px; width: 95vw; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,0.5); overflow: hidden; }
+#diagram-modal-toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+#diagram-modal-toolbar span { font-size: 13px; font-weight: 600; color: var(--text-muted); flex: 1; }
+.modal-tool-btn { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 18px; font-weight: 700; cursor: pointer; color: var(--text); line-height: 1.2; transition: background 0.15s; }
+.modal-tool-btn:hover { background: var(--accent-light); }
+#diagram-modal-zoom-label { font-size: 12px; min-width: 42px; text-align: center; color: var(--text-muted); font-weight: 600; }
+#diagram-modal-close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; }
+#diagram-modal-close-btn:hover { color: var(--text); background: var(--bg); }
+#diagram-modal-viewport { flex: 1; overflow: auto; display: flex; align-items: flex-start; justify-content: center; padding: 24px; }
+#diagram-modal-svg-wrap { display: inline-block; line-height: 0; }
+#diagram-modal-svg-wrap svg { display: block; transition: width 0.15s ease, height 0.15s ease; }
+.api-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.api-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; font-family: 'SF Mono',Consolas,monospace; }
+.api-tag.get { background: var(--tag-get-bg); color: var(--tag-get-text); }
+.api-tag.post { background: var(--tag-post-bg); color: var(--tag-post-text); }
+.api-tag.put { background: var(--tag-put-bg); color: var(--tag-put-text); }
+.api-tag.delete { background: var(--tag-delete-bg); color: var(--tag-delete-text); }
+.api-tag.async { background: var(--tag-async-bg); color: var(--tag-async-text); }
+.api-tag.label { background: var(--table-stripe); color: var(--text-muted); border: 1px solid var(--border); }
+.endpoint-card { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin: 8px 0; background: var(--bg); transition: border-color 0.2s; }
+.endpoint-card:hover { border-color: var(--accent); }
+.endpoint-card .ep-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.endpoint-card .ep-method { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; font-family: 'SF Mono',Consolas,monospace; min-width: 48px; text-align: center; }
+.endpoint-card .ep-method.get { background: var(--tag-get-bg); color: var(--tag-get-text); }
+.endpoint-card .ep-method.post { background: var(--tag-post-bg); color: var(--tag-post-text); }
+.endpoint-card .ep-method.async { background: var(--tag-async-bg); color: var(--tag-async-text); }
+.endpoint-card .ep-url { font-family: 'SF Mono',Consolas,monospace; font-size: 13px; font-weight: 500; color: var(--text); }
+.endpoint-card .ep-desc { font-size: 13px; color: var(--text-muted); }
+.endpoint-card .ep-params { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.info-box { padding: 12px 16px; border-radius: 8px; margin: 14px 0; font-size: 13px; }
+.info-box.note { background: #ebf4ff; border-left: 4px solid #3182ce; color: #2c5282; }
+.info-box.warn { background: #fffbeb; border-left: 4px solid #d69e2e; color: #744210; }
+[data-theme="dark"] .info-box.note { background: #1a2744; border-left-color: #64ffda; color: #a8b2d1; }
+[data-theme="dark"] .info-box.warn { background: #2e2a1a; border-left-color: #fbd38d; color: #fbd38d; }
+.version-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 12px; background: var(--tag-get-bg); color: var(--tag-get-text); margin-left: 10px; }
+.doc-footer { text-align: center; padding: 32px 24px; margin-top: 16px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
+.doc-footer strong { color: var(--text); }
+.doc-footer a { color: var(--accent); text-decoration: none; }
+.back-top { display: inline-block; margin-top: 16px; font-size: 12px; color: var(--accent); text-decoration: none; }
+.back-top:hover { text-decoration: underline; }
+.link-chip { display: inline-block; padding: 3px 12px; background: var(--accent-light); color: var(--accent); border-radius: 16px; font-size: 12px; text-decoration: none; transition: all 0.15s; margin: 2px; }
+.link-chip:hover { background: var(--accent); color: #fff; }
+.file-tree { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 14px 0; font-family: 'SF Mono',Consolas,monospace; font-size: 13px; line-height: 1.8; overflow-x: auto; white-space: pre; }
+.rbac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 16px 0; }
+.rbac-card { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--bg); }
+.rbac-card .rbac-perm { font-family: 'SF Mono',Consolas,monospace; font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.rbac-card .rbac-label { font-size: 13px; color: var(--text); font-weight: 600; margin-bottom: 4px; }
+.rbac-card .rbac-desc { font-size: 12px; color: var(--text-muted); }
+.method-block { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 14px 16px; margin: 10px 0; background: var(--bg); }
+.method-block .method-sig { font-family: 'SF Mono',Consolas,monospace; font-size: 12px; color: var(--accent); margin-bottom: 8px; font-weight: 600; word-break: break-all; }
+.method-block .method-desc { font-size: 13px; color: var(--text-muted); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin: 16px 0; }
+.stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+.stat-num { font-size: 2em; font-weight: 700; color: var(--accent); }
+.stat-label { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+@media print {
+  .sidebar, .topnav, .bulk-actions, .search-box, .theme-toggle, .back-top, .diagram-expand-btn, #diagram-modal, .collapse-icon, .author-chip { display: none !important; }
+  body { background: #fff !important; color: #000 !important; font-size: 12px; }
+  .main { margin: 0 !important; padding: 0 !important; }
+  .section { border: none !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 0 8px 0 !important; }
+  .section-header { background: #f0f0f0 !important; color: #000 !important; border-radius: 0 !important; padding: 8px 14px !important; border-bottom: 1px solid #ccc !important; }
+  .section-title { color: #000 !important; font-size: 15px !important; }
+  .section-body, .section.collapsed .section-body { max-height: none !important; display: block !important; padding: 10px 16px !important; overflow: visible !important; transition: none !important; }
+  .section-body h3 { margin: 14px 0 8px !important; }
+  .section-body h3:first-child { margin-top: 4px !important; }
+  .section-body h4 { margin: 10px 0 6px !important; }
+  .section-body p { margin-bottom: 8px !important; }
+  .table-wrapper { overflow-x: visible !important; border: none !important; border-radius: 0 !important; margin: 8px 0 !important; }
+  table { border-collapse: collapse !important; width: 100% !important; font-size: 10px !important; break-inside: auto; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  th, td { border: 1px solid #bbb !important; padding: 4px 7px !important; }
+  th { background: #e4e4e4 !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  pre, code { background: #f5f5f5 !important; color: #000 !important; border: 1px solid #ddd !important; font-size: 10px !important; }
+  pre { white-space: pre-wrap !important; word-break: break-word !important; }
+  .mermaid-wrapper { border: 1px solid #ccc !important; border-radius: 0 !important; padding: 6px !important; margin: 8px 0 !important; overflow: visible !important; break-inside: avoid; }
+  .mermaid svg { width: 100% !important; height: auto !important; max-width: 100% !important; }
+  .endpoint-card { border: 1px solid #ccc !important; break-inside: avoid; padding: 8px !important; }
+  .info-box { border: 1px solid #ccc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h2, h3, h4 { break-after: avoid; }
+  .section:nth-child(n+3) { break-before: page; }
+  .doc-footer { display: block !important; border-top: 1px solid #ccc; text-align: center; font-size: 10px; color: #555; padding: 8px 0; }
+  @page { size: A4; margin: 16mm 14mm 16mm 14mm; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav" id="top">
+  <h1><span>GPT Assist</span> &mdash; Complete Technical Documentation <span class="version-badge">v1.0</span></h1>
+  <div class="author-chip">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Karan Kumar &mdash; <a href="mailto:karan.kumar@zohocorp.com">karan.kumar@zohocorp.com</a></span>
+  </div>
+  <div class="nav-controls">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search documentation..."
+        onkeyup="handleSearch(this.value)" onfocus="handleSearch(this.value)"
+        onblur="setTimeout(function(){document.getElementById('searchResults').classList.remove('visible')},200)">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="theme-icon">&#9790;</span>
+    </button>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-group">
+    <h3>Overview</h3>
+    <a href="#sys-overview">1. System Overview</a>
+    <a href="#architecture">2. Architecture</a>
+    <a href="#subfeatures">3. Sub-Feature Overview <span class="api-count">9</span></a>
+    <a href="#rbac">4. RBAC &amp; Permissions</a>
+    <a href="#api-index">5. API Index <span class="api-count">9</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Settings Workflows</h3>
+    <a href="#wf1">6. Validate API Key <span class="api-count">POST</span></a>
+    <a href="#wf2">7. Update Chart Settings <span class="api-count">POST</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Chart Assist</h3>
+    <a href="#wf3">8. Notes Preview <span class="api-count">GET</span></a>
+    <a href="#wf4">9. Chart Recommendation <span class="api-count">POST</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Referral Assist</h3>
+    <a href="#wf5">10. Load Referral Data <span class="api-count">GET</span></a>
+    <a href="#wf6">11. Load via ZLabs <span class="api-count">GET</span></a>
+    <a href="#wf8">12. Generate Referral Letter <span class="api-count">POST</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h3>GPT Chat &amp; Lab</h3>
+    <a href="#wf7">13. Ask GPT Q&amp;A <span class="api-count">POST</span></a>
+    <a href="#wf9">14. Lab Opinion <span class="api-count">GET</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Backend Reference</h3>
+    <a href="#gpt4util">15. GPT4Util.java <span class="api-count">21</span></a>
+    <a href="#gpttaskutil">16. GPTTaskUtil.java <span class="api-count">8</span></a>
+    <a href="#http-clients">17. HTTP Clients</a>
+    <a href="#data-models">18. Data Models</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Frontend Reference</h3>
+    <a href="#gpt4js">19. gpt4.js</a>
+    <a href="#chartnotesuggestion">20. chartnotesuggestion.js</a>
+  </div>
+  <div class="sidebar-group">
+    <h3>Database</h3>
+    <a href="#database">21. Database Tables</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="bulk-actions">
+    <button class="bulk-btn" onclick="expandAll()">Expand All</button>
+    <button class="bulk-btn" onclick="collapseAll()">Collapse All</button>
+    <button class="bulk-btn" onclick="setGlobalLevel('normal')">Normal View</button>
+    <button class="bulk-btn" onclick="setGlobalLevel('detailed')">Detailed View</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 1: SYSTEM OVERVIEW -->
+  <div class="section" id="sys-overview">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">1. System Overview</div>
+        <div class="section-subtitle">GPT Assist — AI-powered clinical assistance embedded in the Charm EHR physician workflow</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>GPT Assist is Charm EHR's AI-powered clinical assistance feature. It integrates OpenAI and Azure OpenAI APIs across multiple clinical workflows: chart note generation, referral drafting, lab interpretation, diagnosis suggestions, and general medical Q&amp;A. All features are embedded directly in the physician encounter workflow and operate under HIPAA-compliant PHI masking.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num">9</div><div class="stat-label">REST API Endpoints</div></div>
+        <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Async Executors</div></div>
+        <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">WebSocket Callbacks</div></div>
+        <div class="stat-card"><div class="stat-num">21</div><div class="stat-label">GPT4Util Methods</div></div>
+        <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Thread Pool Size</div></div>
+      </div>
+
+      <h3>Feature Summary</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Feature</th><th>Description</th><th>AI Route</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Chart Assist (Recommendations)</strong></td><td>RAG-enriched clinical suggestions for the active encounter</td><td>Charm AI Webhook &rarr; OpenAI</td></tr>
+            <tr><td><strong>Notes Preview</strong></td><td>PHI-masked preview of encounter data before AI submission</td><td>DB only (no AI call)</td></tr>
+            <tr><td><strong>PubMed Search</strong></td><td>Literature search against PubMed via RAG pipeline</td><td>Charm AI Webhook</td></tr>
+            <tr><td><strong>General Q&amp;A Chat</strong></td><td>Multi-turn conversational GPT chat with rolling history</td><td>OpenAI direct</td></tr>
+            <tr><td><strong>Referral Letter Generation</strong></td><td>AI-drafted referral letter with PHI masking/unmasking</td><td>OpenAI via UrlUtil</td></tr>
+            <tr><td><strong>Lab Opinion</strong></td><td>Clinical interpretation of lab result groups (no PHI)</td><td>OpenAI via UrlUtil</td></tr>
+            <tr><td><strong>API Key Validation</strong></td><td>Validates provider's OpenAI API key against /v1/models</td><td>OpenAI direct</td></tr>
+            <tr><td><strong>Chart Settings</strong></td><td>Configure which data components are included in AI prompts</td><td>DB only</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>High-Level System Flowchart</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    Browser["Browser\ngpt4.js / chartnotesuggestion.js"]
+    Gateway["REST Gateway\n/api/ehr/v1/gpt/*"]
+    Security["security-api-ai.xml\nRBAC + Rate Limit"]
+    AiAPI["AiAPI.java\nHandler"]
+    AIUtil["AIUtil.java\nBusiness Logic + PHI Masking"]
+    GPT4Util["GPT4Util.java\nDirect OpenAI Calls"]
+    GPTTaskUtil["GPTTaskUtil.java\nAsync Thread Pool"]
+    UrlUtil["UrlUtil.java\nHTTPS Client"]
+    DB["Mickey DB\nCharmCache"]
+    OpenAI["OpenAI API\n/v1/chat/completions"]
+    Webhook["Charm AI Webhook\nRAG Pipeline"]
+    WS["WebSocket\nCharmChatUtil"]
+
+    Browser --> Gateway --> Security --> AiAPI
+    AiAPI --> AIUtil
+    AiAPI --> GPT4Util
+    AIUtil --> GPTTaskUtil
+    AIUtil --> DB
+    AIUtil --> UrlUtil
+    GPT4Util --> UrlUtil
+    GPTTaskUtil --> UrlUtil
+    UrlUtil --> OpenAI
+    UrlUtil --> Webhook
+    Webhook --> OpenAI
+    GPTTaskUtil --> WS
+    WS --> Browser
+
+    style Browser fill:#e3f2fd,stroke:#1565c0,color:#000
+    style Security fill:#fff3e0,stroke:#e65100,color:#000
+    style AiAPI fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style AIUtil fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style GPT4Util fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style OpenAI fill:#fce4ec,stroke:#c62828,color:#000
+    style Webhook fill:#fce4ec,stroke:#c62828,color:#000
+    style WS fill:#ede7f6,stroke:#4527a0,color:#000
+    style DB fill:#ede7f6,stroke:#4527a0,color:#000
+        </div>
+      </div>
+
+      <h3>PHI Masking (HIPAA)</h3>
+      <p>Before any patient data is sent to an external AI service, <code>AIUtil.java</code> replaces PHI tokens (patient name, provider name, date of birth) with placeholder strings. The mapping is stored server-side and returned to the client for local unmasking after the AI response is received. Lab opinion is the only workflow that skips PHI masking — lab parameter names and numeric values are not considered PHI.</p>
+      <div class="info-box note">
+        <strong>PHI Masking Pattern:</strong> Patient name &rarr; <code>[MASKED_PATIENT]</code>, Provider name &rarr; <code>[MASKED_PROVIDER]</code>, DOB &rarr; <code>[MASKED_DOB]</code>. The <code>masked_data</code> JSON map is returned to the client and stored in <code>gptReferralAssist.phiUnmaskingData</code> for local replacement after letter generation.
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 2: ARCHITECTURE -->
+  <div class="section" id="architecture">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">2. Architecture</div>
+        <div class="section-subtitle">Full-stack layered architecture: Frontend JS &rarr; REST gateway &rarr; Java handler &rarr; AI services</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Technology Stack</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Layer</th><th>Component</th><th>Responsibility</th></tr></thead>
+          <tbody>
+            <tr><td>Frontend</td><td><code>gpt4.js</code>, <code>chartnotesuggestion.js</code></td><td>UI interactions, DOM reads, Handlebars rendering, PHI unmasking</td></tr>
+            <tr><td>API Client</td><td><code>APIUtil</code> (common.js)</td><td>Standardized AJAX: <code>doGet</code>, <code>doPost</code>, <code>getPOSTResponse</code></td></tr>
+            <tr><td>Gateway</td><td><code>/api/ehr/v1/gpt/*</code></td><td>REST endpoint namespace for all GPT features</td></tr>
+            <tr><td>Security</td><td><code>security-api-ai.xml</code></td><td>RBAC enforcement, rate limiting (60/min), audit logging</td></tr>
+            <tr><td>Routing</td><td><code>APIRequestByGet/Post.xml</code></td><td>Maps URL paths to Java bean methods</td></tr>
+            <tr><td>Handler</td><td><code>AiAPI.java</code></td><td>Input validation, null checks, exception wrapping to JSON</td></tr>
+            <tr><td>Business Logic</td><td><code>AIUtil.java</code> (singleton)</td><td>PHI masking, DB queries, prompt construction, RAG</td></tr>
+            <tr><td>GPT Direct</td><td><code>GPT4Util.java</code></td><td>Direct OpenAI calls for Ask GPT and API key validation</td></tr>
+            <tr><td>Async Executor</td><td><code>GPTTaskUtil.java</code></td><td>ThreadPoolExecutor (10 core threads) for async AI tasks</td></tr>
+            <tr><td>HTTP Client</td><td><code>UrlUtil.java</code></td><td>TLS 1.2 HTTPS client, 10s connect / 30s read timeout</td></tr>
+            <tr><td>OpenAI Direct</td><td><code>GPT4Api.java</code></td><td>Apache HttpClient + Gson, Bearer token auth</td></tr>
+            <tr><td>Persistence</td><td>Mickey Framework + <code>CharmCache</code></td><td>SelectQuery, DataObject, UPSERT, cache invalidation</td></tr>
+            <tr><td>WebSocket</td><td><code>CharmChatUtil.sendWMSCustomMsgToUsers()</code></td><td>Async result delivery to browser after AI completes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Package Structure</h3>
+      <div class="file-tree">source/com/medicalmine/api/rest/ehr/ai/
+├── AiAPI.java                     &larr; REST API handler (all 9 endpoints)
+├── AIUtil.java                    &larr; PHI masking, usage tracking, RAG, DB
+├── AWSInterface.java              &larr; AWS Whisper endpoint client
+├── gpt4/
+│   ├── GPT4Api.java               &larr; OpenAI direct HTTP client (Apache HttpClient)
+│   ├── GPT4Constants.java         &larr; Model and role string constants
+│   ├── GPT4Request.java           &larr; Request DTO (model, messages, max_tokens)
+│   ├── GPT4Response.java          &larr; Response DTO (choices, usage, error)
+│   ├── GPT4Message.java           &larr; Message DTO (text or vision content)
+│   ├── GPT4Choice.java            &larr; Choice DTO (index, message, finish_reason)
+│   ├── GPT4Content.java           &larr; Multimodal content (text/image_url/file)
+│   ├── GPT4ImageUrl.java          &larr; Image URL with detail level
+│   ├── GPT4File.java              &larr; File reference DTO
+│   ├── GPT4Usage.java             &larr; Token usage counts
+│   ├── GPT4Error.java             &larr; API error details
+│   └── MessageQueue.java          &larr; Rolling conversation history queue
+└── util/
+    ├── GPT4Util.java              &larr; Core utility: 21 static methods
+    ├── GPTTaskUtil.java           &larr; Singleton async task executor
+    └── RealtimeSessionHandler.java &larr; WebRTC realtime session manager
+
+webapps/ehr/js/
+├── gpt4.js                        &larr; GPT Assist dialog UI (859 lines)
+└── chartnotesuggestion.js         &larr; Chart note + plan suggestion UI (3553 lines)</div>
+
+      <h3>Synchronous Flow (Ask GPT, Referral, Lab Opinion)</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant FE as Frontend JS
+    participant API as AiAPI.java
+    participant Util as GPT4Util / AIUtil
+    participant HTTP as UrlUtil / GPT4Api
+    participant OAI as OpenAI API
+
+    FE->>API: GET or POST /api/ehr/v1/gpt/*
+    API->>Util: delegate to utility method
+    Util->>HTTP: build request, HTTPS POST
+    HTTP->>OAI: POST /v1/chat/completions
+    OAI-->>HTTP: GPT response JSON
+    HTTP-->>Util: response text
+    Util-->>API: result string or JSON
+    API-->>FE: HTTP 200 JSON response
+        </div>
+      </div>
+
+      <h3>Asynchronous Flow (Chart Recommendations, Whisper)</h3>
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+sequenceDiagram
+    participant FE as Frontend JS
+    participant API as AiAPI.java
+    participant Q as GPTTaskUtil (ThreadPool)
+    participant HTTP as GPT4Api
+    participant OAI as AI Service
+    participant WS as WebSocket (CharmChatUtil)
+
+    FE->>API: POST /api/ehr/v1/gpt/chart_recommendation
+    API->>Q: submit async task
+    API-->>FE: {status: "inProgress"}
+    Q->>HTTP: async: fetch data, mask PHI, build prompt
+    HTTP->>OAI: POST to AI service
+    OAI-->>HTTP: AI response
+    HTTP-->>Q: result
+    Q->>WS: sendWMSCustomMsgToUsers(callbackFn, result)
+    WS-->>FE: WebSocket push with callbackFn
+    FE->>FE: invoke JS callback function
+        </div>
+      </div>
+
+      <div class="info-box note">
+        <strong>Key design principle:</strong> <code>AiAPI.java</code> handles only validation and null-checks. All business logic (PHI masking, prompt construction, DB queries) lives in <code>AIUtil.java</code>. Direct OpenAI calls for simple Q&amp;A go through <code>GPT4Util.java</code>. The HTTP layer is always <code>UrlUtil.java</code> (TLS 1.2, 10s connect / 30s read timeout).
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 3: SUB-FEATURE OVERVIEW -->
+  <div class="section" id="subfeatures">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">3. Sub-Feature Overview</div>
+        <div class="section-subtitle">All 9 workflows grouped by functional area with clickable navigation</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart TD
+    ROOT(["GPT Assist / Chart Assist"])
+
+    SETTINGS["Settings Workflows"]
+    CHART["Chart Assist"]
+    REFERRAL["Referral Assist"]
+    CHAT["GPT Chat &amp; Lab"]
+
+    WF1["1. Validate API Key\nPOST /gpt/check"]
+    WF2["2. Update Chart Settings\nPOST /gpt/updateChartAssistSettings"]
+    WF3["3. Notes Preview\nGET /gpt/notesPreview"]
+    WF4["4. Chart Recommendation\nPOST /gpt/chart_recommendation"]
+    WF5["5. Load Referral Data\nGET /gpt/referral"]
+    WF6["6. Load via ZLabs\nGET /gpt/encounter"]
+    WF8["8. Generate Referral Letter\nPOST /gpt/referral/generation"]
+    WF7["7. Ask GPT Q&amp;A\nPOST /gpt/ask"]
+    WF9["9. Lab Opinion\nGET /gpt/lab/opinion"]
+
+    ROOT --> SETTINGS
+    ROOT --> CHART
+    ROOT --> REFERRAL
+    ROOT --> CHAT
+    SETTINGS --> WF1
+    SETTINGS --> WF2
+    CHART --> WF3
+    CHART --> WF4
+    REFERRAL --> WF5
+    REFERRAL --> WF6
+    REFERRAL --> WF8
+    CHAT --> WF7
+    CHAT --> WF9
+
+    click WF1 "#wf1"
+    click WF2 "#wf2"
+    click WF3 "#wf3"
+    click WF4 "#wf4"
+    click WF5 "#wf5"
+    click WF6 "#wf6"
+    click WF8 "#wf8"
+    click WF7 "#wf7"
+    click WF9 "#wf9"
+
+    style ROOT fill:#1a1a2e,stroke:#64ffda,color:#64ffda
+    style SETTINGS fill:#e3f2fd,stroke:#1565c0,color:#000
+    style CHART fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style REFERRAL fill:#fff3e0,stroke:#e65100,color:#000
+    style CHAT fill:#fce4ec,stroke:#c62828,color:#000
+    style WF1 fill:#e3f2fd,stroke:#1565c0,color:#000
+    style WF2 fill:#e3f2fd,stroke:#1565c0,color:#000
+    style WF3 fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style WF4 fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style WF5 fill:#fff3e0,stroke:#e65100,color:#000
+    style WF6 fill:#fff3e0,stroke:#e65100,color:#000
+    style WF8 fill:#fff3e0,stroke:#e65100,color:#000
+    style WF7 fill:#fce4ec,stroke:#c62828,color:#000
+    style WF9 fill:#fce4ec,stroke:#c62828,color:#000
+        </div>
+      </div>
+
+      <h3>Sub-Feature Reference Table</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Method</th><th>Endpoint</th><th>Type</th><th>Java Entry</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Validate API Key</td><td><span class="api-tag post">POST</span></td><td><code>/gpt/check</code></td><td>Sync</td><td><code>AiAPI.userModels()</code></td></tr>
+            <tr><td>2</td><td>Update Chart Settings</td><td><span class="api-tag post">POST</span></td><td><code>/gpt/updateChartAssistSettings</code></td><td>Sync</td><td><code>AiAPI.updateChartAssistSettings()</code></td></tr>
+            <tr><td>3</td><td>Notes Preview</td><td><span class="api-tag get">GET</span></td><td><code>/gpt/notesPreview</code></td><td>Sync</td><td><code>AiAPI.fetchMaskedNotes()</code></td></tr>
+            <tr><td>4</td><td>Chart Recommendation</td><td><span class="api-tag post">POST</span></td><td><code>/gpt/chart_recommendation</code></td><td>Sync+Webhook</td><td><code>AiAPI.getChartGPTResponse()</code></td></tr>
+            <tr><td>5</td><td>Load Referral Encounter</td><td><span class="api-tag get">GET</span></td><td><code>/gpt/referral</code></td><td>Sync</td><td><code>AiAPI.fetchMaskedEncounterDetails()</code></td></tr>
+            <tr><td>6</td><td>Load Encounter via ZLabs</td><td><span class="api-tag get">GET</span></td><td><code>/gpt/encounter</code></td><td>Sync</td><td><code>AiAPI.fetchMaskedEncounterDetailsFromZlabs()</code></td></tr>
+            <tr><td>7</td><td>Ask GPT (Chat)</td><td><span class="api-tag post">POST</span></td><td><code>/gpt/ask</code></td><td>Sync</td><td><code>AiAPI.getAskGPTResponse()</code></td></tr>
+            <tr><td>8</td><td>Generate Referral Letter</td><td><span class="api-tag post">POST</span></td><td><code>/gpt/referral/generation</code></td><td>Sync</td><td><code>AiAPI.gptAssistReferralGen()</code></td></tr>
+            <tr><td>9</td><td>Lab Opinion</td><td><span class="api-tag get">GET</span></td><td><code>/gpt/lab/opinion</code></td><td>Sync</td><td><code>AiAPI.labGPTOpinion()</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 4: RBAC -->
+  <div class="section" id="rbac">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">4. RBAC &amp; Permissions</div>
+        <div class="section-subtitle">Role-based access controls, rate limiting, and PHI masking enforced by security-api-ai.xml</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="mermaid-wrapper">
+        <div class="mermaid">
+flowchart LR
+    subgraph SEC["security-api-ai.xml — RBAC Enforcement"]
+        direction TB
+        P1["CHARTNOTE_GPT_ASSIST:READ\nChart Recommendation (WF4)"]
+        P2["ASK_GPT_ASSIST:READ\nAsk GPT Q&amp;A (WF7)"]
+        P3["REFERRAL_GPT_ASSIST:READ\nGenerate Referral Letter (WF8)"]
+        P4["LAB_GPT_ASSIST:READ\nLab Opinion (WF9)"]
+        P5["PATIENT:READ\nNotes Preview (WF3) + ZLabs (WF6)"]
+        P6["patient.chartnote OAuth\nLoad Referral Data (WF5)"]
+        P7["Auth Session Only\nValidate Key (WF1) + Settings (WF2)"]
+    end
+    AUTH["Authenticated Provider Session"] --> SEC
+    style AUTH fill:#1a1a2e,stroke:#64ffda,color:#64ffda
+    style P1 fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style P2 fill:#fce4ec,stroke:#c62828,color:#000
+    style P3 fill:#fff3e0,stroke:#e65100,color:#000
+    style P4 fill:#e3f2fd,stroke:#1565c0,color:#000
+    style P5 fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style P6 fill:#ede7f6,stroke:#4527a0,color:#000
+    style P7 fill:#f5f5f5,stroke:#9e9e9e,color:#555
+        </div>
+      </div>
+
+      <h3>Permission Matrix</h3>
+      <div class="rbac-grid">
+        <div class="rbac-card">
+          <div class="rbac-perm">CHARTNOTE_GPT_ASSIST:READ</div>
+          <div class="rbac-label">Chart Recommendation</div>
+          <div class="rbac-desc">Allows calling the AI to get clinical suggestions for an active encounter. Audit log: <code>charm.ehr.api.gpt.ask</code></div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">ASK_GPT_ASSIST:READ</div>
+          <div class="rbac-label">Ask GPT Q&amp;A Chat</div>
+          <div class="rbac-desc">Allows general GPT Q&amp;A chat and PubMed literature search. Audit log: <code>charm.ehr.api.gpt.ask</code></div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">REFERRAL_GPT_ASSIST:READ</div>
+          <div class="rbac-label">Generate Referral Letter</div>
+          <div class="rbac-desc">Allows AI-generated referral letter drafting for a patient encounter.</div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">LAB_GPT_ASSIST:READ</div>
+          <div class="rbac-label">Lab AI Opinion</div>
+          <div class="rbac-desc">Allows AI interpretation of lab result groups from the patient chart.</div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">PATIENT:READ</div>
+          <div class="rbac-label">Notes Preview &amp; ZLabs Encounter</div>
+          <div class="rbac-desc">Standard patient read permission. OAuth scope: <code>patient.demographics</code></div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">patient.chartnote (OAuth)</div>
+          <div class="rbac-label">Load Referral Encounter</div>
+          <div class="rbac-desc">OAuth scope required to read full chart note data for referral preparation.</div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">Authenticated Session</div>
+          <div class="rbac-label">Validate API Key &amp; Update Settings</div>
+          <div class="rbac-desc">Only requires a valid provider session. No additional RBAC permission needed.</div>
+        </div>
+        <div class="rbac-card">
+          <div class="rbac-perm">Rate Limit: 60 req/min</div>
+          <div class="rbac-label">All GPT Endpoints</div>
+          <div class="rbac-desc">Enforced globally by <code>security-api-ai.xml</code>. 5-second CharmCache lock per user for AI endpoints.</div>
+        </div>
+      </div>
+
+      <h3>PHI Masking Rules</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Workflow</th><th>PHI Masking</th><th>Unmasking Location</th></tr></thead>
+          <tbody>
+            <tr><td>Notes Preview (WF3)</td><td>Applied server-side in AIUtil</td><td>Display only — not sent to AI</td></tr>
+            <tr><td>Chart Recommendation (WF4)</td><td>Applied server-side in AIUtil</td><td>N/A — AI sees masked data only</td></tr>
+            <tr><td>Load Referral Data (WF5)</td><td>Applied server-side; <code>masked_data</code> map returned</td><td>Client-side after letter generation</td></tr>
+            <tr><td>Load via ZLabs (WF6)</td><td>Applied server-side; <code>masked_data</code> map returned</td><td>Client-side after letter generation</td></tr>
+            <tr><td>Generate Referral Letter (WF8)</td><td>Prompt uses masked tokens; response contains masked tokens</td><td>Client calls <code>showUnMaskedPHIData()</code></td></tr>
+            <tr><td>Ask GPT (WF7)</td><td>Not applied (general Q&amp;A, no patient context)</td><td>N/A</td></tr>
+            <tr><td>Lab Opinion (WF9)</td><td>Not applied (lab values are not PHI)</td><td>N/A</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 5: API INDEX -->
+  <div class="section" id="api-index">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">5. API Index</div>
+        <div class="section-subtitle">All 9 GPT Assist endpoints at a glance with method, handler, and RBAC</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/gpt/check</span></div>
+        <div class="ep-desc">Validate an OpenAI API key against /v1/models. Returns <code>{is_valid, gpt_4_enabled}</code>.</div>
+        <div class="ep-params">Handler: <code>AiAPI.userModels()</code> &nbsp;|&nbsp; RBAC: Auth session only</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/gpt/updateChartAssistSettings</span></div>
+        <div class="ep-desc">Save which data components (Vitals, Labs, Medications) are included in AI prompts.</div>
+        <div class="ep-params">Handler: <code>AiAPI.updateChartAssistSettings()</code> &nbsp;|&nbsp; RBAC: Auth session only</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/gpt/notesPreview</span></div>
+        <div class="ep-desc">Fetch PHI-masked encounter data for provider preview before sending to AI.</div>
+        <div class="ep-params">Handler: <code>AiAPI.fetchMaskedNotes()</code> &nbsp;|&nbsp; RBAC: PATIENT:READ</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/gpt/chart_recommendation</span></div>
+        <div class="ep-desc">Get AI clinical recommendations for an encounter via RAG-enriched Charm AI Webhook.</div>
+        <div class="ep-params">Handler: <code>AiAPI.getChartGPTResponse()</code> &nbsp;|&nbsp; RBAC: CHARTNOTE_GPT_ASSIST:READ</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/gpt/referral</span></div>
+        <div class="ep-desc">Load PHI-masked full encounter data (from patient chart view) for referral letter preparation.</div>
+        <div class="ep-params">Handler: <code>AiAPI.fetchMaskedEncounterDetails()</code> &nbsp;|&nbsp; RBAC: patient.chartnote OAuth</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/gpt/encounter</span></div>
+        <div class="ep-desc">Load PHI-masked encounter data (from encounter view) with ZLabs external lab integration.</div>
+        <div class="ep-params">Handler: <code>AiAPI.fetchMaskedEncounterDetailsFromZlabs()</code> &nbsp;|&nbsp; RBAC: PATIENT:READ</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/gpt/ask</span></div>
+        <div class="ep-desc">Multi-turn GPT Q&amp;A chat with rolling conversation history. Supports General and Adverse Effects modes.</div>
+        <div class="ep-params">Handler: <code>AiAPI.getAskGPTResponse()</code> &nbsp;|&nbsp; RBAC: ASK_GPT_ASSIST:READ</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method post">POST</span><span class="ep-url">/api/ehr/v1/gpt/referral/generation</span></div>
+        <div class="ep-desc">Generate AI referral letter using selected encounter sections. PHI masked; client unmasks locally.</div>
+        <div class="ep-params">Handler: <code>AiAPI.gptAssistReferralGen()</code> &nbsp;|&nbsp; RBAC: REFERRAL_GPT_ASSIST:READ</div>
+      </div>
+      <div class="endpoint-card">
+        <div class="ep-header"><span class="ep-method get">GET</span><span class="ep-url">/api/ehr/v1/gpt/lab/opinion</span></div>
+        <div class="ep-desc">AI clinical interpretation of a lab result group by groupId. No PHI masking applied.</div>
+        <div class="ep-params">Handler: <code>AiAPI.labGPTOpinion()</code> &nbsp;|&nbsp; RBAC: LAB_GPT_ASSIST:READ</div>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF1: VALIDATE API KEY -->
+  <div class="section" id="wf1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">6. Workflow 1 — Validate OpenAI API Key</div>
+        <div class="section-subtitle">Provider enters API key in Practice Settings and clicks Validate</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /api/ehr/v1/gpt/check</span>
+        <span class="api-tag label">settings.js</span>
+        <span class="api-tag label">GPT4Util.java</span>
+        <span class="api-tag label">OpenAI /v1/models</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider enters an OpenAI API key in Practice Settings &gt; GPT Assist tab and clicks "Validate". No DB operations occur — this is a pure API key probe against OpenAI's models endpoint.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as settings.js
+    participant API as AiAPI.java
+    participant GPT as GPT4Util
+    participant OAI as OpenAI /v1/models
+
+    P->>UI: Enter API key, click Validate
+    UI->>API: POST /api/ehr/v1/gpt/check
+    Note right of UI: body: {api_key}
+    API->>GPT: fetchUserModels(apiKey)
+    GPT->>OAI: GET /v1/models
+    Note right of GPT: Authorization: Bearer apiKey
+    alt Valid key (200)
+        OAI-->>GPT: model list JSON
+        GPT-->>API: {is_valid:true, gpt_4_enabled:true/false}
+        API-->>UI: JSON response
+        UI-->>P: Green checkmark shown
+    else Invalid key (401)
+        OAI-->>GPT: 401 Unauthorized
+        GPT-->>API: {is_valid:false}
+        API-->>UI: JSON response
+        UI-->>P: Red error message
+    end
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as settings.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant GPT4 as GPT4Util.java
+    participant URL as UrlUtil.java
+    participant OAI as OpenAI API
+
+    P->>UI: validateGPTAPIKey() triggered
+    Note right of UI: reads key from input field
+    UI->>SEC: POST /api/ehr/v1/gpt/check
+    Note right of UI: body: {api_key}
+    SEC->>SEC: Authenticate session + rate limit check
+    SEC->>AIAPI: AiAPI.userModels(apiKey)
+    AIAPI->>GPT4: GPT4Util.fetchUserModels(apiKey)
+    GPT4->>URL: HTTPS GET /v1/models
+    Note right of GPT4: Authorization: Bearer apiKey
+    URL->>OAI: GET https://api.openai.com/v1/models
+    alt Key valid (200)
+        OAI-->>URL: 200 {data:[{id:"gpt-4",...}]}
+        URL-->>GPT4: models list JSON
+        GPT4->>GPT4: check "gpt-3.5-turbo" and "gpt-4" in list
+        GPT4-->>AIAPI: {is_valid:true, gpt_4_enabled:true}
+    else Key invalid (401)
+        OAI-->>URL: 401 {error:{type:"invalid_api_key"}}
+        GPT4-->>AIAPI: {is_valid:false, gpt_4_enabled:false}
+    end
+    AIAPI-->>SEC: JSONObject as String
+    SEC-->>UI: HTTP 200 JSON
+    alt is_valid = true
+        UI-->>P: Green checkmark, key saved on settings submit
+    else is_valid = false
+        UI-->>P: Red error toast
+    end
+          </div>
+        </div>
+      </div>
+
+      <h3>Business Rules</h3>
+      <ol>
+        <li>No DB read or write occurs during key validation — key is only stored when settings are saved separately.</li>
+        <li>The <code>gpt_4_enabled</code> flag is derived by checking whether the returned models list contains a model whose ID includes "gpt-4".</li>
+        <li>Presence of "gpt-3.5-turbo" indicates basic key validity; presence of "gpt-4" indicates GPT-4 access.</li>
+        <li>The rate limit (60/min) applies to the calling provider session, not per API key.</li>
+      </ol>
+
+      <h3>Error States</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Condition</th><th>System Response</th><th>User Sees</th></tr></thead>
+          <tbody>
+            <tr><td>Invalid API key (OpenAI 401)</td><td><code>{is_valid:false}</code></td><td>Red error indicator</td></tr>
+            <tr><td>Rate limit exceeded</td><td>HTTP 429</td><td>Rate limit error toast</td></tr>
+            <tr><td>Network timeout (UrlUtil 30s)</td><td>Exception caught in AiAPI</td><td>Generic error message</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF2: UPDATE CHART SETTINGS -->
+  <div class="section" id="wf2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">7. Workflow 2 — Update Chart Assist Settings</div>
+        <div class="section-subtitle">Provider selects data components to include in AI analysis and saves</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /api/ehr/v1/gpt/updateChartAssistSettings</span>
+        <span class="api-tag label">settings.js</span>
+        <span class="api-tag label">AiAPI.java</span>
+        <span class="api-tag label">PRACTICEPROPS DB</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider selects/deselects data components (Vitals, Labs, Medications) from the Chart Assist settings multi-select and clicks Save.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as settings.js
+    participant API as AiAPI.java
+    participant DB as PRACTICEPROPS Table
+    participant C as CharmCache
+
+    P->>UI: Select components (Vitals, Labs...), click Save
+    UI->>API: POST /gpt/updateChartAssistSettings
+    Note right of UI: data_to_send: "VTLS,LABRES,MEDICATIONS"
+    API->>DB: UPSERT CHART_GPT_INCLUDED_COMPONENTS
+    DB-->>API: Success
+    API->>C: Invalidate cache key
+    API-->>UI: {message: "Preference updated successfully"}
+    UI-->>P: Success toast notification
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as settings.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant CHARM as CharmUtil
+    participant DB as PRACTICEPROPS Table
+    participant CACHE as CharmCache
+
+    P->>UI: updateChartAssistSettings() triggered
+    Note right of UI: reads #chart_notes_assist_settings multi-select
+    UI->>UI: join selected values as CSV
+    UI->>SEC: POST /api/ehr/v1/gpt/updateChartAssistSettings
+    Note right of UI: body: {data_to_send: "VTLS,LABRES"}
+    SEC->>SEC: Authenticate session, validate param max-length 3000
+    SEC->>AIAPI: AiAPI.updateChartAssistSettings(dataToUpdate)
+    AIAPI->>CHARM: CharmUtil.addOrUpdatePracticeProps
+    Note right of AIAPI: key: CHART_GPT_INCLUDED_COMPONENTS
+    CHARM->>DB: UPSERT into PRACTICEPROPS
+    DB-->>CHARM: row updated/inserted
+    CHARM->>CACHE: invalidate(CHART_GPT_INCLUDED_COMPONENTS, practiceId)
+    CHARM-->>AIAPI: success
+    AIAPI-->>SEC: {message:"Preference updated successfully"}
+    SEC-->>UI: HTTP 200 JSON
+    UI-->>P: Show success toast
+          </div>
+        </div>
+      </div>
+
+      <h3>Data Component Codes</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Code</th><th>Label</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>VTLS</code></td><td>Vitals</td><td>Blood pressure, temperature, weight, etc.</td></tr>
+            <tr><td><code>LABRES</code></td><td>Lab Results</td><td>Recent lab panel results</td></tr>
+            <tr><td><code>MEDICATIONS</code></td><td>Medications / Prescriptions</td><td>Active medication list</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box note">
+        The stored CSV string (max 3000 chars) is later read by <code>AIUtil</code> during Notes Preview and Chart Recommendation to filter which data sections are assembled into the GPT prompt.
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF3: NOTES PREVIEW -->
+  <div class="section" id="wf3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">8. Workflow 3 — Notes Preview</div>
+        <div class="section-subtitle">Provider previews PHI-masked encounter data before sending to GPT</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /api/ehr/v1/gpt/notesPreview</span>
+        <span class="api-tag label">chartnotesuggestion.js</span>
+        <span class="api-tag label">AIUtil.java</span>
+        <span class="api-tag label">PATIENT:READ</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider clicks the "Preview" button in the Chart Assist panel. Shows a modal with all encounter data that will be sent to the AI — with PHI replaced by tokens — so the provider can review before proceeding.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as chartnotesuggestion.js
+    participant API as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as DB Tables
+    participant HB as Handlebars
+
+    P->>UI: Click Preview button
+    UI->>API: GET /gpt/notesPreview
+    Note right of UI: params: encounter_id, isSoapEncounter
+    API->>AIU: fetchMaskedEncounterDetails
+    AIU->>DB: SELECT notes, diagnoses, patient data
+    AIU->>AIU: Apply PHI masking
+    Note right of AIU: Replace name, DOB with tokens
+    AIU-->>API: JSON with masked data
+    API-->>UI: Structured encounter JSON
+    UI->>HB: Render nlp/gpt4/notesPreview template
+    HB-->>P: Preview modal displayed
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as chartnotesuggestion.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB1 as PHYSICIANNOTES / PHYSICIANNOTESEXT
+    participant DB2 as CONSULTATION
+    participant DB3 as PRACTICEPATIENTSLIST
+    participant ZLAB as ZLabs External
+
+    P->>UI: Click Preview button in Chart Assist panel
+    UI->>UI: Read CONSULTATION_ID and encounter type
+    UI->>SEC: GET /api/ehr/v1/gpt/notesPreview
+    Note right of UI: params: encounter_id, isSoapEncounter
+    SEC->>SEC: Authenticate, check PATIENT:READ
+    SEC->>AIAPI: AiAPI.fetchMaskedNotes(encounterId, isSoapEncounter)
+    AIAPI->>AIU: AIUtil.fetchMaskedEncounterDetailsWithZlabs
+    par DB Queries
+        AIU->>DB1: SELECT physician notes by encounterId
+        AIU->>DB2: SELECT consultation metadata
+    end
+    AIU->>ZLAB: Fetch external lab data
+    ZLAB-->>AIU: ZLabs results
+    AIU->>AIU: Apply PHI masking
+    Note right of AIU: Replace patient name, provider name, DOB
+    AIU-->>AIAPI: masked encounter details
+    AIAPI->>AIU: fetchPatientDetailsAndDxs(encounterId)
+    AIU->>DB3: SELECT patient demographics + dx codes
+    DB3-->>AIU: patient + dx data
+    AIU-->>AIAPI: patient + dx data
+    AIAPI->>AIU: getChartNoteAdditionalData(patientId)
+    AIU-->>AIAPI: past encounter summary
+    AIAPI->>AIU: fillPhysicianNotesInJSON(details, notes)
+    AIU-->>AIAPI: final JSON structure
+    AIAPI-->>SEC: JSON response
+    SEC-->>UI: HTTP 200
+    UI->>UI: Render Handlebars nlp/gpt4/notesPreview template
+    UI-->>P: Modal with masked preview data
+          </div>
+        </div>
+      </div>
+
+      <h3>Response JSON Structure</h3>
+      <pre><code class="language-json">{
+  "PAST_ENCOUNTER":       "...",
+  "DX_CODES":             "[Z87.39, E11.9]",
+  "GENDER":               "M",
+  "AGE":                  "54",
+  "CHIEF_COMPLAINTS":     "...",
+  "ASSESSMENT_NOTES":     "...",
+  "PHYSICAL_EXAMINATION": "...",
+  "SUBJECTIVE_NOTES":     "...",
+  "TREATMENT_NOTES":      "..."
+}</code></pre>
+      <div class="info-box note">
+        PHI masking replaces patient name, provider name, and date of birth with placeholder tokens before this data is ever sent to the AI. The unmasking map is stored server-side for the referral workflows.
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF4: CHART RECOMMENDATION -->
+  <div class="section" id="wf4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">9. Workflow 4 — Chart Recommendation</div>
+        <div class="section-subtitle">Provider requests AI clinical suggestions via RAG-enriched Charm AI Webhook</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /api/ehr/v1/gpt/chart_recommendation</span>
+        <span class="api-tag label">chartnotesuggestion.js</span>
+        <span class="api-tag label">AIUtil.java</span>
+        <span class="api-tag label">CHARTNOTE_GPT_ASSIST:READ</span>
+        <span class="api-tag async">Charm AI Webhook</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider clicks "Get AI Suggestions" in the Chart Assist panel. Encounter notes are enriched with RAG nearest-neighbor context and sent to the Charm AI Webhook, which calls OpenAI.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as chartnotesuggestion.js
+    participant API as AiAPI.java
+    participant AIU as AIUtil.java
+    participant WH as Charm AI Webhook
+    participant OAI as OpenAI
+    participant HB as Handlebars
+
+    P->>UI: Click Get AI Suggestions
+    UI->>API: POST /gpt/chart_recommendation
+    Note right of UI: body: {notes, consultation_id}
+    API->>AIU: getChartGPTResponseFromWebhook
+    AIU->>AIU: RAG nearest-neighbor search
+    AIU->>AIU: Build enriched prompt
+    AIU->>WH: POST enriched prompt
+    WH->>OAI: Chat Completions API
+    OAI-->>WH: Clinical recommendations
+    WH-->>AIU: Structured response
+    AIU-->>API: Recommendations JSON
+    API-->>UI: AI suggestions
+    UI->>HB: Render chartNoteGptSuggestion template
+    HB-->>P: Chart suggestions displayed
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as chartnotesuggestion.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as Mickey DB
+    participant URL as UrlUtil.java
+    participant WH as Charm AI Webhook
+    participant OAI as OpenAI Chat API
+
+    P->>UI: Click Get AI Suggestions button
+    UI->>UI: Collect notes from form fields
+    UI->>SEC: POST /api/ehr/v1/gpt/chart_recommendation
+    Note right of UI: body: {notes, consultation_id, is_assessment_notes_available}
+    SEC->>SEC: Authenticate, check CHARTNOTE_GPT_ASSIST:READ
+    SEC->>SEC: Write audit log: charm.ehr.api.gpt.ask
+    SEC->>AIAPI: AiAPI.getChartGPTResponse(notes, encId, isAssessment)
+    AIAPI->>AIU: AIUtil.getChartGPTResponseFromWebhook
+    AIU->>DB: Read CHART_ASSIST_NEARESTNEIGHBORS_COUNT
+    DB-->>AIU: RAG config value
+    AIU->>AIU: Perform RAG nearest-neighbor search
+    Note right of AIU: Uses encounter notes as query vector
+    AIU->>AIU: Construct enriched prompt
+    Note right of AIU: notes + RAG context chunks
+    AIU->>URL: POST to Charm AI Webhook
+    URL->>WH: Enriched clinical prompt
+    WH->>OAI: POST /v1/chat/completions
+    OAI-->>WH: {choices:[{message:{content:"..."}}]}
+    WH-->>URL: Structured recommendations
+    URL-->>AIU: Response JSON
+    AIU-->>AIAPI: Recommendations object
+    AIAPI-->>SEC: JSON response
+    SEC-->>UI: HTTP 200
+    UI->>UI: Render nlp/chart_suggestions/chartNoteGptSuggestion template
+    UI-->>P: Suggestions panel with AI recommendations
+          </div>
+        </div>
+      </div>
+
+      <h3>RAG Pipeline Detail</h3>
+      <ol>
+        <li>The current encounter notes are used as a query.</li>
+        <li><code>CHART_ASSIST_NEARESTNEIGHBORS_COUNT</code> property controls how many similar past cases to retrieve.</li>
+        <li>Nearest-neighbor results are appended to the prompt as context before sending to the webhook.</li>
+        <li>The Charm AI Webhook handles the final OpenAI call with the enriched prompt.</li>
+      </ol>
+
+      <h3>Error States</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Condition</th><th>System Response</th><th>User Sees</th></tr></thead>
+          <tbody>
+            <tr><td>No assessment notes</td><td>Proceeds with available fields only</td><td>Suggestions based on partial data</td></tr>
+            <tr><td>Webhook timeout (30s)</td><td>Exception in UrlUtil</td><td>Error toast, retry option</td></tr>
+            <tr><td>RBAC denied</td><td>HTTP 403</td><td>Permission error message</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF5: LOAD REFERRAL DATA -->
+  <div class="section" id="wf5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">10. Workflow 5 — Load Referral Encounter Data</div>
+        <div class="section-subtitle">Provider opens GPT Referral Assist from patient chart — loads and masks full encounter</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /api/ehr/v1/gpt/referral</span>
+        <span class="api-tag label">gpt4.js</span>
+        <span class="api-tag label">AIUtil.java</span>
+        <span class="api-tag label">patient.chartnote OAuth</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider opens "GPT Referral Assist" from the patient chart view. Entry point #1 for the referral workflow — uses both <code>patientId</code> and <code>encounterId</code>. Progress bar shown (10s estimate).</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant API as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as DB Tables
+    participant HB as Handlebars
+
+    P->>UI: Open GPT Referral Assist (patient chart)
+    UI->>UI: Show progress bar (10s estimate)
+    UI->>API: GET /gpt/referral
+    Note right of UI: params: patient_id, encounter_id
+    API->>AIU: fetchMaskedEncounterDetails
+    AIU->>DB: SELECT encounter, notes, patient, meds, dx
+    AIU->>AIU: Apply PHI masking
+    Note right of AIU: Store token map in masked_data
+    AIU-->>API: ReferralEncounterDetails DataObject
+    API-->>UI: JSON with masked encounter
+    UI->>HB: Render gptassist/GPTAssistReferral template
+    HB-->>P: Section checkboxes for referral
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB1 as CONSULTATION
+    participant DB2 as PHYSICIANNOTES / PHYSICIANNOTESEXT
+    participant DB3 as PRACTICEPATIENTSLIST
+    participant DB4 as Medication / Dx Tables
+
+    P->>UI: gptReferralAssist.showGPTAssistReferralPrompt(patientID, encounterID)
+    UI->>UI: Show progress bar
+    UI->>SEC: GET /api/ehr/v1/gpt/referral
+    Note right of UI: params: patient_id, encounter_id
+    SEC->>SEC: Authenticate session
+    Note right of SEC: OAuth scope: patient.chartnote
+    SEC->>AIAPI: AiAPI.fetchMaskedEncounterDetails(patientId, encounterId)
+    AIAPI->>AIU: AIUtil.fetchMaskedEncounterDetails(patientId, encounterId)
+    par Parallel DB Queries
+        AIU->>DB1: SELECT encounter metadata by encounterId
+        AIU->>DB2: SELECT all note fields
+        AIU->>DB3: SELECT patient demographics
+        AIU->>DB4: SELECT medications and diagnoses
+    end
+    DB1-->>AIU: consultation record
+    DB2-->>AIU: physician notes
+    DB3-->>AIU: patient info
+    DB4-->>AIU: meds and dx
+    AIU->>AIU: Apply PHI masking
+    Note right of AIU: Stores token map in masked_data field
+    AIU-->>AIAPI: ReferralEncounterDetails DataObject
+    AIAPI-->>SEC: JSON response
+    SEC-->>UI: HTTP 200
+    UI->>UI: gptReferralAssist.displayEncounterListView(resp)
+    UI->>UI: Store resp.encounter.masked_data in phiUnmaskingData
+    UI->>UI: Render gptassist/GPTAssistReferral template
+    UI-->>P: Referral dialog with section checkboxes
+          </div>
+        </div>
+      </div>
+
+      <h3>PHI Masking Token Map</h3>
+      <pre><code class="language-json">{
+  "[MASKED_PATIENT]":  "John Smith",
+  "[MASKED_PROVIDER]": "Dr. Jane Doe",
+  "[MASKED_DOB]":      "1970-03-15"
+}</code></pre>
+      <p>This map is stored in the DataObject and passed to the client as <code>resp.encounter.masked_data</code>, where it is saved in <code>gptReferralAssist.phiUnmaskingData</code> for use after letter generation (Workflow 8).</p>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF6: LOAD VIA ZLABS -->
+  <div class="section" id="wf6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">11. Workflow 6 — Load Encounter via ZLabs</div>
+        <div class="section-subtitle">Alternative referral entry point from encounter view — includes external lab data</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /api/ehr/v1/gpt/encounter</span>
+        <span class="api-tag label">gpt4.js</span>
+        <span class="api-tag label">AIUtil.java</span>
+        <span class="api-tag label">ZLabs Integration</span>
+        <span class="api-tag label">PATIENT:READ</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider opens "GPT Referral Assist" from within an encounter view (vs. patient chart view). Only <code>encounterId</code> is available — patient ID is resolved from the encounter. ZLabs external lab data is integrated.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant API as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as DB Tables
+    participant ZL as ZLabs External
+
+    P->>UI: Open referral assist from encounter view
+    UI->>UI: Show progress bar
+    UI->>API: GET /gpt/encounter
+    Note right of UI: param: encounter_id only
+    API->>AIU: fetchMaskedEncounterDetailsWithZlabs
+    AIU->>DB: SELECT (resolves patientId from encounter)
+    AIU->>ZL: Fetch external lab results
+    ZL-->>AIU: Lab data integrated
+    AIU->>AIU: PHI masking applied
+    AIU-->>API: Encounter with masked_data
+    API-->>UI: JSON response
+    UI->>UI: Store phiUnmaskingData client-side
+    UI-->>P: Referral section checkboxes
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB1 as CONSULTATION
+    participant DB2 as PHYSICIANNOTES / PHYSICIANNOTESEXT
+    participant ZLAB as ZLabs External Labs
+
+    P->>UI: showGPTAssistReferralPromptFromZLabs(encounterID)
+    UI->>UI: Show progress bar
+    UI->>SEC: GET /api/ehr/v1/gpt/encounter
+    Note right of UI: param: encounter_id
+    SEC->>SEC: Authenticate, check PATIENT:READ
+    Note right of SEC: OAuth scope: patient.demographics
+    SEC->>AIAPI: AiAPI.fetchMaskedEncounterDetailsFromZlabs(encounterId)
+    AIAPI->>AIU: AIUtil.fetchMaskedEncounterDetailsWithZlabs(encounterId)
+    AIU->>DB1: SELECT CONSULTATION to resolve patientId
+    DB1-->>AIU: consultation with patientId
+    par Parallel Queries
+        AIU->>DB2: SELECT all physician note fields
+        AIU->>ZLAB: Fetch external lab data for encounter
+    end
+    DB2-->>AIU: physician notes
+    ZLAB-->>AIU: external lab results
+    AIU->>AIU: Integrate ZLabs into encounter object
+    AIU->>AIU: Apply PHI masking
+    Note right of AIU: masked_data JSON field populated
+    AIU-->>AIAPI: Encounter DataObject with masked_data
+    AIAPI-->>SEC: JSON response
+    SEC-->>UI: HTTP 200
+    alt resp.encounter.masked_data exists
+        UI->>UI: Parse and store in gptReferralAssist.phiUnmaskingData
+    end
+    UI->>UI: displayEncounterListView(resp)
+    UI-->>P: Referral dialog with lab data included
+          </div>
+        </div>
+      </div>
+
+      <h3>Difference from Workflow 5</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Aspect</th><th>WF5: /gpt/referral</th><th>WF6: /gpt/encounter</th></tr></thead>
+          <tbody>
+            <tr><td>Entry point</td><td>Patient chart view</td><td>Encounter view</td></tr>
+            <tr><td>Input params</td><td><code>patient_id</code> + <code>encounter_id</code></td><td><code>encounter_id</code> only</td></tr>
+            <tr><td>Patient resolution</td><td>Provided by caller</td><td>Resolved from CONSULTATION table</td></tr>
+            <tr><td>ZLabs integration</td><td>Not included</td><td>Included</td></tr>
+            <tr><td>OAuth scope</td><td><code>patient.chartnote</code></td><td><code>patient.demographics</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF8: GENERATE REFERRAL LETTER -->
+  <div class="section" id="wf8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">12. Workflow 8 — Generate Referral Letter</div>
+        <div class="section-subtitle">Provider selects encounter sections, AI drafts a referral letter with PHI masking</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /api/ehr/v1/gpt/referral/generation</span>
+        <span class="api-tag label">gpt4.js</span>
+        <span class="api-tag label">AIUtil.java</span>
+        <span class="api-tag label">REFERRAL_GPT_ASSIST:READ</span>
+        <span class="api-tag label">OpenAI via UrlUtil</span>
+      </div>
+      <p><strong>Trigger:</strong> After loading encounter data via Workflow 5 or 6, the provider selects the sections to include and clicks "Generate Referral". The AI produces a draft letter using masked PHI tokens; the client then replaces tokens with real values locally.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant API as AiAPI.java
+    participant AIU as AIUtil.java
+    participant OAI as OpenAI
+
+    P->>UI: Select sections, click Generate Referral
+    UI->>UI: Build selected_notes string from checked boxes
+    UI->>UI: Show progress bar (10s estimate)
+    UI->>API: POST /gpt/referral/generation
+    Note right of UI: body: {patient_id, encounter_id, selected_notes}
+    API->>API: Validate IDs not null
+    API->>AIU: gptAssistReferralGen
+    AIU->>AIU: Validate notes not empty
+    AIU->>AIU: Build referral prompt with masked data
+    AIU->>OAI: POST to OpenAI
+    OAI-->>AIU: Draft letter with masked tokens
+    AIU-->>API: {referralMail, unmaskData}
+    API-->>UI: Masked draft letter
+    UI->>UI: Replace tokens with real PHI locally
+    UI-->>P: Readable referral letter in textarea
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as Mickey DB
+    participant URL as UrlUtil.java
+    participant OAI as OpenAI API
+
+    P->>UI: gptReferralAssist.generateReferralMail(patientId, encounterId)
+    UI->>UI: Iterate input[id^=gpt_]:checked checkboxes
+    Note right of UI: Maps checkbox IDs to encounter field values
+    UI->>UI: Build selected_notes string
+    UI->>UI: Show progress bar (10s estimate)
+    UI->>SEC: POST /api/ehr/v1/gpt/referral/generation
+    Note right of UI: body: {patient_id, encounter_id, selected_notes}
+    SEC->>SEC: Authenticate, check REFERRAL_GPT_ASSIST:READ
+    SEC->>AIAPI: AiAPI.gptAssistReferralGen(patientId, encId, notes)
+    alt patientId or encounterId null
+        AIAPI-->>UI: GPT_ASSIST_REFERRAL_MAIL_ID_CHECK_ERROR
+    end
+    AIAPI->>AIU: AIUtil.gptAssistReferralGen(patientId, encId, notes)
+    AIU->>DB: SELECT patient and provider details for prompt
+    DB-->>AIU: patient and provider context
+    alt encounterNotes empty
+        AIU-->>AIAPI: GPT_ASSIST_REFERRAL_MAIL_ENCOUNTER_NOTES_ERROR
+    end
+    AIU->>AIU: Construct referral letter prompt with masked tokens
+    AIU->>URL: POST to OpenAI (fetchPostJSONResultsWithFile)
+    URL->>OAI: POST /v1/chat/completions
+    Note right of URL: System prompt: referral letter instructions
+    OAI-->>URL: Draft letter with [MASKED_PATIENT] tokens
+    URL-->>AIU: Response JSON
+    AIU-->>AIAPI: {referralMail: "Dear Dr. [MASKED_PROVIDER]..."}
+    AIAPI-->>SEC: JSON response
+    SEC-->>UI: HTTP 200
+    UI->>UI: Store masked draft in phiMaskedRefMail
+    UI->>UI: Populate #gpt_ref_resp_draft textarea
+    UI->>UI: Replace tokens using phiUnmaskingData
+    Note right of UI: [MASKED_PATIENT] -> "John Smith"
+    UI-->>P: Readable referral letter displayed
+          </div>
+        </div>
+      </div>
+
+      <h3>Section Checkbox to Field Mapping</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Checkbox ID</th><th>Encounter Field</th><th>Label in Letter</th></tr></thead>
+          <tbody>
+            <tr><td><code>gpt_chief_cmplnts</code></td><td><code>#chief_complaints_val</code></td><td>Chief Complaints</td></tr>
+            <tr><td><code>gpt_assmnt_nots</code></td><td><code>#assessment_notes_val</code></td><td>Assessment Notes</td></tr>
+            <tr><td><code>gpt_symptms</code></td><td><code>#symptoms_val</code></td><td>Symptoms</td></tr>
+            <tr><td><code>gpt_trtmnt_nots</code></td><td><code>#treatment_notes_val</code></td><td>Treatment Notes</td></tr>
+            <tr><td><code>gpt_hstry_of_prsnt_illness</code></td><td><code>#history_of_present_illness_val</code></td><td>History of Present Illness</td></tr>
+            <tr><td><code>gpt_phyexm</code></td><td><code>#physical_examination_val</code></td><td>Physical Examination</td></tr>
+            <tr><td><code>gpt_diagns</code></td><td><code>#diagnoses_val</code></td><td>Diagnoses</td></tr>
+            <tr><td><code>gpt_prxton</code></td><td><code>#medications_val</code></td><td>Medications / Prescriptions</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Error States</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Condition</th><th>Error Code</th><th>User Sees</th></tr></thead>
+          <tbody>
+            <tr><td>patientId or encounterId null</td><td><code>GPT_ASSIST_REFERRAL_MAIL_ID_CHECK_ERROR</code></td><td>Validation error message</td></tr>
+            <tr><td>No sections selected (empty notes)</td><td><code>GPT_ASSIST_REFERRAL_MAIL_ENCOUNTER_NOTES_ERROR</code></td><td>Select at least one section prompt</td></tr>
+            <tr><td>OpenAI timeout</td><td>UrlUtil exception</td><td>Error toast, retry option</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF7: ASK GPT -->
+  <div class="section" id="wf7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">13. Workflow 7 — Ask GPT (General Q&amp;A Chat)</div>
+        <div class="section-subtitle">Provider sends a question to GPT; conversation history maintained client-side</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag post">POST /api/ehr/v1/gpt/ask</span>
+        <span class="api-tag label">gpt4.js</span>
+        <span class="api-tag label">GPT4Util.java</span>
+        <span class="api-tag label">ASK_GPT_ASSIST:READ</span>
+        <span class="api-tag label">OpenAI Chat Completions</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider types a question in the GPT Assist chat panel and presses Send. Conversation history is serialized client-side and sent with each request. No DB operations occur — this is a stateless Q&amp;A flow. Also triggered by medication adverse effects lookup.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js (chatGpt)
+    participant API as AiAPI.java
+    participant GPT4 as GPT4Util.java
+    participant OAI as OpenAI /v1/chat/completions
+
+    P->>UI: Type question, press Send
+    UI->>UI: Append user bubble to chat
+    UI->>UI: Collect last 10 .conversation DOM divs
+    UI->>API: POST /gpt/ask
+    Note right of UI: body: {question, past_transactions}
+    API->>GPT4: generateAskGPTResponse(question, pastTrxns)
+    GPT4->>GPT4: Build messages from past_transactions
+    GPT4->>GPT4: Append new question to messages
+    GPT4->>OAI: POST /v1/chat/completions
+    OAI-->>GPT4: Answer text
+    GPT4-->>API: answer string
+    API-->>UI: {result: answerString}
+    UI-->>P: Bot reply bubble appended to chat
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow (including Adverse Effects sub-flow)</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant GPT4 as GPT4Util.java
+    participant URL as UrlUtil.java
+    participant OAI as OpenAI Chat API
+
+    alt Standard Q&A path
+        P->>UI: chatGpt.sendMessage() triggered
+        UI->>UI: Read user input from chat input field
+    else Adverse Effects sub-flow
+        P->>UI: Click AI Opinion on medication
+        UI->>UI: prefix = "Adverse of medication: " + medName
+    end
+    UI->>UI: Append user message bubble to chat
+    UI->>UI: Collect divArray conversation history
+    UI->>UI: Serialize as past_transactions JSON
+    UI->>SEC: POST /api/ehr/v1/gpt/ask
+    Note right of UI: body: {question, past_transactions}
+    SEC->>SEC: Authenticate, check ASK_GPT_ASSIST:READ
+    SEC->>SEC: Write audit log: charm.ehr.api.gpt.ask
+    SEC->>AIAPI: AiAPI.getAskGPTResponse(question, past_transactions)
+    AIAPI->>GPT4: GPT4Util.generateAskGPTResponse(question, past_transactions)
+    GPT4->>GPT4: Build messages array from past_transactions
+    Note right of GPT4: [{role:user,content:q1},{role:assistant,content:a1},...]
+    GPT4->>GPT4: Append new question to messages array
+    GPT4->>URL: HTTPS POST to OpenAI
+    URL->>OAI: POST /v1/chat/completions
+    Note right of URL: model: gpt-4o, messages array
+    OAI-->>URL: {choices:[{message:{content:"answer"}}]}
+    URL-->>GPT4: response JSON
+    GPT4->>GPT4: Extract answer string from choices[0]
+    GPT4-->>AIAPI: answer string
+    AIAPI-->>SEC: {result: answerString}
+    SEC-->>UI: HTTP 200 JSON
+    UI->>UI: Append bot reply bubble to chat
+    UI-->>P: Bot reply visible in chat panel
+          </div>
+        </div>
+      </div>
+
+      <h3>Conversation History Management</h3>
+      <ol>
+        <li>History is maintained entirely client-side in the <code>divArray</code> DOM structure.</li>
+        <li>Each request serializes the full prior conversation as <code>past_transactions</code> JSON.</li>
+        <li>The server is stateless — no session or DB storage of conversation history.</li>
+        <li>Server-side: <code>MessageQueue.addMessage()</code> removes oldest user+assistant pair when limit of 10 messages (5 pairs) is exceeded.</li>
+        <li>Clearing the chat panel resets history completely.</li>
+      </ol>
+
+      <h3>searchType Modes</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Mode</th><th>Trigger</th><th>System Prompt Variation</th></tr></thead>
+          <tbody>
+            <tr><td><code>General</code></td><td>Standard chat panel</td><td>General medical Q&amp;A assistant</td></tr>
+            <tr><td><code>Adverse_effect</code></td><td>Medication list AI Opinion click</td><td>Adverse effects specialist; question auto-prefixed with medication name</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ WF9: LAB OPINION -->
+  <div class="section" id="wf9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">14. Workflow 9 — Lab Opinion</div>
+        <div class="section-subtitle">Provider clicks AI Opinion on a lab result group — AI interprets values and reference ranges</div>
+      </div>
+      <div class="section-toggle" onclick="event.stopPropagation()">
+        <button class="active" onclick="toggleDetail(this,'normal')">Normal</button>
+        <button onclick="toggleDetail(this,'detailed')">Detailed</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="api-tags">
+        <span class="api-tag get">GET /api/ehr/v1/gpt/lab/opinion</span>
+        <span class="api-tag label">gpt4.js</span>
+        <span class="api-tag label">AIUtil.java</span>
+        <span class="api-tag label">LAB_GPT_ASSIST:READ</span>
+        <span class="api-tag label">OpenAI (no PHI masking)</span>
+      </div>
+      <p><strong>Trigger:</strong> Provider clicks the "AI Opinion" button on a lab result group in the patient chart. Lab values and reference ranges are not PHI, so no masking is applied. The AI provides clinical interpretation directly.</p>
+
+      <div class="diagram-normal active">
+        <h3>Normal Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js (gptLabAssist)
+    participant API as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as Lab Result Tables
+    participant OAI as OpenAI
+
+    P->>UI: Click AI Opinion on lab group
+    UI->>UI: Render gptassist/LabAssistView template
+    UI->>UI: Extract lab rows from #patientList DOM table
+    UI->>API: GET /gpt/lab/opinion
+    Note right of UI: param: group_id
+    API->>API: Validate groupId not null
+    API->>AIU: labGPTOpinion(groupId)
+    AIU->>DB: SELECT lab results by groupId
+    AIU->>AIU: Validate results not empty
+    AIU->>AIU: Build clinical prompt
+    Note right of AIU: param names, values, reference ranges
+    AIU->>OAI: HTTP POST (no PHI masking)
+    OAI-->>AIU: Clinical interpretation
+    AIU-->>API: {labOpinion: "..."}
+    API-->>UI: Opinion text
+    UI-->>P: Opinion shown in sticky note panel
+          </div>
+        </div>
+      </div>
+
+      <div class="diagram-detailed">
+        <h3>Detailed Flow</h3>
+        <div class="mermaid-wrapper">
+          <div class="mermaid">
+sequenceDiagram
+    participant P as Provider
+    participant UI as gpt4.js
+    participant SEC as security-api-ai.xml
+    participant AIAPI as AiAPI.java
+    participant AIU as AIUtil.java
+    participant DB as Lab Result DB Tables
+    participant URL as UrlUtil.java
+    participant OAI as OpenAI API
+
+    P->>UI: gptLabAssist.showLabAssistPrompt(groupID)
+    UI->>UI: Render Handlebars gptassist/LabAssistView template
+    UI->>UI: Slide down #StickyNoteViewDiv panel
+    UI->>UI: gptLabAssist.getLabResults(groupID)
+    Note right of UI: Extract rows from #patientList DOM table
+    UI->>UI: Build labResultStr
+    Note right of UI: "HbA1c : 8.5%, 4.0-5.6%"
+    UI->>UI: gptLabAssist.getUserRequestDiv(labResultStr, groupID)
+    UI->>SEC: GET /api/ehr/v1/gpt/lab/opinion
+    Note right of UI: param: group_id
+    SEC->>SEC: Authenticate, check LAB_GPT_ASSIST:READ
+    SEC->>AIAPI: AiAPI.labGPTOpinion(groupId)
+    alt groupId is null
+        AIAPI-->>UI: GPT_LAB_OPINION_NULL_LAB_GROUP_ID_ERROR
+    end
+    AIAPI->>AIU: AIUtil.labGPTOpinion(groupId)
+    AIU->>DB: SELECT lab results by groupId
+    alt No lab results found
+        AIU-->>AIAPI: GPT_LAB_OPINION_NULL_LAB_RESULT_ERROR
+    end
+    AIU->>AIU: Construct clinical prompt
+    Note right of AIU: Lab names, values, reference ranges (no PHI)
+    AIU->>URL: HTTP POST to OpenAI
+    URL->>OAI: POST /v1/chat/completions
+    OAI-->>URL: {choices:[{message:{content:"HbA1c of 8.5%..."}}]}
+    URL-->>AIU: Response JSON
+    AIU-->>AIAPI: {labOpinion: "The HbA1c of 8.5%..."}
+    AIAPI-->>SEC: JSON response
+    SEC-->>UI: HTTP 200
+    UI->>UI: Append bot reply to .gpt_Lab_Opinion panel
+    UI-->>P: Clinical interpretation in sticky note panel
+          </div>
+        </div>
+      </div>
+
+      <h3>Lab Result String Format (Client-Side)</h3>
+      <pre><code>HbA1c : 8.5%, Reference: 4.0-5.6%
+Glucose : 180 mg/dL, Reference: 70-100 mg/dL
+Creatinine : 1.2 mg/dL, Reference: 0.6-1.2 mg/dL</code></pre>
+
+      <div class="info-box note">
+        <strong>Why No PHI Masking?</strong> Lab parameter names, numeric values, and reference ranges do not constitute PHI under HIPAA. The patient's name and demographic identifiers are never included in the lab opinion prompt.
+      </div>
+
+      <h3>Error States</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Condition</th><th>Error Code</th><th>User Sees</th></tr></thead>
+          <tbody>
+            <tr><td>groupId is null</td><td><code>GPT_LAB_OPINION_NULL_LAB_GROUP_ID_ERROR</code></td><td>Validation error in panel</td></tr>
+            <tr><td>No lab results for groupId</td><td><code>GPT_LAB_OPINION_NULL_LAB_RESULT_ERROR</code></td><td>No results found message</td></tr>
+            <tr><td>OpenAI timeout</td><td>UrlUtil exception</td><td>Error in sticky note panel</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 15: GPT4UTIL -->
+  <div class="section" id="gpt4util">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">15. Backend Reference — GPT4Util.java (21 Methods)</div>
+        <div class="section-subtitle">Core AI utility class — all static methods for prompt building, routing, and AI calls</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Central orchestration class at <code>com.medicalmine.api.rest.ehr.ai.util.GPT4Util</code>. All methods are <code>static</code>. Handles prompt construction, model routing (Azure vs OpenAI), attachment processing, placeholder substitution, and usage logging.</p>
+
+      <h3>Response Generation</h3>
+      <div class="method-block">
+        <div class="method-sig">public static String generateResponse(GPT4Request request)</div>
+        <div class="method-desc">Wrapper: calls generateGPT4Response() and returns <code>choices[0].message.contentAsString()</code>. Use for plain-text AI responses.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String generateJSONResponse(GPT4Request request)</div>
+        <div class="method-desc">Same as generateResponse but validates and extracts JSON from the response. Handles LLM preamble text by finding first <code>{</code> and last <code>}</code>. Replaces <code>{delimiter}</code> with <code>####</code>. Throws FinanceException(GPT_API_JSON_ERROR) if no valid JSON bracket pair found.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static GPT4Response generateGPT4Response(GPT4Request request)</div>
+        <div class="method-desc">Core method. Forces model to GPT_4O. Creates GPT4Api instance with practice API key. Handles null response, empty choices, and known GPT errors (<code>insufficient_quota</code> &rarr; specific error code; others &rarr; SEVERE log). Logs total tokens at INFO.</div>
+      </div>
+
+      <h3>Request Building</h3>
+      <div class="method-block">
+        <div class="method-sig">public static GPT4Request generateGPT4Request(String userData, String appendToUserPrompt, String modelType, String pastTrxns)</div>
+        <div class="method-desc">Standard request builder. Steps: (1) Get API key via AIUtil.getGptAPiKey(). (2) Call getGPTPromptDetails() for system_prompt, user_prompt, max_tokens. (3) Replace {delimiter} with ####. (4) Call updateUserPrompt() to fill {key} placeholders from userData JSON. (5) Append appendToUserPrompt if provided. (6) If pastTrxns not null: deserialize MessageQueue from Gson JSON, cleanQueue(). (7) Build: [past messages] + systemMessage + userMessage. (8) Return GPT4Request(GPT_4O, messagesList, max_tokens).</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String[] updateUserPrompt(String userData, String user_prompt)</div>
+        <div class="method-desc">Uses regex <code>\{(.*?)\}</code> to find {key} placeholders in user_prompt. Parses userData as JSON (ObjectMapper). Replaces matched keys. Preserves {Past*} keys (for multi-turn history). Returns [updated_user_prompt, updated_userData_json] array.</div>
+      </div>
+
+      <h3>Feature Methods</h3>
+      <div class="method-block">
+        <div class="method-sig">public static String generatePhysicianAssist(String notes, Long memberId, Long encounterId, String suggestionType)</div>
+        <div class="method-desc">Routes to CHART_NOTE_ASSIST_PLAN ("Plan"), CHART_NOTE_ASSIST ("Diagnoses"), or CHART_NOTE_ASSIST_ASSESSMENT (default). Calls generateJSONResponse() &rarr; logs usage via AIUtil.addOrUpdateGPTAssistUsage(memberId, encounterId, "CHART_GPT").</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String generateReferralReport(String content, Long encounterId)</div>
+        <div class="method-desc">PROMPT_TYPE: REFERRAL_ASSIST. Builds GPT4Request &rarr; generateResponse() &rarr; log usage tag "REFERRALS". Returns email draft string.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String generateLabOpinion(String labResults, Long groupId)</div>
+        <div class="method-desc">PROMPT_TYPE: LAB_OPINION_ASSIST. Builds GPT4Request &rarr; generateResponse() &rarr; log usage tag "LAB_OPINION". Returns clinical opinion string.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String generateAskGPTResponse(String question, String pastTrxns)</div>
+        <div class="method-desc">PROMPT_TYPE: ASK_GPT_ASSIST. Builds GPT4Request with conversation history &rarr; generateResponse() &rarr; log usage tag "ASK_GPT". Returns answer string.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String generatePlanNotes(String notes, String planType)</div>
+        <div class="method-desc">Uses planType as PROMPT_TYPE directly. Returns string. No usage logging.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static String generateCptCodes(String notes)</div>
+        <div class="method-desc">PROMPT_TYPE: CPT_CODES_ASSIST. Returns JSON string of CPT code suggestions.</div>
+      </div>
+
+      <h3>Supporting Methods</h3>
+      <div class="method-block">
+        <div class="method-sig">public static JSONObject fetchUserModels(String apiKey)</div>
+        <div class="method-desc">Validates API key via GPT4Api.isValidUser(). Returns <code>{"is_valid": true/false, "gpt_4_enabled": true/false}</code>. Presence of "gpt-3.5-turbo" &rarr; key valid. Presence of "gpt-4" &rarr; GPT-4 access.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public static HashMap&lt;String, Object&gt; getGPTPromptDetails(String modelType, String modelVersion)</div>
+        <div class="method-desc">Queries GPTPROMPTDETAILS table. Criteria: PROMPT_TYPE = modelType AND MODEL_VERSION = modelVersion. Returns HashMap with USER_PROMPT, SYSTEM_PROMPT, MAX_TOKENS.</div>
+      </div>
+
+      <h3>GPTPROMPTDETAILS PROMPT_TYPE Values</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>PROMPT_TYPE</th><th>Used For</th></tr></thead>
+          <tbody>
+            <tr><td><code>CHART_NOTE_ASSIST</code></td><td>Diagnoses suggestions from physician notes</td></tr>
+            <tr><td><code>CHART_NOTE_ASSIST_PLAN</code></td><td>Plan suggestions</td></tr>
+            <tr><td><code>CHART_NOTE_ASSIST_ASSESSMENT</code></td><td>Assessment notes suggestions</td></tr>
+            <tr><td><code>CHART_NOTE_GENERATION</code></td><td>Full chart note (OpenAI path)</td></tr>
+            <tr><td><code>CHART_NOTE_SUBJECTIVE_GENERATION</code></td><td>Subjective/Objective note (Azure async task 1)</td></tr>
+            <tr><td><code>CHART_NOTE_ASSESSMENT_GENERATION</code></td><td>Assessment/Diagnoses note (Azure async task 2)</td></tr>
+            <tr><td><code>REFERRAL_ASSIST</code></td><td>Referral email generation</td></tr>
+            <tr><td><code>LAB_OPINION_ASSIST</code></td><td>Lab results interpretation</td></tr>
+            <tr><td><code>ASK_GPT_ASSIST</code></td><td>Multi-turn Q&amp;A</td></tr>
+            <tr><td><code>CPT_CODES_ASSIST</code></td><td>CPT code suggestions</td></tr>
+            <tr><td><code>CLAIM_AI_SUGGESTIONS</code></td><td>Insurance claim AI (Azure)</td></tr>
+            <tr><td><code>CLAIM_AI_DENIAL_SUGGESTIONS</code></td><td>Claim denial suggestions (Azure)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 16: GPTTASKUTIL -->
+  <div class="section" id="gpttaskutil">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">16. Backend Reference — GPTTaskUtil.java (8 Async Methods)</div>
+        <div class="section-subtitle">Singleton async task executor — 10 core threads, AbortPolicy, WebSocket result delivery</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Manages all async AI operations at <code>com.medicalmine.api.rest.ehr.ai.util.GPTTaskUtil</code>. All async tasks immediately return <code>{"status": "inProgress"}</code> to the REST caller. Results delivered asynchronously via WebSocket.</p>
+
+      <div class="info-box note">
+        <strong>Core Pattern:</strong> Submit task to ThreadPoolExecutor (10 core threads, 2 max extra, AbortPolicy) &rarr; return inProgress JSON immediately &rarr; task runs in background &rarr; on completion, call <code>CharmChatUtil.sendWMSCustomMsgToUsers(zuid, responseObject)</code> where <code>responseObject.callbackFn</code> tells the browser which JS function to invoke.
+      </div>
+
+      <h3>Thread Pool Configuration</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Executor Name</td><td><code>"GPTTasks"</code></td></tr>
+            <tr><td>Core Threads</td><td>10</td></tr>
+            <tr><td>Max Extra Threads</td><td>2</td></tr>
+            <tr><td>Rejection Policy</td><td><code>AbortPolicy</code> &rarr; throws FinanceException</td></tr>
+            <tr><td>Pattern</td><td>Singleton — <code>getInstance()</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Async Methods</h3>
+      <div class="method-block">
+        <div class="method-sig">public String createChartGPTTask(String notes, Long encounterId, Long memberId, String suggestionType)</div>
+        <div class="method-desc">Async task calls GPT4Util.generatePhysicianAssist(). On success: processes via AIUtil.chartAssistGpt() &rarr; logs via AIUtil.addOrUpdatePlanAssistUsage() &rarr; sends WebSocket callback "getGptResponseFromWebHook" with recommendations. On error: sends error message to same callback. Returns: <code>{"status":"inProgress","tasks":{"subjective_objective":"inProgress","assessment_diagnoses":"inProgress"}}</code></div>
+      </div>
+
+      <h3>WebSocket Callbacks</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Callback Function</th><th>Source Method</th><th>Key Data Fields</th></tr></thead>
+          <tbody>
+            <tr><td><code>getGptResponseFromWebHook</code></td><td>createChartGPTTask</td><td>recommendation_type, recommendations.gptResponse, consultation_id</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 17: HTTP CLIENTS -->
+  <div class="section" id="http-clients">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">17. Backend Reference — HTTP Clients</div>
+        <div class="section-subtitle">GPT4Api.java — OpenAI HTTP client used by all 9 GPT Assist endpoints</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>GPT4Api.java — OpenAI Direct HTTP Client</h3>
+      <p>Class: <code>com.medicalmine.api.rest.ehr.ai.gpt4.GPT4Api</code>. Handles HTTP communication with OpenAI public API using Apache HttpClient and Gson serialization.</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>API_URL</code></td><td>https://api.openai.com/v1/chat/completions</td><td>Chat completions endpoint</td></tr>
+            <tr><td><code>MODELS_URL</code></td><td>https://api.openai.com/v1/models</td><td>API key validation endpoint</td></tr>
+            <tr><td><code>apiKey</code></td><td>Instance field</td><td>Bearer token — set per-instance from practice config</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="method-block">
+        <div class="method-sig">public GPT4Response generateResponse(GPT4Request gpt4Request) throws Exception</div>
+        <div class="method-desc">Serializes GPT4Request to JSON via Gson. POSTs to API_URL with <code>Authorization: Bearer {apiKey}</code> header. Deserializes response to GPT4Response via Gson. Logs request and response at INFO level. Check <code>getError()</code> before <code>getChoices()</code> on the returned response.</div>
+      </div>
+      <div class="method-block">
+        <div class="method-sig">public String isValidUser() throws Exception</div>
+        <div class="method-desc">GETs MODELS_URL to validate API key. Returns raw JSON string. Caller checks for "gpt-3.5-turbo" (basic validity) and "gpt-4" (GPT-4 access) substrings in response.</div>
+      </div>
+
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SECTION 18: DATA MODELS -->
+  <div class="section" id="data-models">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">18. Data Models</div>
+        <div class="section-subtitle">All 10 DTOs in the com.medicalmine.api.rest.ehr.ai.gpt4 package — Gson serialized</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>All DTOs use <code>@SerializedName</code> annotations for OpenAI snake_case field names. Gson is used for all serialization/deserialization.</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>DTO</th><th>Key Fields</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>GPT4Request</strong></td>
+              <td><code>model</code>, <code>messages[]</code>, <code>max_tokens</code>, <code>temperature</code></td>
+              <td>Always uses GPT_4O model in practice; temperature: 0 = deterministic, 1 = creative</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Response</strong></td>
+              <td><code>id</code>, <code>object</code>, <code>choices[]</code>, <code>usage</code>, <code>error</code></td>
+              <td>Check <code>getError()</code> first (null on success); use <code>choices[0].message.contentAsString()</code></td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Message</strong></td>
+              <td><code>role</code> ("system"|"user"|"assistant"), <code>content</code> (String or List&lt;GPT4Content&gt;)</td>
+              <td>Dual mode: text and vision. <code>getContentAsString()</code> handles both types transparently</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Choice</strong></td>
+              <td><code>index</code>, <code>message</code> (GPT4Message), <code>finish_reason</code></td>
+              <td>Use choices[0] for single-response flows</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Content</strong></td>
+              <td><code>type</code> ("text"|"image_url"|"file"), <code>text</code>, <code>image_url</code> (GPT4ImageUrl), <code>file</code> (GPT4File)</td>
+              <td>Used for multimodal (Vision API) requests</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4ImageUrl</strong></td>
+              <td><code>url</code> (base64 data URL), <code>detail</code> ("high" for medical images)</td>
+              <td>High detail used for medical images requiring precise interpretation</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4File</strong></td>
+              <td><code>file_id</code>, <code>purpose</code></td>
+              <td>OpenAI Files API reference for pre-uploaded documents</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Usage</strong></td>
+              <td><code>prompt_tokens</code>, <code>completion_tokens</code>, <code>total_tokens</code></td>
+              <td>Logged at INFO level; used for usage tracking in AIUtil</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Error</strong></td>
+              <td><code>message</code>, <code>type</code>, <code>param</code>, <code>code</code></td>
+              <td>"insufficient_quota" is handled specifically with a dedicated error code</td>
+            </tr>
+            <tr>
+              <td><strong>GPT4Constants</strong></td>
+              <td><code>GPT_3_5_TURBO</code>="gpt-3.5-turbo", <code>GPT_4</code>="gpt-4", <code>GPT_4O</code>="gpt-4o", <code>USER</code>="user", <code>SYSTEM</code>="system", <code>ASSISTANT</code>="assistant"</td>
+              <td>GPT_4O is the forced default for all requests in GPT4Util</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>MessageQueue.java — Conversation History</h3>
+      <p>Manages multi-turn Ask GPT conversation history. Uses <code>LinkedList&lt;GPT4Message&gt;</code>. Implements <code>Serializable</code> for Gson round-trip via request param <code>past_transactions</code>.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Field / Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>maxQueueLimit</code></td><td>10 (= 5 user+assistant conversation pairs)</td></tr>
+            <tr><td><code>messages</code></td><td>Queue&lt;GPT4Message&gt; — LinkedList FIFO implementation</td></tr>
+            <tr><td><code>addMessage(GPT4Message)</code></td><td>At capacity: removes 2 messages (user+assistant pair = rolling window) before adding new</td></tr>
+            <tr><td><code>cleanQueue()</code></td><td>Trims queue to maxQueueLimit by removing from head</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Key Constants</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Constant</th><th>Value</th><th>Usage</th></tr></thead>
+          <tbody>
+            <tr><td><code>GLOBAL_MAX_TOKENS</code></td><td>200</td><td>Global default token limit (overridden per PROMPT_TYPE from DB)</td></tr>
+            <tr><td><code>CONVERSATION_LIMIT_IN_SECONDS</code></td><td>86400L (24 hours)</td><td>Max conversation session duration</td></tr>
+            <tr><td><code>MAX_QUEUE_LIMIT</code></td><td>10</td><td>Max messages in rolling conversation window</td></tr>
+            <tr><td><code>PROMPT_DELIMITER</code></td><td><code>"####"</code></td><td>Separates data sections in prompts; replaces {delimiter} placeholder</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+  <!-- Section 19: Frontend Reference — gpt4.js -->
+  <div class="section" id="frontend-gpt4js">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">19. Frontend Reference — gpt4.js</div>
+        <div class="section-subtitle">Client-side JS orchestrating GPT Assist dialogs and API calls</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>
+        <code>webapps/ehr/js/gptAssist/gpt4.js</code> is the main frontend orchestrator. It defines five global namespace objects and one dialog launcher, each responsible for a distinct GPT Assist sub-feature.
+      </p>
+
+      <h3>Global Namespace Objects</h3>
+
+      <h4>1. <code>gptMainView</code></h4>
+      <p>Controls the shared GPT Assist main panel, message queue rendering, and streaming message display.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method / Property</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>init()</code></td><td>Renders the main GPT panel template, binds WebSocket callbacks</td></tr>
+            <tr><td><code>renderMessages()</code></td><td>Iterates the local message queue and stamps each message into the chat UI</td></tr>
+            <tr><td><code>onWebSocketMessage(data)</code></td><td>Handles streaming chunks arriving from the WebSocket; appends to the active message bubble</td></tr>
+            <tr><td><code>clearConversation()</code></td><td>Calls <code>POST /api/ai/gptassist/updatechartsetting</code> to reset server-side queue then clears local UI</td></tr>
+            <tr><td><code>submitUserInput(text)</code></td><td>Sends user message via APIUtil; pushes optimistic bubble to UI before response arrives</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>2. <code>pubMedSuggestions</code></h4>
+      <p>Handles the PubMed-backed note preview panel (Workflow 3).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method / Property</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>init(encounterId)</code></td><td>Calls <code>GET /api/ai/gptassist/notespreview</code>; stores <code>encounterId</code> for re-fetch</td></tr>
+            <tr><td><code>renderSuggestions(data)</code></td><td>Stamps suggestion cards using Handlebars template</td></tr>
+            <tr><td><code>onAccept(index)</code></td><td>Copies selected suggestion text into the chart-note editor at cursor position</td></tr>
+            <tr><td><code>onReject(index)</code></td><td>Removes the suggestion card without modifying the editor</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>3. <code>chatGpt</code></h4>
+      <p>Wraps the Ask GPT sub-feature (Workflow 7) — free-text chat with a pre-loaded system prompt.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method / Property</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>init()</code></td><td>Loads the chat panel; initialises the local <code>MessageQueue</code> mirror</td></tr>
+            <tr><td><code>send(prompt)</code></td><td>Calls <code>POST /api/ai/gptassist/askgpt</code>; handles streaming via WebSocket callback</td></tr>
+            <tr><td><code>getHistory()</code></td><td>Calls <code>GET /api/ai/gptassist/updatechartsetting</code> to restore prior conversation on panel re-open</td></tr>
+            <tr><td><code>abort()</code></td><td>Sends abort flag; hides spinner; leaves partial response in UI</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>4. <code>gptReferralAssist</code></h4>
+      <p>Manages the Referral Letter generator (Workflows 5, 6, 8).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method / Property</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>init(referralId)</code></td><td>Calls <code>GET /api/ai/gptassist/loadreferraldata</code> to pre-fill form; optionally calls ZLabs loader</td></tr>
+            <tr><td><code>generate()</code></td><td>Calls <code>POST /api/ai/gptassist/generatereferralletter</code>; handles masked-token response and unmasks locally</td></tr>
+            <tr><td><code>onUnmask(text, tokenMap)</code></td><td>Replaces all <code>[PATIENT_*]</code>/<code>[PROVIDER_*]</code> tokens with real PII from the pre-fetched referral data object (never sent over wire again)</td></tr>
+            <tr><td><code>copyToClipboard()</code></td><td>Writes the unmasked referral text to system clipboard; shows confirmation toast</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>5. <code>gptLabAssist</code></h4>
+      <p>Lab Opinion sub-feature (Workflow 9).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method / Property</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>init(encounterId)</code></td><td>Loads lab results panel; binds the Ask Opinion button</td></tr>
+            <tr><td><code>requestOpinion(labIds)</code></td><td>Calls <code>POST /api/ai/gptassist/labopinion</code> with selected lab IDs; renders streamed opinion</td></tr>
+            <tr><td><code>renderOpinion(html)</code></td><td>Stamps markdown-rendered opinion into the panel below the lab table</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>6. <code>showGPTAssistDialog(feature)</code></h4>
+      <p>Top-level launcher called from the EHR toolbar. Routes to the correct namespace based on <code>feature</code> string: <code>"chartnote"</code>, <code>"referral"</code>, <code>"lab"</code>, or <code>"askgpt"</code>. Checks RBAC permission bit before rendering; shows upgrade prompt if feature is disabled for the practice.</p>
+
+      <div class="info-box note">
+        <strong>Note:</strong> All API calls from gpt4.js use <code>APIUtil.doRequest</code> / <code>APIUtil.doPost</code> / <code>APIUtil.getPOSTResponse</code> — never raw <code>XMLHttpRequest</code> or <code>fetch</code>.
+      </div>
+
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+
+  <!-- Section 20: Frontend Reference — chartnotesuggestion.js -->
+  <div class="section" id="frontend-chartnotesuggestion">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">20. Frontend Reference — chartnotesuggestion.js</div>
+        <div class="section-subtitle">Chart note AI suggestion panel — root state and six sub-objects</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>
+        <code>webapps/ehr/js/gptAssist/chartnotesuggestion.js</code> manages the inline chart-note suggestion panel embedded inside the SOAP editor. It is structured as a root state object with six named sub-objects.
+      </p>
+
+      <h3>Root State</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>encounterId</code></td><td>String</td><td>Active encounter ID; set at panel init</td></tr>
+            <tr><td><code>providerId</code></td><td>String</td><td>Logged-in provider ID for permission checks</td></tr>
+            <tr><td><code>isEnabled</code></td><td>Boolean</td><td>Feature flag sourced from practice settings; gates all sub-object rendering</td></tr>
+            <tr><td><code>activeTab</code></td><td>String</td><td>Currently active tab: <code>"suggestions"</code>, <code>"dx"</code>, or <code>"preview"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4><code>initView(encounterId, providerId)</code></h4>
+      <p>Entry point called from the SOAP editor bootstrap. Checks <code>isChartNoteBotEnabled()</code>, then conditionally renders the suggestion panel and attaches tab event listeners.</p>
+
+      <h4><code>isChartNoteBotEnabled()</code></h4>
+      <p>Reads the <code>CHARTNOTE_GPT_ASSIST</code> permission bit from the session-level permission object. Returns <code>true</code> only if both the practice has the feature enabled AND the provider has <code>:READ</code> access. Controls whether the entire suggestion panel is injected into the DOM.</p>
+
+      <h3>Sub-Objects</h3>
+
+      <h4>1. <code>gpt_assist_suggestions</code></h4>
+      <p>Handles the primary SOAP suggestion tab (Workflow 3 — Notes Preview).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>load()</code></td><td>Calls <code>GET /api/ai/gptassist/notespreview</code>; renders spinner while pending</td></tr>
+            <tr><td><code>render(data)</code></td><td>Stamps Handlebars template with suggestion cards; binds Accept/Reject per card</td></tr>
+            <tr><td><code>accept(index)</code></td><td>Inserts suggestion text into the active SOAP field at cursor; triggers auto-save</td></tr>
+            <tr><td><code>reject(index)</code></td><td>Removes the card from DOM; does not call any API</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>2. <code>preview</code></h4>
+      <p>Read-only rendered preview of the AI-generated SOAP note draft.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>show(html)</code></td><td>Renders the note preview in a styled read-only panel</td></tr>
+            <tr><td><code>copyAll()</code></td><td>Copies the entire preview text to clipboard</td></tr>
+            <tr><td><code>insertAll()</code></td><td>Bulk-inserts all preview text into the SOAP note fields</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>3. <code>mainFrame</code></h4>
+      <p>Container and tab-strip controller for the suggestion panel.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>render()</code></td><td>Injects the panel container and tab strip into the SOAP editor DOM</td></tr>
+            <tr><td><code>switchTab(tabName)</code></td><td>Updates <code>activeTab</code>, hides inactive sub-panels, shows active one, triggers its <code>load()</code></td></tr>
+            <tr><td><code>resize()</code></td><td>Adjusts panel height on SOAP editor resize events</td></tr>
+            <tr><td><code>destroy()</code></td><td>Removes panel from DOM on encounter close</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>4. <code>assisticon</code></h4>
+      <p>The floating sparkle icon rendered in the SOAP text areas that triggers the suggestion panel.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Method</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>attach(fieldEl)</code></td><td>Injects the icon element adjacent to the given SOAP field</td></tr>
+            <tr><td><code>onClick()</code></td><td>Calls <code>mainFrame.render()</code> if panel is not yet visible; calls <code>mainFrame.switchTab("suggestions")</code></td></tr>
+            <tr><td><code>detach()</code></td><td>Removes icon from DOM on field blur or encounter navigation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+
+  <!-- Section 21: Database Tables -->
+  <div class="section" id="database-tables">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="collapse-icon">&#9660;</div>
+      <div style="flex:1">
+        <div class="section-title">21. Database Tables</div>
+        <div class="section-subtitle">MySQL tables, caches, and properties used by GPT Assist</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>GPTPROMPTDETAILS</h3>
+      <p>Stores per-prompt-type configuration. Queried at runtime by <code>GPT4Util.getTokensFromDB()</code> and <code>getModelFromDB()</code>.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>PROMPT_TYPE</code></td><td>VARCHAR(100)</td><td>Enum key matching Java constants (e.g. <code>SOAP_NOTE_SUGGESTION</code>, <code>CHART_RECOMMENDATION</code>)</td></tr>
+            <tr><td><code>PROMPT_TEXT</code></td><td>TEXT</td><td>System prompt template; may contain <code>{delimiter}</code> and <code>{context}</code> placeholders</td></tr>
+            <tr><td><code>MAX_TOKENS</code></td><td>INT</td><td>Token ceiling for this prompt type; overrides <code>GLOBAL_MAX_TOKENS = 200</code></td></tr>
+            <tr><td><code>MODEL</code></td><td>VARCHAR(50)</td><td>Model override (e.g. <code>gpt-4o</code>, <code>gpt-3.5-turbo</code>); falls back to practice-level setting if NULL</td></tr>
+            <tr><td><code>TEMPERATURE</code></td><td>DECIMAL(3,2)</td><td>Sampling temperature; NULL falls back to <code>GPT4Util</code> default</td></tr>
+            <tr><td><code>IS_ACTIVE</code></td><td>TINYINT(1)</td><td>Soft-disable a prompt type without deleting the row</td></tr>
+            <tr><td><code>CREATED_TIME</code></td><td>BIGINT</td><td>Unix epoch ms; used for audit</td></tr>
+            <tr><td><code>MODIFIED_TIME</code></td><td>BIGINT</td><td>Unix epoch ms; updated on any change</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>CHARM_ASYNC_CHART_NOTE</h3>
+      <p>Stores asynchronous chart-note generation jobs queued by <code>GPTTaskUtil</code>. Polled by the WebSocket handler to deliver results.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>TASK_ID</code></td><td>VARCHAR(36)</td><td>UUID generated at job creation; returned to frontend for polling</td></tr>
+            <tr><td><code>ENCOUNTER_ID</code></td><td>VARCHAR(50)</td><td>Associated encounter; used to route WebSocket delivery</td></tr>
+            <tr><td><code>PROVIDER_ID</code></td><td>VARCHAR(50)</td><td>Owning provider; used for session validation on retrieval</td></tr>
+            <tr><td><code>PROMPT_TYPE</code></td><td>VARCHAR(100)</td><td>Task type matching <code>GPTPROMPTDETAILS.PROMPT_TYPE</code></td></tr>
+            <tr><td><code>STATUS</code></td><td>VARCHAR(20)</td><td><code>PENDING</code>, <code>PROCESSING</code>, <code>COMPLETED</code>, <code>FAILED</code></td></tr>
+            <tr><td><code>RESULT_TEXT</code></td><td>LONGTEXT</td><td>AI-generated output; NULL until <code>COMPLETED</code></td></tr>
+            <tr><td><code>ERROR_MESSAGE</code></td><td>TEXT</td><td>Populated on <code>FAILED</code> status</td></tr>
+            <tr><td><code>CREATED_TIME</code></td><td>BIGINT</td><td>Job enqueue timestamp (Unix ms)</td></tr>
+            <tr><td><code>COMPLETED_TIME</code></td><td>BIGINT</td><td>Job completion timestamp (Unix ms)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>CHARM_PROPERTIES (GPT Assist Keys)</h3>
+      <p>Practice-level and global key-value configuration. GPT Assist reads the following keys at runtime.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Property Key</th><th>Scope</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>GPT_API_KEY</code></td><td>Practice</td><td>OpenAI API key; stored AES-encrypted; decrypted in <code>GPT4Util.getApiKey()</code></td></tr>
+            <tr><td><code>GPT_MODEL</code></td><td>Practice</td><td>Default model (e.g. <code>gpt-4o</code>); overridden per prompt by <code>GPTPROMPTDETAILS.MODEL</code></td></tr>
+            <tr><td><code>GPT_ASSIST_ENABLED</code></td><td>Practice</td><td>Master on/off toggle; checked before any GPT call</td></tr>
+            <tr><td><code>GPT_RATE_LIMIT_PER_MIN</code></td><td>Global</td><td>Max requests per minute per practice; default 60 (enforced in <code>security-api-ai.xml</code>)</td></tr>
+            <tr><td><code>GPT_CONVERSATION_TTL</code></td><td>Global</td><td>Seconds before idle conversation is purged; default 86400 (24 h)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>CharmCache — GPT Assist Keys</h3>
+      <p><code>CharmCache</code> (in-memory distributed cache) is used to avoid DB round-trips on hot paths. GPT Assist populates the following cache namespaces.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Cache Key Pattern</th><th>TTL</th><th>Stores</th></tr></thead>
+          <tbody>
+            <tr><td><code>GPT_PROMPT_{PROMPT_TYPE}</code></td><td>30 min</td><td>Full <code>GPTPROMPTDETAILS</code> row for a given prompt type; invalidated on admin update</td></tr>
+            <tr><td><code>GPT_API_KEY_{PRACTICE_ID}</code></td><td>15 min</td><td>Decrypted API key; short TTL to limit exposure window on key rotation</td></tr>
+            <tr><td><code>GPT_CONV_{SESSION_ID}</code></td><td>24 h</td><td>Serialised <code>MessageQueue</code> for the provider session; keyed by session token</td></tr>
+            <tr><td><code>GPT_RATE_{PRACTICE_ID}_{MINUTE_EPOCH}</code></td><td>2 min</td><td>Request counter for rate limiting; incremented on each API call; evicts naturally after 2 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box warn">
+        <strong>Warning:</strong> The <code>GPT_API_KEY_{PRACTICE_ID}</code> cache entry holds a plaintext decrypted API key in memory. Cache eviction or server restart will trigger a DB re-fetch and re-decryption. Ensure the AES key used for encryption is stored in a secure properties file outside the WAR.
+      </div>
+
+      <a href="#top" class="back-top">&uarr; Back to top</a>
+    </div>
+  </div>
+
+
+  <footer class="doc-footer">
+    <div><strong>CharmEHR — GPT Assist Complete Technical Documentation</strong> &nbsp;&middot;&nbsp; v1.0 &nbsp;&middot;&nbsp; 2026-05-28</div>
+    <div style="margin-top:6px">Author: <strong>Karan Kumar</strong> &nbsp;&mdash;&nbsp; <a href="mailto:karan.kumar@zohocorp.com">karan.kumar@zohocorp.com</a></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">
+      Related: <a class="link-chip" href="COPILOT_TECHNICAL_DOCUMENTATION.html">Copilot Technical Docs</a>
+    </div>
+  </footer>
+
+</main>
+
+<!-- Expand Modal (global, one instance) -->
+<div id="diagram-modal">
+  <div id="diagram-modal-box">
+    <div id="diagram-modal-toolbar">
+      <span id="diagram-modal-title">Diagram</span>
+      <button class="modal-tool-btn" onclick="modalZoomOut()">&#8722;</button>
+      <span id="diagram-modal-zoom-label">100%</span>
+      <button class="modal-tool-btn" onclick="modalZoomIn()">+</button>
+      <button class="modal-tool-btn" onclick="modalZoomReset()">Fit</button>
+      <button id="diagram-modal-close-btn" onclick="closeDiagramModal()">&#10005;</button>
+    </div>
+    <div id="diagram-modal-viewport">
+      <div id="diagram-modal-svg-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+// ── Mermaid init ──────────────────────────────────────────────
+mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  // highlight.js
+  document.querySelectorAll('pre code').forEach(function (el) { hljs.highlightElement(el); });
+
+  // CRITICAL: save raw Mermaid source BEFORE first render
+  document.querySelectorAll('.mermaid').forEach(function (el) {
+    el.setAttribute('data-mermaid-source', el.textContent.trim());
+  });
+
+  // Render Mermaid + inject expand buttons
+  mermaid.run({ querySelector: '.mermaid' })
+    .then(addExpandButtons)
+    .catch(function () { addExpandButtons(); });
+
+  // Sidebar active-link on scroll
+  var sectionEls   = document.querySelectorAll('.section[id]');
+  var sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        sidebarLinks.forEach(function (a) { a.classList.remove('active'); });
+        var link = document.querySelector('.sidebar a[href="#' + e.target.id + '"]');
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.2 });
+  sectionEls.forEach(function (s) { observer.observe(s); });
+
+  // Close diagram modal on backdrop click
+  document.getElementById('diagram-modal').addEventListener('click', function (e) {
+    if (e.target === this) closeDiagramModal();
+  });
+});
+
+// ── Section collapse ────────────────────────────────────────────
+function toggleSection(header) {
+  var section = header.parentElement;
+  var wasCollapsed = section.classList.contains('collapsed');
+  section.classList.toggle('collapsed');
+  if (wasCollapsed) {
+    var diagrams = section.querySelectorAll('.mermaid[data-processed]');
+    if (!diagrams.length) {
+      setTimeout(function () {
+        mermaid.run({ querySelector: '#' + section.id + ' .mermaid' })
+          .then(addExpandButtons).catch(function () {});
+      }, 50);
+    }
+  }
+}
+function expandAll()   { document.querySelectorAll('.section').forEach(function (s) { s.classList.remove('collapsed'); }); }
+function collapseAll() { document.querySelectorAll('.section').forEach(function (s) { s.classList.add('collapsed');   }); }
+
+// ── Normal / Detailed per-section toggle ──────────────────────
+function toggleDetail(btn, level) {
+  var toggle = btn.closest('.section-toggle');
+  toggle.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var body = btn.closest('.section').querySelector('.section-body');
+  body.querySelectorAll('.diagram-normal, .diagram-detailed').forEach(function (d) { d.classList.remove('active'); });
+  var target = body.querySelector('.diagram-' + level);
+  if (target) target.classList.add('active');
+}
+
+function setGlobalLevel(level) {
+  document.querySelectorAll('.section-toggle').forEach(function (toggle) {
+    var btn = toggle.querySelector(level === 'normal' ? 'button:first-child' : 'button:last-child');
+    if (btn) toggleDetail(btn, level);
+  });
+}
+
+// ── Theme toggle ────────────────────────────────────────────────
+function toggleTheme() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '\u263E' : '\u2600';
+  document.getElementById('hljs-light').disabled = !isDark;
+  document.getElementById('hljs-dark').disabled  =  isDark;
+  updateMermaidTheme(isDark ? 'default' : 'dark');
+}
+
+function updateMermaidTheme(theme) {
+  mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' });
+  document.querySelectorAll('.mermaid').forEach(function (el) {
+    var src = el.getAttribute('data-mermaid-source');
+    if (!src) return;
+    el.removeAttribute('data-processed');
+    el.innerHTML = '';
+    el.textContent = src;
+  });
+  mermaid.run({ querySelector: '.mermaid' })
+    .then(addExpandButtons).catch(function () { addExpandButtons(); });
+}
+
+// ── Diagram expand modal ─────────────────────────────────────────
+var _modalFitScale = 1, _modalUserZoom = 1, _modalNatW = 800, _modalNatH = 400;
+
+function addExpandButtons() {
+  document.querySelectorAll('.mermaid-wrapper').forEach(function (wrapper) {
+    if (wrapper.querySelector('.diagram-expand-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'diagram-expand-btn';
+    btn.innerHTML = '&#8663; Expand';
+    btn.onclick = function (e) { e.stopPropagation(); openDiagramModal(wrapper); };
+    wrapper.appendChild(btn);
+  });
+}
+
+function openDiagramModal(wrapper) {
+  var svgEl = wrapper.querySelector('svg');
+  if (!svgEl) return;
+
+  // Get natural dimensions from the ORIGINAL SVG before cloning
+  // Mermaid v11 sets style.maxWidth instead of width/height attributes
+  var vb = svgEl.viewBox && svgEl.viewBox.baseVal;
+  if (vb && vb.width > 0) {
+    _modalNatW = vb.width;
+    _modalNatH = vb.height;
+  } else {
+    var bbox = svgEl.getBoundingClientRect();
+    var styleMaxW = parseFloat(svgEl.style.maxWidth);
+    _modalNatW = (styleMaxW > 0 ? styleMaxW : (bbox.width > 10 ? bbox.width : parseFloat(svgEl.getAttribute('width')) || 900));
+    _modalNatH = bbox.height > 10 ? bbox.height : parseFloat(svgEl.getAttribute('height')) || 500;
+  }
+
+  var clone = svgEl.cloneNode(true);
+  // Remove any restrictive CSS set by Mermaid so the modal can size it freely
+  clone.style.maxWidth = 'none';
+  clone.style.width = '';
+  clone.style.height = '';
+  // Ensure viewBox is set for proper scaling
+  if (!clone.getAttribute('viewBox') && _modalNatW > 0) {
+    clone.setAttribute('viewBox', '0 0 ' + _modalNatW + ' ' + _modalNatH);
+  }
+
+  var wrap = document.getElementById('diagram-modal-svg-wrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(clone);
+
+  // Open modal first, then calculate scale in next frame so clientWidth is accurate
+  document.getElementById('diagram-modal').classList.add('open');
+  requestAnimationFrame(function () {
+    var vp = document.getElementById('diagram-modal-viewport');
+    var availW = vp.clientWidth - 48;
+    var availH = vp.clientHeight - 48;
+    _modalFitScale = (availW > 0 && _modalNatW > 0) ? Math.min(availW / _modalNatW, availH / _modalNatH, 1) : 1;
+    _modalUserZoom = 1;
+    _applyModalSize();
+  });
+}
+function closeDiagramModal() { document.getElementById('diagram-modal').classList.remove('open'); }
+function modalZoomIn()       { _modalUserZoom = Math.min(_modalUserZoom * 1.2, 5);   _applyModalSize(); }
+function modalZoomOut()      { _modalUserZoom = Math.max(_modalUserZoom / 1.2, 0.1); _applyModalSize(); }
+function modalZoomReset()    { _modalUserZoom = 1; _applyModalSize(); }
+function _applyModalSize() {
+  var svgEl = document.querySelector('#diagram-modal-svg-wrap svg');
+  if (!svgEl) return;
+  var scale = _modalFitScale * _modalUserZoom;
+  svgEl.setAttribute('width',  Math.round(_modalNatW * scale));
+  svgEl.setAttribute('height', Math.round(_modalNatH * scale));
+  document.getElementById('diagram-modal-zoom-label').textContent = Math.round(scale * 100) + '%';
+}
+
+// ── Search ─────────────────────────────────────────────────────
+function handleSearch(query) {
+  var results = document.getElementById('searchResults');
+  query = query.trim().toLowerCase();
+  if (!query) { results.classList.remove('visible'); return; }
+  var matches = [];
+  document.querySelectorAll('.section').forEach(function (section) {
+    var title = (section.querySelector('.section-title') || {}).textContent || '';
+    var body  = (section.querySelector('.section-body')  || {}).textContent || '';
+    if (title.toLowerCase().includes(query) || body.toLowerCase().includes(query)) {
+      matches.push({ id: section.id, title: title, preview: body.substring(0, 60) });
+    }
+  });
+  if (!matches.length) {
+    results.innerHTML = '<a style="color:var(--text-muted)">No results found</a>';
+  } else {
+    results.innerHTML = matches.slice(0, 8).map(function (m) {
+      return '<a href="#' + m.id + '" onclick="document.getElementById(\'searchResults\').classList.remove(\'visible\')">'
+        + m.title + '<div class="sr-section">' + m.preview + '&hellip;</div></a>';
+    }).join('');
+  }
+  results.classList.add('visible');
+}
+</script>
+</body>
+</html>
